@@ -21,7 +21,7 @@ private:
     Direction direction;
 
 public:
-    void move();
+    bool move();    //false if collided with own body
     Snake();
     Snake(unsigned short startX, unsigned  short startY);
     void grow();

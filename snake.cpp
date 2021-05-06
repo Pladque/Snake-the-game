@@ -34,12 +34,11 @@ Snake::Snake(unsigned short startX, unsigned  short startY)
 }
 
 //updated once per frame postion updater
-void Snake::move()
+bool Snake::move()
 {
     bodyPart previousPositionOfBodyPart = bodyPart(head);
 
     //moving head
-
     if(this->direction == Direction::up)
     {
         if(head.y - 1 >= 0) //able to move up
@@ -90,8 +89,12 @@ void Snake::move()
     //moving rest of body
     bodyPart* currBodyPart = head.next;
 
+    bool validMove = true;
     while(currBodyPart)
     {
+        if(currBodyPart->x == head.x  &&  currBodyPart->y == head.y)
+            validMove = false;
+
         bodyPart temp = bodyPart(currBodyPart);
         currBodyPart->copyPos(previousPositionOfBodyPart);
         previousPositionOfBodyPart = temp;
@@ -99,6 +102,7 @@ void Snake::move()
         currBodyPart = currBodyPart->next;
     }
 
+    return validMove;
 }
 
 void Snake::grow()
