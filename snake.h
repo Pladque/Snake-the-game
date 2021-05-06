@@ -27,6 +27,8 @@ public:
     void grow();
     void fade();
 
+    bodyPart getHead();
+
 };
 
 

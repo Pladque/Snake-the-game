@@ -115,7 +115,6 @@ void Snake::grow()
     currBodyPart->next = new bodyPart();
 }
 
-
 void Snake::fade()
 {
     bodyPart* currBodyPart = &head;
@@ -131,4 +130,7 @@ void Snake::fade()
     delete currBodyPart;
 }
 
-
+bodyPart Snake::getHead()
+{
+    return this->head;
+}
