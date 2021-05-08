@@ -1,4 +1,4 @@
-#include "snake.h"
+#include "snake.hpp"
 
 bodyPart::bodyPart()
 {
@@ -14,11 +14,11 @@ bodyPart::bodyPart(unsigned short  newX, unsigned short  newY, bodyPart* newNext
     this->next = newNext;
 }
 
-bodyPart::bodyPart(bodyPart* toCopy)
+bodyPart::bodyPart(const bodyPart& toCopy)
 {
-    this->x = toCopy->x;
-    this->y = toCopy->y;
-    this->next = toCopy->next;
+    this->x = toCopy.x;
+    this->y = toCopy.y;
+    this->next = toCopy.next;
 }
 
 void bodyPart::copyPos(bodyPart positionSource)
@@ -29,73 +29,73 @@ void bodyPart::copyPos(bodyPart positionSource)
 
 Snake::Snake(unsigned short startX, unsigned  short startY)
 {
-    this->head = bodyPart(startX, startY, nullptr);
+    this->head = new bodyPart(startX, startY, nullptr);
 
 }
 
 //updated once per frame postion updater
 bool Snake::move()
 {
-    bodyPart previousPositionOfBodyPart = bodyPart(head);
+    bodyPart previousPositionOfBodyPart = bodyPart(*head);
 
     //moving head
     if(this->direction == Direction::up)
     {
-        if(head.y - 1 >= 0) //able to move up
+        if(head->y - 1 >= 0) //able to move up
         {
-            head.y -= 1;
+            head->y -= 1;
         }
         else    //teleport head to other side of grid
         {
-            head.y = GRID_SIZE_Y;
+            head->y = GRID_SIZE_Y;
         }
     }
     else if(direction ==  Direction::down)
     {
-        if(head.y + 1 <= GRID_SIZE_Y) //able to move down
+        if(head->y + 1 <= GRID_SIZE_Y) //able to move down
         {
 
-            head.y += 1;
+            head->y += 1;
         }
         else //teleport head to other side of grid
         {
-            head.y = 0;
+            head->y = 0;
 
         }
     }
     else if(direction ==  Direction::left)
     {
-        if(head.x - 1 >= 0) //able to move left
+        if(head->x - 1 >= 0) //able to move left
         {
-            head.x -= 1;
+            head->x -= 1;
         }
         else //teleport head to other side of grid
         {
-            head.x = GRID_SIZE_X;
+            head->x = GRID_SIZE_X;
         }
     }
     else if(direction ==  Direction::right)
     {
-        if(head.x + 1 <= GRID_SIZE_X) //able to move right
+        if(head->x + 1 <= GRID_SIZE_X) //able to move right
         {
-            head.x += 1;
+            head->x += 1;
         }
         else    //teleport head to other side of grid
         {
-            head.x = 0;
+            head->x = 0;
         }
     }
 
     //moving rest of body
-    bodyPart* currBodyPart = head.next;
+    bodyPart* currBodyPart = head->next;
 
     bool validMove = true;
     while(currBodyPart)
     {
-        if(currBodyPart->x == head.x  &&  currBodyPart->y == head.y)
+        if(currBodyPart->x == head->x  &&  currBodyPart->y == head->y)
             validMove = false;
 
-        bodyPart temp = bodyPart(currBodyPart);
+        bodyPart temp = bodyPart(*currBodyPart);
         currBodyPart->copyPos(previousPositionOfBodyPart);
         previousPositionOfBodyPart = temp;
 
@@ -108,7 +108,7 @@ bool Snake::move()
 void Snake::grow()
 {
 
-    bodyPart* currBodyPart = &head;
+    bodyPart* currBodyPart = head;
 
     while(currBodyPart->next)
     {
@@ -116,12 +116,20 @@ void Snake::grow()
     }
 
     //not sure if it is enough to make it work
-    currBodyPart->next = new bodyPart();
+    currBodyPart->next = new bodyPart(*currBodyPart);
+}
+
+void Snake::changeDirection(Direction newDir) {
+    direction = newDir;
+}
+
+Direction Snake::getDirection() {
+    return direction;
 }
 
 void Snake::fade()
 {
-    bodyPart* currBodyPart = &head;
+    bodyPart* currBodyPart = head;
     bodyPart* newLastBodyPart;
     while(currBodyPart->next)
     {
@@ -134,7 +142,17 @@ void Snake::fade()
     delete currBodyPart;
 }
 
-bodyPart Snake::getHead()
+bodyPart* Snake::getHead()
 {
     return this->head;
+}
+
+Snake::~Snake() {
+    bodyPart* currBodyPart = head;
+    bodyPart* toDel;
+    while(currBodyPart){
+        toDel = currBodyPart;
+        currBodyPart = currBodyPart->next;
+        delete toDel;
+    }
 }
