@@ -1,5 +1,6 @@
 #include <string>
-#include "snake.h"
+#pragma once
+#include "snake.hpp"
 
 class collectableObj
 {
@@ -16,5 +17,8 @@ public:
 	int getSizeBonus();
 	int getScoreBonus();
 	bool goToFreeRandomPosistion(bodyPart* head = nullptr);
+
+	int getPosX();
+	int getPosY();
 	
 };

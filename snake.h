@@ -1,3 +1,4 @@
+#pragma once
 #include "consts.cpp"
 
 class bodyPart
@@ -8,16 +9,15 @@ public:
     bodyPart* next;
     bodyPart();
     bodyPart(unsigned short  newX, unsigned short  newY, bodyPart* newNext);
-    bodyPart(bodyPart* toCopy);
+    bodyPart(const bodyPart& toCopy);
     void copyPos(bodyPart positionSource);
 
 };
 
-class Snake
-{
+class Snake{
 private:
     int length;
-    bodyPart head;
+    bodyPart* head;
     Direction direction;
 
 public:
@@ -26,9 +26,8 @@ public:
     Snake(unsigned short startX, unsigned  short startY);
     void grow();
     void fade();
-
-    bodyPart getHead();
-
+    Direction getDirection();
+    void changeDirection(Direction newDir);
+    bodyPart* getHead();
+    ~Snake();
 };
-
-
