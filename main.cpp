@@ -46,7 +46,7 @@ void resizeSnake(Snake& snake, int size){
 
 void updateScore(int addToScore){
     score += addToScore;
-    text.setString(std::to_string(score));
+    text.setString("Score: " + std::to_string(score));
 }
 
 // mby rework it, to check collision with array of
@@ -55,12 +55,10 @@ void updateScore(int addToScore){
 
 void snakeHeadCollision(Snake *snake, collectableObj *obj1, sf::Sound& appleEating){
     
-    
     if(snake->getHead()->x == obj1->getPosX() &&  snake->getHead()->y == obj1->getPosY() ){
 //        std::cout<<score<<std::endl;
         // we can add golden aplles, that will f.e add 2 to size
         // and 5 to score
-        
         appleEating.play();
         resizeSnake(*snake, obj1->getSizeBonus());
         updateScore(obj1->getScoreBonus());
@@ -100,14 +98,14 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 void setupScoreDisplayer( sf::Font &font)
 {
     text.setFont(font); // font is a sf::Font
-    text.setString(std::to_string(score));
+    text.setString("Score: " + std::to_string(score));
     text.setCharacterSize(48); // in pixels, not points!
     text.setFillColor(sf::Color::Black);
     text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 }
 
-
+bool gamePaused = false;
 int main(int, char const**)
 {
     // Init game
@@ -142,7 +140,7 @@ int main(int, char const**)
             if(ev.type == sf::Event::Closed) {
                 window.close();
             }else if(ev.key.code == sf::Keyboard::Escape) {
-                window.close();
+                gamePaused = true;
             }else if(ev.type == sf::Event::KeyPressed) {
                 switch (ev.key.code) {
                     case sf::Keyboard::W:
@@ -170,19 +168,27 @@ int main(int, char const**)
                 }
             }
         }
-        
-        snake.changeDirection(newDir);
-        
-
-        if(!snake.move())
-            std::cout<<"GAME OVER"<<std::endl;
-        
+//        if(!gamePaused){
+            snake.changeDirection(newDir);
+        if(!snake.move()){
+            sf::SoundBuffer gameOverSound;
+            sf::Sound gameOver;
+            gameOverSound.loadFromFile("gameover2.wav");
+            gameOver.setBuffer(gameOverSound);
+            gameOver.setVolume(50);
+            gameOver.play();
+            sf::sleep(sf::milliseconds(2500));
+            window.close();
+        }
+//        }
         window.clear(sf::Color(153,204,255,100));
         
         drawField(window, snake, apple);//, text);
 
         snakeHeadCollision(&snake, &apple, appleEating);
+            
         
+            
         window.display();
         sf::sleep(sf::milliseconds(100));
     }
