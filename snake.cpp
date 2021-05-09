@@ -1,4 +1,6 @@
+#pragma once
 #include "snake.hpp"
+//#include "snake.h"
 
 bodyPart::bodyPart()
 {
@@ -47,12 +49,12 @@ bool Snake::move()
         }
         else    //teleport head to other side of grid
         {
-            head->y = GRID_SIZE_Y;
+            head->y = GRID_SIZE_Y - 1;
         }
     }
     else if(direction ==  Direction::down)
     {
-        if(head->y + 1 <= GRID_SIZE_Y) //able to move down
+        if(head->y + 1 < GRID_SIZE_Y) //able to move down
         {
 
             head->y += 1;
@@ -71,12 +73,12 @@ bool Snake::move()
         }
         else //teleport head to other side of grid
         {
-            head->x = GRID_SIZE_X;
+            head->x = GRID_SIZE_X - 1;
         }
     }
     else if(direction ==  Direction::right)
     {
-        if(head->x + 1 <= GRID_SIZE_X) //able to move right
+        if(head->x + 1 < GRID_SIZE_X) //able to move right
         {
             head->x += 1;
         }

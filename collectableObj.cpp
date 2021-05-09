@@ -2,25 +2,6 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
-/*
-class collectableObj
-{
-private:
-	int scoreBonus;
-	int sizeBonus;
-	std::string name;
-	int posX;
-	int posY;
-	
-public:
-	collectableObj(std::string newName, int posX, int posY, int newScoreBonus, int newSizeBonus);
-	std::string getName();
-	int getSizeBonus();
-	int getScoreBonus();
-	
-}
-
-*/
 
 collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, int newScoreBonus, int newSizeBonus)
 {
@@ -46,14 +27,14 @@ int collectableObj::getScoreBonus()
 	return scoreBonus;
 }
 
-bool collectableObj::bool goToFreeRandomPosistion(bodyPart* head)
+bool collectableObj::goToFreeRandomPosistion(bodyPart* head)
 {
 	if(head == nullptr)	//changing position to random, and dont care where is snake
 	{
 	  srand (time(NULL));
 
-	  int posX= rand() % GRID_SIZE_X + 1;
-	  int posY= rand() % GRID_SIZE_Y + 1;
+	  this-> posX= rand() % GRID_SIZE_X;
+	  this-> posY= rand() % GRID_SIZE_Y;
 	}
 	else	//changins position to only not ocupated by snake
 	{
@@ -63,6 +44,18 @@ bool collectableObj::bool goToFreeRandomPosistion(bodyPart* head)
 	}
 	
 	return false; //wasnt able change posisiton
+}
+
+int  collectableObj::getPosX()
+{
+	return posX;
+
+}
+
+int  collectableObj::getPosY()
+{
+	return posY;
+
 }
 
 
