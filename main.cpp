@@ -1,3 +1,4 @@
+
 #include "snake.cpp"
 #include "collectableObj.cpp"
 #include <SFML/Audio.hpp>
@@ -16,7 +17,7 @@ int snake_y = GRID_SIZE_Y / 2;
 
 //temp as global, put it into main later mby
 int score = 0;
-sf::Text text;      // for diplaying score
+sf::Text text;      // for displaying score
 
 void resizeSnake(Snake& snake, int size){
     for(int i = 0; i < size; i++)
@@ -24,8 +25,7 @@ void resizeSnake(Snake& snake, int size){
 }
 
 
-void updateScore(int addToScore)
-{
+void updateScore(int addToScore){
     score += addToScore;
     text.setString(std::to_string(score));
 }
@@ -33,16 +33,15 @@ void updateScore(int addToScore)
 // mby rework it, to check collision with array of
 //collectableObj - it will allow us to add fe poison apple, bombs etc
 // and other staff that snake can collide with
-void snakeHeadCollision(Snake *snake, collectableObj *obj1)
-{
-    if(snake->getHead()->x == obj1->getPosX() &&  snake->getHead()->y == obj1->getPosY() )
-    {
-        std::cout<<score<<std::endl;
+void snakeHeadCollision(Snake *snake, collectableObj *obj1){
+    
+    if(snake->getHead()->x == obj1->getPosX() &&  snake->getHead()->y == obj1->getPosY() ){
+//        std::cout<<score<<std::endl;
         // we can add golden aplles, that will f.e add 2 to size
         // and 5 to score
         resizeSnake(*snake, obj1->getSizeBonus());
         updateScore(obj1->getScoreBonus());
-        obj1->goToFreeRandomPosistion();
+        obj1->goToFreeRandomPosistion(snake->getHead());
     }
 }
 
@@ -162,7 +161,7 @@ int main(int, char const**)
         if(!snake.move())
             std::cout<<"GAME OVER"<<std::endl;
         
-        window.clear(sf::Color::Green);
+        window.clear(sf::Color(153,204,255,100));
         
         drawField(window, snake, apple);//, text);
 
