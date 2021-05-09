@@ -1,6 +1,7 @@
 
 #include "snake.cpp"
 #include "collectableObj.cpp"
+#include "particle.cpp"
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
@@ -43,6 +44,28 @@ void resizeSnake(Snake& snake, int size){
         snake.grow();
 }
 
+PartycleSystem makeParticles()
+{
+    srand (time(NULL));
+    Particle* firstParticle = 
+    new Particle(2 + rand() % 3 / 10, 2 + rand() % 3 / 10
+    , 10 + rand() % 2, 2+ rand() % 3 - 4, 1 , 0.1 + rand() % 3 /10 - 0.2,
+     0.1+ rand() % 3 /10 - 0.2);
+    Particle* currParticle = firstParticle;
+
+    for(int i = 0; i < 10; i++)
+    {
+        currParticle -> next = new Particle(0.5 + rand() % 3 / 10, 0.5 + rand() % 3 / 10
+    , 5 + rand() % 2, 5+ rand() % 3, 1 , 0.1 + rand() % 3 /10 - 0.2,
+     0.1+ rand() % 3 /10 - 0.2);
+        currParticle = currParticle ->next;
+        currParticle ->next = nullptr;
+    }
+
+    PartycleSystem collectedApplePS = PartycleSystem(firstParticle, 0, 0, 0);
+    return collectedApplePS;
+}
+
 
 void updateScore(int addToScore){
     score += addToScore;
@@ -67,10 +90,8 @@ void snakeHeadCollision(Snake *snake, collectableObj *obj1, sf::Sound& appleEati
 }
 
 void drawField(sf::RenderWindow& window, Snake& snake, 
-                collectableObj& collObj)// sf::Text &text) 
+                collectableObj& collObj, PartycleSystem &collectedApplePS)// sf::Text &text) 
 {  
-    
-    
     bodyPart* curr = snake.getHead();
     
     while(curr)
@@ -92,6 +113,28 @@ void drawField(sf::RenderWindow& window, Snake& snake,
     //drawing score
     text.setPosition(20, 20);   
     window.draw(text);
+
+
+    //drawing particle effect
+    //I will fix it later xd
+    //DONT DELETE plz
+    /*
+    Particle* particleToDraw = collectedApplePS.getFirstParticle();
+
+    while(particleToDraw)
+    {
+        if(particleToDraw ->ttl >=0)
+        {
+            sf::CircleShape shape(particleToDraw->size);
+            shape.setFillColor(sf::Color(255, 0, 0));
+            shape.setPosition((collObj.getPosX() + particleToDraw->positionX) * cell_size_pix, 
+            (collObj.getPosY()+ particleToDraw->positionY)* cell_size_pix);
+            window.draw(shape);
+        }
+        particleToDraw = particleToDraw->next;
+    }
+
+    */
 
 }
 
@@ -122,6 +165,9 @@ int main(int, char const**)
     }
     
     setupScoreDisplayer(font);
+
+    //DONT DELETE plz
+    //PartycleSystem collectedApplePS = makeParticles();
     
     //Game loop
     srand(time(NULL));
@@ -183,7 +229,9 @@ int main(int, char const**)
 //        }
         window.clear(sf::Color(153,204,255,100));
         
-        drawField(window, snake, apple);//, text);
+        drawField(window, snake, apple, collectedApplePS);//, text);
+
+        collectedApplePS.blowUp();
 
         snakeHeadCollision(&snake, &apple, appleEating);
             
