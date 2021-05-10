@@ -2,6 +2,7 @@
 #pragma once
 #include "snake.hpp"
 
+
 class collectableObj
 {
 private:
