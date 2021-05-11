@@ -5,12 +5,12 @@
 2. Done: 
 *basic Snake class, which defines snake behavior/properties
 *configuration of SFML, which will be used in the future to implement some graphic features
+*Snake representation rendering on the map,
+*pseudo random fruits/objects creation and rendering on the map,
 
 3. To do:
-*Snake representation rendering on the map,
 *interaction with enviroment, ie. fruits, other animals, obstacles which could stop the snake from moving,
 *interaction with user, simple GUI to start/quit the game, adjust options etc,
-*pseudo random fruits/objects creation and rendering on the map,
 *music (???),
 *another snake, controlled by computer, which could increase difficulty, by invoking collision with player (???)
 
