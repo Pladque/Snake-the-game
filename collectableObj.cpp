@@ -10,6 +10,7 @@ collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, in
 	this->posY = newPosY;
 	this->scoreBonus = newScoreBonus;
 	this->sizeBonus = newSizeBonus;
+    this->isGolden = false;
 }
 
 std::string collectableObj::getName()
@@ -27,10 +28,29 @@ int collectableObj::getScoreBonus()
 	return scoreBonus;
 }
 
+bool collectableObj::getIsGolden()
+{
+    return this->isGolden;
+}
+
 int field[GRID_SIZE_Y][GRID_SIZE_X];
 
 bool collectableObj::goToFreeRandomPosistion(bodyPart* head){
     srand (time(NULL));
+
+    if(rand()%goldenAppleProbability == 0)
+    {
+        this->isGolden = true;
+        this->scoreBonus = goldenAppleScoreBonus;
+        this->sizeBonus = goldenAppleSizeBonus;
+    }
+    else
+    {
+        this->isGolden = false;
+        this->scoreBonus = redAppleScoreBonus;
+        this->sizeBonus = redAppleSizeBonus;
+    }
+    
 	if(head == nullptr)	//changing position to random, and dont care where is snake
 	{
 	  this-> posX= rand() % GRID_SIZE_X;

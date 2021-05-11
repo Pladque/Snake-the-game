@@ -84,6 +84,22 @@ public:
         return this->particles;
     }
 
+    void setPosition(float newPosX, float newPosY)
+    {
+        this->positionX = newPosX;
+        this->positionY = newPosY;
+    }
+
+    float getPosX()
+    {
+        return this->positionX;
+    }
+
+    float getPosY()
+    {
+        return this->positionY;
+    }
+
 
 
 };

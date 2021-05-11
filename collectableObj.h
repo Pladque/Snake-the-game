@@ -11,6 +11,7 @@ private:
 	std::string name;
 	int posX;
 	int posY;
+	bool isGolden;
 	
 public:
 	collectableObj(std::string newName, int posX, int posY, int newScoreBonus, int newSizeBonus);
@@ -21,5 +22,7 @@ public:
 
 	int getPosX();
 	int getPosY();
+
+	bool getIsGolden();
 	
 };
