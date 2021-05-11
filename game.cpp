@@ -130,7 +130,7 @@ void drawField(sf::RenderWindow& window, Snake& snake,
     // drawing apple
     sf::Sprite tempAppleSP = appleSP;
     if(collObj.getIsGolden())
-        tempAppleSP.setColor(sf::Color(240, 255, 0));    //golden aplle color
+        tempAppleSP.setColor(sf::Color(0, 255, 0));    //golden aplle color
 
     tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
     window.draw(tempAppleSP);
