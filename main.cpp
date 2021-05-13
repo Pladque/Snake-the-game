@@ -11,7 +11,7 @@
 #define REACT_HEIGHT 40.f
 #define CHAR_SIZE 20.f
 #define SPACING -60.f
-#define MOUSE_CORRECTION 25.f
+#define MOUSE_CORRECTION 0.f
 
 int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
@@ -27,7 +27,7 @@ int EnterMenu()
 	extern int snakeSpeed;
 	
 	
-	sf::Vector2i globalMousePosition;	//Variable holding mouse position;
+	sf::Vector2i localMousePosition;	//Variable holding mouse position;
 	sf::Texture menuTexture;
 	if (!menuTexture.loadFromFile(TEXTURES_PATH + "mainSnake2.jpg"))
 		return -1;
@@ -222,31 +222,31 @@ int EnterMenu()
 			else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 			    // left mouse button is pressed
-			    globalMousePosition = sf::Mouse::getPosition();
-			    if (globalMousePosition.x >= REACT_X && globalMousePosition.x <= (REACT_X + REACT_WIDTH))
+			    localMousePosition = sf::Mouse::getPosition(menuWindow);
+			    if (localMousePosition.x >= REACT_X && localMousePosition.x <= (REACT_X + REACT_WIDTH))
 			    {
-					if (globalMousePosition.y >= (205.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (205.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
+					if (localMousePosition.y >= (205.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (205.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
 					{
 						//Start the game window was clicked by mouse
 						menuWindow.close();
 						return 0;
 					}
-					else if (globalMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
+					else if (localMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
 					{
 						//settings window was clicked by mouse
 						entered_settings = 1;
 					}
-					else if (globalMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
+					else if (localMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
 					{
 						//quit game was clicked by mouse
 				        menuWindow.close();
 				        return -1;
 					}
-					else if (globalMousePosition.y >= (205.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (205.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
+					else if (localMousePosition.y >= (205.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (205.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//snakes_count/apple_counts window
 					}
-					else if (globalMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
+					else if (localMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//difficulty window was cliked by mouse
 						difficulty++; 
@@ -270,7 +270,7 @@ int EnterMenu()
 							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 						}
 					}
-					else if (globalMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
+					else if (localMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//music window was clicked by mouse
 						if (music_on_off == "on")
@@ -287,12 +287,12 @@ int EnterMenu()
 							menuMusic.setVolume(50.f);
 						}
 					}
-					else if (globalMousePosition.y >= (394.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (394.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
+					else if (localMousePosition.y >= (394.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (394.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//Return to menu was clicked by mouse
 						entered_settings = 0;
 					}
-					else if (globalMousePosition.y >= (457.f + SPACING + MOUSE_CORRECTION) && globalMousePosition.y <= (457.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
+					else if (localMousePosition.y >= (457.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (457.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//Select board was clicked by mouse
 					}
