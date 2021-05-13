@@ -23,7 +23,7 @@
 
 #TODO
 
--[ ] Background sprite for game
+- [ ] Background sprite for game
 
 -[ ] Walls
 
