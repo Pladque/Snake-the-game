@@ -140,10 +140,9 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
         }
     }
 }
-
 void drawField(sf::RenderWindow& window, Snake& snake, 
-
-                collectableObj& collObj, PartycleSystem &collectedApplePS)// sf::Text &ScoreText) 
+                collectableObj& collObj, PartycleSystem &collectedApplePS,
+                 collectableObj &poisonedApple)
 
 {  
     bodyPart* curr = snake.getHead();
@@ -388,7 +387,7 @@ int run(std::string boardName = "")
         window.clear(sf::Color(153,204,255,100));
         
 
-        drawField(window, snake, apple, collectedApplePS);//, ScoreText);
+        drawField(window, snake, apple, collectedApplePS, poisonedApple);//, text);
 
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS,collisonObjsAmount);
