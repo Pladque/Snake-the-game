@@ -95,27 +95,35 @@ void updateScore(int addToScore){
 //collectableObj - it will allow us to add fe poison apple, bombs etc
 // and other staff that snake can collide with
 
-void snakeHeadCollision(Snake *snake, collectableObj *obj1, 
-    sf::Sound& appleEating, PartycleSystem &appleEatingPS){
+void snakeHeadCollision(Snake *snake, collectableObj* objects[], 
+    sf::Sound& appleEating, PartycleSystem &appleEatingPS, int collObjAmount = 0)
+{
     
-    if(snake->getHead()->x == obj1->getPosX() &&  snake->getHead()->y == obj1->getPosY() ){
-//        std::cout<<score<<std::endl;
-        // we can add golden aplles, that will f.e add 2 to size
-        // and 5 to score
-        appleEatingPS = makeParticles();
-        appleEatingPS.setPosition(obj1 ->getPosX() * cell_size_pix, 
-        obj1 ->getPosY() * cell_size_pix);
+    
+    for(int i = 0; i <  collObjAmount; i++)
+    {
+        
+        if(snake->getHead()->x == objects[i]->getPosX() &&  snake->getHead()->y == objects[i]->getPosY() )
+        {
+    //        std::cout<<score<<std::endl;
+            // we can add golden aplles, that will f.e add 2 to size
+            // and 5 to score
+            appleEatingPS = makeParticles();
+            appleEatingPS.setPosition(objects[i] ->getPosX() * cell_size_pix, 
+            objects[i] ->getPosY() * cell_size_pix);
 
-        appleEating.play();
-        resizeSnake(*snake, obj1->getSizeBonus());
-        updateScore(obj1->getScoreBonus());
-        obj1->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead());
+            appleEating.play();
+            resizeSnake(*snake, objects[i]->getSizeBonus());
+            updateScore(objects[i]->getScoreBonus());
+            objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead());
 
+        }
     }
 }
 
 void drawField(sf::RenderWindow& window, Snake& snake, 
-                collectableObj& collObj, PartycleSystem &collectedApplePS)// sf::Text &text) 
+                collectableObj& collObj, PartycleSystem &collectedApplePS,
+                 collectableObj &poisonedApple)
 {  
     bodyPart* curr = snake.getHead();
     
@@ -140,6 +148,16 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 
     tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
     window.draw(tempAppleSP);
+
+    if(poisonedAppleOn)
+    {
+        tempAppleSP = appleSP;
+        tempAppleSP.setColor(sf::Color(0,215,0));
+
+        tempAppleSP.setPosition(poisonedApple.getPosX() * cell_size_pix, poisonedApple.getPosY()* cell_size_pix);
+        window.draw(tempAppleSP);
+
+    }
 
     //drawing score
     text.setPosition(20, 20);   
@@ -265,7 +283,6 @@ int run(std::string boardName = "")
     
     setupScoreDisplayer(font);
 
-    //DONT DELETE plz
     PartycleSystem collectedApplePS;
     
     //Game loop
@@ -277,9 +294,27 @@ int run(std::string boardName = "")
     collectableObj apple = collectableObj("apple", 0, 0, 1, 1);
     apple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
     
+    collectableObj poisonedApple("none", 0, 0 ,0 ,0);
+    if(poisonedAppleOn)
+    {
+        poisonedApple = collectableObj("poisonedApple", 0, 0, -5, -1);
+        poisonedApple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
+        poisonedApple.makePosion();
+    }
+
     Direction newDir;
     newDir = snake.getDirection();
     int i = 0;
+
+    //saving all objects snake can collide with
+    int collisonObjsAmount = 1;
+    collectableObj* AllCollectableObjs[10];
+
+    AllCollectableObjs[0] = &apple;
+    if(poisonedAppleOn)
+        AllCollectableObjs[1] = &poisonedApple;
+
+
     while(window.isOpen()){
         i++;
         sf::Event ev;
@@ -307,9 +342,11 @@ int run(std::string boardName = "")
 
         window.clear(sf::Color(153,204,255,100));
         
-        drawField(window, snake, apple, collectedApplePS);//, text);
+        drawField(window, snake, apple, collectedApplePS, poisonedApple);//, text);
 
-        snakeHeadCollision(&snake, &apple, appleEating, collectedApplePS);
+
+
+        snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS,collisonObjsAmount);
         collectedApplePS.blowUp();
         window.display();
         sf::sleep(sf::milliseconds(frameFreezeTime));
