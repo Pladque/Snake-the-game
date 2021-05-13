@@ -94,7 +94,7 @@ bool Snake::move()
     bool validMove = true;
     while(currBodyPart)
     {
-        if(currBodyPart->x == head->x  &&  currBodyPart->y == head->y)
+        if((currBodyPart->x == head->x  &&  currBodyPart->y == head->y) && (currBodyPart->next != nullptr))
             validMove = false;
 
         bodyPart temp = bodyPart(*currBodyPart);
