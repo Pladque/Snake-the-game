@@ -64,7 +64,7 @@ void resizeSnake(Snake& snake, int size)
     }
     else
     {
-        for(int i = 0; i < size; i++)
+        for(int i = 0; i < -size; i++)
             snake.fade();
     }
     
@@ -109,9 +109,9 @@ PartycleSystem makeParticles(int particleDense = 100)
 
 void updateScore(int addToScore){
     if(score + addToScore < 0) {
-        return;
-    }
-    score += addToScore;
+        score = 0;
+    }else
+        score += addToScore;
     ScoreText.setString("Score: " + std::to_string(score));
 }
 
@@ -199,10 +199,12 @@ void drawField(sf::RenderWindow& window, Snake& snake,
         if(particleToDraw ->ttl >=0)
         {
             sf::CircleShape shape(particleToDraw->size);
-            if(!collObj.getPrevIsGolden()){
+            if(!collObj.getPrevIsGolden() && !collObj.getIsPoisoned()){
                 shape.setFillColor(sf::Color(255, 0, 0));
-            }else
+            }else if(collObj.getPrevIsGolden())
                 shape.setFillColor(sf::Color(255,215,0));
+            else
+                shape.setFillColor(sf::Color(0,0,0));
             shape.setPosition(
             (snake.getHead()->x * cell_size_pix + particleToDraw->positionX + cell_size_pix/2), 
             (snake.getHead()->y * cell_size_pix + particleToDraw->positionY + cell_size_pix/2));
