@@ -12,7 +12,7 @@
 
 - [ ] high score (aka save system) 
 
-- [ ] mode with opponen (mby like snake.io gameplay??)
+- [ ] mode with opponent (mby like snake.io gameplay??)
 
 - [ ] 3 types of apples (poisoned, golden, normal)
 
@@ -25,6 +25,23 @@
 ## Update v1.1 ##
 
 //write update here
+Changes since 1.0:
+
+*snake.c/hpp - main snake class. Snake is represented as the one-sided list, with one distinguished element, called the snake head. Other segments of program could interfere with a head, using methods of this class. Whole body contain set of single elements, belonging to the snake list, which are made to "follow" the head whenever it moves. Methods in this class allow the snake to grow, change directions and fade.
+
+*settings.cpp - this file contains basic game configuration, such as snake speed, grid size, score bonuses, etc. Settings should be able to be altered from options in game main menu.
+
+*collectableObj - fruit class, reserving space for fruit on the map, ensures to avoid generating fruit on the snake body/head. Methods of this class are mainly getters to class fields, needed by other segments of the code.
+
+*consts.cpp - file with constants inlcuded in game. Contains paths to textures/sounds, snake directions mapping, etc.
+
+*particle.cpp - experimental file, containing some "extra" effects in the game, while eating fruits etc. 
+
+*game.cpp - game main body. Game window is generated here, with snake and fruits/other objects being rendered on the grid, player score is also displayed in the top of the window. It includes other configuration files, and libraries required for graphics/sound effects. Whole interaction with user, ie. moving snake with keystrokes etc, takes place here. Methods of previously included configuration classes are invoked here, to interact with adequates objects.
+
+*main.cpp - main file, providing main menu and basic interaction with user, game.cpp is included here. Options/settings will be accesible from this part of the code. If user decides to start the game, game.cpp will be started.
+
+
 
 ## Update v1.0 ##
 
