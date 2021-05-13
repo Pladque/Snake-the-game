@@ -22,6 +22,8 @@
 
 - [ ] Fix particle system 
 
+- [ ] GameBoards to choose
+
 ## Update v1.1 ##
 
 Changes since 1.0:
