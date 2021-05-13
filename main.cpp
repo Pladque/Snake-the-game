@@ -151,7 +151,10 @@ int EnterMenu()
 			//menuMusic.play();
             // Close window: exit
 			if (menuEvent.type == sf::Event::Closed)
+			{
 				menuWindow.close();
+				return -1;
+			}
 			else if (menuEvent.type == sf::Event::KeyPressed)
 			{
 				if ((menuEvent.key.code == sf::Keyboard::Q || menuEvent.key.code == sf::Keyboard::Escape) && entered_settings == 0)
