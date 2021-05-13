@@ -122,4 +122,15 @@ int  collectableObj::getPosY()
 
 }
 
+bool collectableObj::getIsPoisoned()
+{
+    return this->isPoisoned;
+}
+
+
+void collectableObj::makePosion()
+{
+    this->isPoisoned = true;
+}
+
 

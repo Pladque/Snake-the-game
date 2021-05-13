@@ -9,3 +9,5 @@ int goldenAppleScoreBonus = 5;
 
 int redAppleSizeBonus = 1;
 int redAppleScoreBonus = 1;
+
+bool poisonedAppleOn = true;

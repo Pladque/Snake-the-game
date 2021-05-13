@@ -12,7 +12,10 @@ private:
 	std::string name;
 	int posX;
 	int posY;
+
+	//for apples
 	bool isGolden;
+	bool isPoisoned;
     bool prevIsGolden;
 	
 public:
@@ -27,5 +30,7 @@ public:
 
 	bool getIsGolden();
     bool getPrevIsGolden();
+	bool getIsPoisoned();
+	void makePosion();
 	
 };
