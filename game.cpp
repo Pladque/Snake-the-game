@@ -33,7 +33,15 @@ const int window_height = GRID_SIZE_Y * cell_size_pix;
 BoardReader boardReader;
 
 
-
+void deleteParticle(PartycleSystem &toDelete){
+    Particle* temp = toDelete.getFirstParticle();
+    Particle* help;
+    while(temp) {
+        help = temp->next;
+        delete temp;
+        temp = help;
+    }
+}
 void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
     snakeTexture.loadFromFile(TEXTURES_PATH+"snake.png");
     snakeSP.setTexture(snakeTexture);
@@ -124,6 +132,7 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
             resizeSnake(*snake, objects[i]->getSizeBonus());
             updateScore(objects[i]->getScoreBonus());
             objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead());
+
 
         }
     }
@@ -360,7 +369,7 @@ int run(std::string boardName = "")
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
-    
+    deleteParticle(collectedApplePS);
     
     return EXIT_SUCCESS;
 }
