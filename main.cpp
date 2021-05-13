@@ -19,6 +19,7 @@ int EnterMenu()
 	std::string snakes_count = "1";
 	std::string difficulty_level = "normal";
 	std::string music_on_off = "on";
+	//These strings are used to display options
 	extern int snakeSpeed;
 	
 	//Main function -> depending on its return, game would start or not
@@ -27,16 +28,16 @@ int EnterMenu()
 		return -1;
 	sf::Music menuMusic;
 	sf::RenderWindow menuWindow(sf::VideoMode(1280, 960), "SNAKE_2D");	//resolution may be changed, after every other thing works
-																		//as expected
+										//as expected
 	sf::Sprite menuSprite(menuTexture);
 	sf::Event menuEvent;
 	sf::Font menuFont;
     if (!menuFont.loadFromFile("./Assets/Fonts/JosefinSans-SemiBoldItalic.ttf"))
         return -1;
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed in consecutive windows
-	sf::Text windDifficultyLevel, windSnakesCount, windMusic, windReturnFromOptions;
+	sf::Text windDifficultyLevel, windSnakesCount, windMusic, windReturnFromOptions;	//text, displayed in options
 													//end of Menu init
-													
+	//initilising required shapes and text to display											
 	sf::RectangleShape rectangleBasic(sf::Vector2f(232.f, 25.f));
     rectangleBasic.setFillColor(sf::Color(20, 100, 150));
     rectangleBasic.setPosition(REACT_X, 115.f);
