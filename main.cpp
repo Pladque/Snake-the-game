@@ -23,7 +23,7 @@ int EnterMenu()
 	//Main function -> depending on its return, game would start or not
 	std::string snakes_count = "1";
 	std::string difficulty_level = "normal";
-	std::string music_on_off = "on";
+	std::string music_on_off = "off";
 	extern int snakeSpeed;
 	
 	
