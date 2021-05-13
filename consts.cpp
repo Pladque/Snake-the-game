@@ -1,5 +1,5 @@
 #include <string>
-
+#pragma once
 enum Direction {up, down, left, right};
 
 const std::string FONTS_PATH = "./Assets/Fonts/";

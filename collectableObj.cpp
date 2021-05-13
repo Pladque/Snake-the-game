@@ -1,3 +1,4 @@
+#include "BoardReader.cpp"
 #include "collectableObj.h"
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
@@ -11,6 +12,7 @@ collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, in
 	this->scoreBonus = newScoreBonus;
 	this->sizeBonus = newSizeBonus;
     this->isGolden = false;
+    this->prevIsGolden = false;
 }
 
 std::string collectableObj::getName()
@@ -33,19 +35,25 @@ bool collectableObj::getIsGolden()
     return this->isGolden;
 }
 
+bool collectableObj::getPrevIsGolden() {
+    return this->prevIsGolden;
+}
+
 int field[GRID_SIZE_Y][GRID_SIZE_X];
 
-bool collectableObj::goToFreeRandomPosistion(bodyPart* head){
+bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head){
     srand (time(NULL));
 
     if(rand()%goldenAppleProbability == 0)
     {
+        this->prevIsGolden = this->isGolden;
         this->isGolden = true;
         this->scoreBonus = goldenAppleScoreBonus;
         this->sizeBonus = goldenAppleSizeBonus;
     }
     else
     {
+        this->prevIsGolden = this->isGolden;
         this->isGolden = false;
         this->scoreBonus = redAppleScoreBonus;
         this->sizeBonus = redAppleSizeBonus;
@@ -69,6 +77,13 @@ bool collectableObj::goToFreeRandomPosistion(bodyPart* head){
             counter++;
             field[temp->y][temp->x] = 1;
             temp = temp->next;
+        }
+        
+        wall* temp2 = firstWall;
+        while(temp2) {
+            counter++;
+            field[temp2->getY()][temp2->getX()] = 1;
+            temp2 = temp2->getNext();
         }
         
         if(counter == 0)

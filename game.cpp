@@ -1,8 +1,9 @@
 
 #include "snake.cpp"
+#include "BoardReader.cpp"
 #include "collectableObj.cpp"
 #include "particle.cpp"
-#include "BoardReader.cpp"
+
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -108,7 +109,7 @@ void snakeHeadCollision(Snake *snake, collectableObj *obj1,
         appleEating.play();
         resizeSnake(*snake, obj1->getSizeBonus());
         updateScore(obj1->getScoreBonus());
-        obj1->goToFreeRandomPosistion(snake->getHead());
+        obj1->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead());
 
     }
 }
@@ -153,7 +154,10 @@ void drawField(sf::RenderWindow& window, Snake& snake,
         if(particleToDraw ->ttl >=0)
         {
             sf::CircleShape shape(particleToDraw->size);
-            shape.setFillColor(sf::Color(255, 0, 0));
+            if(!collObj.getPrevIsGolden()){
+                shape.setFillColor(sf::Color(255, 0, 0));
+            }else
+                shape.setFillColor(sf::Color(255,215,0));
             shape.setPosition(
             (snake.getHead()->x * cell_size_pix + particleToDraw->positionX + cell_size_pix/2), 
             (snake.getHead()->y * cell_size_pix + particleToDraw->positionY + cell_size_pix/2));
@@ -262,7 +266,7 @@ int run(std::string boardName = "")
     setupScoreDisplayer(font);
 
     //DONT DELETE plz
-    PartycleSystem collectedApplePS = makeParticles();
+    PartycleSystem collectedApplePS;
     
     //Game loop
     srand(time(NULL));
@@ -271,12 +275,13 @@ int run(std::string boardName = "")
     resizeSnake(snake, 5);
 
     collectableObj apple = collectableObj("apple", 0, 0, 1, 1);
-    apple.goToFreeRandomPosistion();
+    apple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
     
     Direction newDir;
     newDir = snake.getDirection();
+    int i = 0;
     while(window.isOpen()){
-
+        i++;
         sf::Event ev;
         
         windowPollEvent(window, ev, newDir, snake, gamePaused);
@@ -304,10 +309,8 @@ int run(std::string boardName = "")
         
         drawField(window, snake, apple, collectedApplePS);//, text);
 
-        collectedApplePS.blowUp();
-
         snakeHeadCollision(&snake, &apple, appleEating, collectedApplePS);
-            
+        collectedApplePS.blowUp();
         window.display();
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;

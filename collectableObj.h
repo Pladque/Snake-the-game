@@ -13,17 +13,19 @@ private:
 	int posX;
 	int posY;
 	bool isGolden;
+    bool prevIsGolden;
 	
 public:
 	collectableObj(std::string newName, int posX, int posY, int newScoreBonus, int newSizeBonus);
 	std::string getName();
 	int getSizeBonus();
 	int getScoreBonus();
-	bool goToFreeRandomPosistion(bodyPart* head = nullptr);
+	bool goToFreeRandomPosistion(wall* firstWall, bodyPart* head = nullptr);
 
 	int getPosX();
 	int getPosY();
 
 	bool getIsGolden();
+    bool getPrevIsGolden();
 	
 };

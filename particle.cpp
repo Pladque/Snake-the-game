@@ -1,3 +1,4 @@
+
 class Particle
 {
 public:
@@ -13,6 +14,7 @@ public:
 
     int positionX = 0, positionY = 0;
 
+    
     Particle(float newSpeedX, float newSpeedY, float newTTL, float newSize
     ,int newColor, float newVelocityX, float newVelocityY)
     {
@@ -40,6 +42,14 @@ class PartycleSystem
     bool already_died;
 
 public:
+    PartycleSystem(){
+        this->particles = nullptr;
+        this-> positionX = 0;
+        this->positionY = 0;
+        this->delay = 0.0;
+        this->ready_to_blow_up = false;
+        this->already_died = true;
+    }
     PartycleSystem(Particle *newShape, int newPosX, 
                     int newPosY, float newDelay)
     {
