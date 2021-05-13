@@ -108,10 +108,12 @@ PartycleSystem makeParticles(int particleDense = 100)
 
 
 void updateScore(int addToScore){
-    if(score + addToScore < 0) {
-        return;
-    }
+    //if(score + addToScore < 0) {
+     //   return;
+    //}
     score += addToScore;
+    if (score < 0)
+        score = 0;
     ScoreText.setString("Score: " + std::to_string(score));
 }
 
