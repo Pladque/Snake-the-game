@@ -1,176 +1,260 @@
-#include "snake.cpp"
-#include "collectableObj.cpp"
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/System/Time.hpp>
-//DEBUG:
-#include <iostream>
-#include <string>
+#include "game.cpp"
 
-const int cell_size_pix = 32;
-const int window_width = GRID_SIZE_X * cell_size_pix;
-const int window_height = GRID_SIZE_Y * cell_size_pix;
+/*
+ * MENU	
+ */ 
 
-int snake_x = GRID_SIZE_X / 2;
-int snake_y = GRID_SIZE_Y / 2;
+#define MULT 2
+#define REACT_X 25.f
+#define TEXT_X 26.f
+#define REACT_WIDTH 250.f
+#define REACT_HEIGHT 40.f
+#define CHAR_SIZE 20.f
+#define SPACING -60.f
 
-//temp as global, put it into main later mby
-int score = 0;
-sf::Text text;      // for diplaying score
+int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard
+bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
+bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main Menu,
+							//otherwise to move on with logic
 
-void resizeSnake(Snake& snake, int size){
-    for(int i = 0; i < size; i++)
-        snake.grow();
-}
-
-
-void updateScore(int addToScore)
+int EnterMenu()
 {
-    score += addToScore;
-    text.setString(std::to_string(score));
-}
-
-// mby rework it, to check collision with array of
-//collectableObj - it will allow us to add fe poison apple, bombs etc
-// and other staff that snake can collide with
-void snakeHeadCollision(Snake *snake, collectableObj *obj1)
-{
-    if(snake->getHead()->x == obj1->getPosX() &&  snake->getHead()->y == obj1->getPosY() )
-    {
-        std::cout<<score<<std::endl;
-        // we can add golden aplles, that will f.e add 2 to size
-        // and 5 to score
-        resizeSnake(*snake, obj1->getSizeBonus());
-        updateScore(obj1->getScoreBonus());
-        obj1->goToFreeRandomPosistion();
-    }
-}
-
-void drawField(sf::RenderWindow& window, Snake& snake, 
-                collectableObj& collObj)// sf::Text &text) 
-{  
-    sf::Texture snakeTexture;
-    snakeTexture.loadFromFile("snake.png");
-    sf::Sprite snakeSP;
-    snakeSP.setTexture(snakeTexture);
+	std::string snakes_count = "1";
+	std::string difficulty_level = "normal";
+	std::string music_on_off = "on";
+	extern int snakeSpeed;
+	
+	//Main function -> depending on its return, game would start or not
+	sf::Texture menuTexture;
+	if (!menuTexture.loadFromFile(TEXTURES_PATH + "mainSnake2.jpg"))
+		return -1;
+	sf::Texture boardTexture;
+	sf::Music menuMusic;
+	if (!menuMusic.openFromFile(SOUNDS_PATH + "menuMusic.ogg"))
+        return -1;
+	sf::RenderWindow menuWindow(sf::VideoMode(1280, 960), "SNAKE_2D");	//resolution may be changed, after every other thing works
+																		//as expected
+	sf::Sprite menuSprite(menuTexture);
+	sf::Sprite boardSprite(boardTexture);
+	sf::Event menuEvent;
+	sf::Font menuFont;
+    if (!menuFont.loadFromFile("./Assets/Fonts/JosefinSans-SemiBoldItalic.ttf"))
+        return -1;
+	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
+	sf::Text windDifficultyLevel, windSnakesCount, windMusic, windReturnFromOptions;		//in consecutive windows
+	sf::Text windSelectBoard;
+													//end of Menu init
+													
+	sf::RectangleShape rectangleBasic(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
+    rectangleBasic.setFillColor(sf::Color(20, 100, 150));
+    rectangleBasic.setPosition(REACT_X, 205.f + SPACING);
+    rectangleBasic.setOutlineThickness(5.f);
+	rectangleBasic.setOutlineColor(sf::Color(250, 150, 100));
+	
+	sf::RectangleShape rectangleBasic2(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
+    rectangleBasic2.setFillColor(sf::Color(20, 100, 150));
+    rectangleBasic2.setPosition(REACT_X, 268.f + SPACING);		
+    rectangleBasic2.setOutlineThickness(5.f);
+	rectangleBasic2.setOutlineColor(sf::Color(250, 150, 100));
     
-    sf::Texture headTexture;
-    headTexture.loadFromFile("head.png");
-    sf::Sprite head;
-    head.setTexture(headTexture);
-
-    sf::Texture appleTexture;
-    appleTexture.loadFromFile("apple.png");
-    sf::Sprite appleSP;
-    appleSP.setTexture(appleTexture);
-    
-    bodyPart* curr = snake.getHead();
-    
-    while(curr)
-    {
-        if(curr == snake.getHead()) {
-            head.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
-            window.draw(head);
-        }else{
-            snakeSP.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
-            window.draw(snakeSP);
+    sf::RectangleShape rectangleBasic3(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
+    rectangleBasic3.setFillColor(sf::Color(20, 100, 150));
+    rectangleBasic3.setPosition(REACT_X, 331.f + SPACING);		
+    rectangleBasic3.setOutlineThickness(5.f);
+	rectangleBasic3.setOutlineColor(sf::Color(250, 150, 100));		
+	
+	sf::RectangleShape rectangleBasic4(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
+    rectangleBasic4.setFillColor(sf::Color(20, 100, 150));
+    rectangleBasic4.setPosition(REACT_X, 394.f + SPACING);		
+    rectangleBasic4.setOutlineThickness(5.f);
+	rectangleBasic4.setOutlineColor(sf::Color(250, 150, 100));	
+	
+	sf::RectangleShape rectangleBasic5(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
+    rectangleBasic5.setFillColor(sf::Color(20, 100, 150));
+    rectangleBasic5.setPosition(REACT_X, 457.f + SPACING);		
+    rectangleBasic5.setOutlineThickness(5.f);
+	rectangleBasic5.setOutlineColor(sf::Color(250, 150, 100));		
+	
+	sf::RectangleShape rectangleBoard(sf::Vector2f(REACT_WIDTH, REACT_WIDTH));
+    rectangleBoard.setFillColor(sf::Color(255, 255, 255));
+    rectangleBoard.setPosition(REACT_X, 520.f + SPACING);		
+    //rectangleBasic5.setOutlineThickness(5.f);
+	//rectangleBasic5.setOutlineColor(sf::Color(250, 150, 100));					
+													
+	mainText.setFont(menuFont);
+	mainText.setString("SNAKE 2D");
+	mainText.setCharacterSize(38);
+	mainText.setFillColor(sf::Color::Red);
+	mainText.setPosition(570.f, 5.f);
+	mainText.setStyle(sf::Text::Bold);
+	
+	windStartGame.setFont(menuFont);
+	windStartGame.setString("New game: press 'P'");
+	windStartGame.setCharacterSize(CHAR_SIZE);
+	windStartGame.setFillColor(sf::Color::Black);
+	windStartGame.setPosition(TEXT_X, 209.f + SPACING);
+	
+	windOptions.setFont(menuFont);
+	windOptions.setString("Options: press 'S'");
+	windOptions.setCharacterSize(CHAR_SIZE);
+	windOptions.setFillColor(sf::Color::Black);
+	windOptions.setPosition(TEXT_X, 272.f + SPACING);
+	
+	windQuitGame.setFont(menuFont);
+	windQuitGame.setString("Quit game: press 'Q'");
+	windQuitGame.setCharacterSize(CHAR_SIZE);
+	windQuitGame.setFillColor(sf::Color::Black);
+	windQuitGame.setPosition(TEXT_X, 335.f + SPACING);
+	
+	windSnakesCount.setFont(menuFont);
+	windSnakesCount.setString("Snakes number: " + snakes_count + " ('N')");
+	windSnakesCount.setCharacterSize(CHAR_SIZE);
+	windSnakesCount.setFillColor(sf::Color::Black);
+	windSnakesCount.setPosition(TEXT_X, 209.f + SPACING);
+	
+	windDifficultyLevel.setFont(menuFont);
+	windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+	windDifficultyLevel.setCharacterSize(CHAR_SIZE);
+	windDifficultyLevel.setFillColor(sf::Color::Black);
+	windDifficultyLevel.setPosition(TEXT_X, 272.f + SPACING);
+	
+	windMusic.setFont(menuFont);
+	windMusic.setString("Music: " + music_on_off + " ('M')");
+	windMusic.setCharacterSize(CHAR_SIZE);
+	windMusic.setFillColor(sf::Color::Black);
+	windMusic.setPosition(TEXT_X, 335.f + SPACING);
+	
+	windReturnFromOptions.setFont(menuFont);
+	windReturnFromOptions.setString("Return to menu ('Esc')");
+	windReturnFromOptions.setCharacterSize(CHAR_SIZE);
+	windReturnFromOptions.setFillColor(sf::Color::Black);
+	windReturnFromOptions.setPosition(TEXT_X, 398.f + SPACING);
+	
+	windSelectBoard.setFont(menuFont);
+	windSelectBoard.setString("Select board: ('V')");
+	windSelectBoard.setCharacterSize(CHAR_SIZE);
+	windSelectBoard.setFillColor(sf::Color::Black);
+	windSelectBoard.setPosition(TEXT_X, 461.f + SPACING);
+	
+	
+	menuMusic.play(); 
+	menuMusic.setVolume(50.f);
+	//starting main Menu loop
+	while (menuWindow.isOpen())
+	{
+		
+        while (menuWindow.pollEvent(menuEvent))
+        {
+			//menuMusic.play();
+            // Close window: exit
+			if (menuEvent.type == sf::Event::Closed)
+				menuWindow.close();
+			else if (menuEvent.type == sf::Event::KeyPressed)
+			{
+				if ((menuEvent.key.code == sf::Keyboard::Q || menuEvent.key.code == sf::Keyboard::Escape) && entered_settings == 0)
+			    {
+			        //the escape key was pressed
+			        //Q and Esc are used to exit game
+			        menuWindow.close();
+			        return -1;
+			    }
+			    else if (menuEvent.key.code == sf::Keyboard::P && entered_settings == 0)
+			    {
+					menuWindow.close();
+					return 0;
+				}
+				else if (menuEvent.key.code == sf::Keyboard::S)
+				{
+					entered_settings = 1;
+				}
+				else if (menuEvent.key.code == sf::Keyboard::M && entered_settings == 1)
+				{
+					if (music_on_off == "on")
+					{
+						music_on_off = "off";
+						windMusic.setString("Music: " + music_on_off + " ('M')");
+						menuMusic.stop();
+					}
+					else
+					{
+						music_on_off = "on";
+						windMusic.setString("Music: " + music_on_off + " ('M')");
+						menuMusic.play();
+						menuMusic.setVolume(50.f);
+						
+					}
+				}
+				else if (menuEvent.key.code == sf::Keyboard::Escape && entered_settings == 1)
+				{
+					entered_settings = 0;
+				}
+				else if (menuEvent.key.code == sf::Keyboard::L && entered_settings == 1)
+				{
+					difficulty++; 
+					difficulty = difficulty % 3;
+					if (difficulty == 0)
+					{
+						difficulty_level = "easy";
+						snakeSpeed = 9;
+						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+					}
+					else if (difficulty == 1)
+					{
+						difficulty_level = "normal";
+						snakeSpeed = 7;
+						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+					}
+					else
+					{
+						difficulty_level = "hard";
+						snakeSpeed = 4;
+						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+					}
+				}
+				else
+				{
+					continue;
+				}
+			}
         }
-        curr = curr->next;
-    }
-
-    // drawing apple
-    appleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
-    window.draw(appleSP);
-
-    //drawing score
-    text.setPosition(20, 20);   
-    window.draw(text);
-
+        menuWindow.clear();
+        menuWindow.draw(menuSprite);
+        menuWindow.draw(mainText);
+        menuWindow.draw(rectangleBasic);
+	    menuWindow.draw(rectangleBasic2);
+	    menuWindow.draw(rectangleBasic3);
+        if (entered_settings == 0)
+        {
+	        menuWindow.draw(windStartGame);
+			menuWindow.draw(windOptions);
+	        menuWindow.draw(windQuitGame);
+		}
+		else
+		{
+			menuWindow.draw(rectangleBasic4);
+			menuWindow.draw(rectangleBasic5);
+			menuWindow.draw(rectangleBoard);
+			menuWindow.draw(windDifficultyLevel);
+			menuWindow.draw(windSnakesCount);
+	        menuWindow.draw(windReturnFromOptions);
+	        menuWindow.draw(windMusic);
+	        menuWindow.draw(windSelectBoard);
+		}
+        menuWindow.display();
+	}
+	return -1;
 }
 
-
-
-void handleKey(Snake& snake) {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        if(snake.getDirection() == Direction::up || snake.getDirection() == Direction::down)
-            return;
-        snake.changeDirection(Direction::up);
-    }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        if(snake.getDirection() == Direction::down || snake.getDirection() == Direction::up)
-            return;
-        snake.changeDirection(Direction::down);
-    }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        if(snake.getDirection() == Direction::left || snake.getDirection() == Direction::right)
-            return;
-        snake.changeDirection(Direction::left);
-    }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        if(snake.getDirection() == Direction::right || snake.getDirection() == Direction::left)
-            return;
-        snake.changeDirection(Direction::right);
-    }
-}
-
-
-void setupScoreDisplayer( sf::Font &font)
-{
-    text.setFont(font); // font is a sf::Font
-    text.setString(std::to_string(score));
-    text.setCharacterSize(48); // in pixels, not points!
-    text.setFillColor(sf::Color::Black);
-    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
-}
-
+/*
+ * MENU
+ */
 
 int main(int, char const**)
 {
-    // Init game
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar | sf::Style::Close);
-    
-    //loading font
-    sf::Font font;
-    if (!font.loadFromFile("cabin-sketch.bold.ttf"))
-    {
-        std::cout<<"Font file missing"<<std::endl;
-    }
-    
-    setupScoreDisplayer(font);
-    
-    //Game loop
-    srand(time(NULL));
-    Snake snake = Snake(snake_x, snake_y);
-    snake.changeDirection(Direction::left);
-    resizeSnake(snake, 5);
-
-    collectableObj apple = collectableObj("apple", 0, 0, 1, 1);
-    apple.goToFreeRandomPosistion();
-
-    while(window.isOpen()){
-        sf::Event ev;
-        
-        while(window.pollEvent(ev)) {
-            
-            if(ev.type == sf::Event::Closed) {
-                window.close();
-            }else if(ev.key.code == sf::Keyboard::Escape) {
-                window.close();
-            }
-        }
-        
-        handleKey(snake);
-
-        if(!snake.move())
-            std::cout<<"GAME OVER"<<std::endl;
-        
-        window.clear(sf::Color::Green);
-        
-        drawField(window, snake, apple);//, text);
-
-        snakeHeadCollision(&snake, &apple);
-        
-        window.display();
-        sf::sleep(sf::milliseconds(100));
-    }
-    
-    return EXIT_SUCCESS;
+	if (EnterMenu() == 0)
+	{
+		//run();
+		run(BOARDS_PATH + "wallsAroundBoard.txt");
+	}
+	return 0;
 }

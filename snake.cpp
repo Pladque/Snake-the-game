@@ -1,4 +1,4 @@
-#pragma once
+
 #include "snake.hpp"
 //#include "snake.h"
 

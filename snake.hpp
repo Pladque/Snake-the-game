@@ -1,5 +1,7 @@
 #pragma once
 #include "consts.cpp"
+#pragma once
+#include "settings.cpp"
 
 
 class bodyPart
