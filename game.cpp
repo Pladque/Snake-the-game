@@ -53,13 +53,13 @@ PartycleSystem makeParticles(int particleDense = 100)
     srand (time(NULL));
     Particle* firstParticle = 
      new Particle(
-        rand() % 3, //speedX
-        rand() % 3   //speedY
-        , 2 + rand() % 2,      //ttl
-        2+ rand() % 3,      //size
+        rand() % 200 / 100.0, //speedX
+        rand() %  200 / 100.0   //speedY
+        , 2.5 + rand() % 100 / 100.0,      //ttl
+        1.5 + rand() % 300 / 1000.0,      //size
         1 ,                     //color
-        rand() % 5,   //velocityX
-        rand() % 5);   //velocityY
+        rand() % 50/100.0 - 0.25,   //velocityX
+        rand() % 50/100.0 - 0.25);   //velocityY
 
 
     Particle* currParticle = firstParticle;
@@ -67,13 +67,13 @@ PartycleSystem makeParticles(int particleDense = 100)
     for(int i = 0; i < particleDense; i++)
     {
         currParticle -> next = new Particle(
-        rand() % 3 - 1, //speedX
-        rand() % 3 - 1  //speedY
-        , 2 + rand() % 2,      //ttl
-        2+ rand() % 3,      //size
+        rand() % 200 / 100.0, //speedX
+        rand() %  200 / 100.0   //speedY
+        , 2.5 + rand() % 100 / 100.0,      //ttl
+        1.5 + rand() % 300 / 1000.0,      //size
         1 ,                     //color
-        rand() % 5 / 10 ,   //velocityX
-        rand() % 5 / 10);   //velocityY
+        rand() % 50/100.0 - 0.25,   //velocityX
+        rand() % 50/100.0 - 0.25);   //velocityY
 
 
         currParticle = currParticle ->next; 
@@ -155,8 +155,8 @@ void drawField(sf::RenderWindow& window, Snake& snake,
             sf::CircleShape shape(particleToDraw->size);
             shape.setFillColor(sf::Color(255, 0, 0));
             shape.setPosition(
-            (collectedApplePS.getPosX() + particleToDraw->positionX), 
-            (collectedApplePS.getPosY() + particleToDraw->positionY));
+            (snake.getHead()->x * cell_size_pix + particleToDraw->positionX + cell_size_pix/2), 
+            (snake.getHead()->y * cell_size_pix + particleToDraw->positionY + cell_size_pix/2));
             
             window.draw(shape);
         }
