@@ -33,7 +33,15 @@ const int window_height = GRID_SIZE_Y * cell_size_pix;
 BoardReader boardReader;
 
 
-
+void deleteParticle(PartycleSystem &toDelete){
+    Particle* temp = toDelete.getFirstParticle();
+    Particle* help;
+    while(temp) {
+        help = temp->next;
+        delete temp;
+        temp = help;
+    }
+}
 void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
     snakeTexture.loadFromFile(TEXTURES_PATH+"snake.png");
     snakeSP.setTexture(snakeTexture);
@@ -102,6 +110,7 @@ void snakeHeadCollision(Snake *snake, collectableObj *obj1,
 //        std::cout<<score<<std::endl;
         // we can add golden aplles, that will f.e add 2 to size
         // and 5 to score
+        deleteParticle(appleEatingPS);
         appleEatingPS = makeParticles();
         appleEatingPS.setPosition(obj1 ->getPosX() * cell_size_pix, 
         obj1 ->getPosY() * cell_size_pix);
@@ -315,7 +324,7 @@ int run(std::string boardName = "")
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
-    
+    deleteParticle(collectedApplePS);
     
     return EXIT_SUCCESS;
 }
