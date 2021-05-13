@@ -2,3 +2,4 @@
 .vscode
 main.o
 sfml-app
+hightScore.txt
