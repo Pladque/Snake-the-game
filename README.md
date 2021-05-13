@@ -23,11 +23,19 @@
 
 #TODO
 -[ ] Background sprite for game
+
 -[ ] Walls
+
 -[ ] Settings in menu
+
 -[ ] pause menu
+
 -[ ] high score (aka save system)
+
 -[ ] mode with opponen (mby like snake.io gameplay??)
+
 -[ ] 3 types of apples (poisoned, golden, normal)
+
 -[ ] menu with mouse input  
+
 
