@@ -39,4 +39,6 @@
 
 - [ ] menu with mouse input  
 
+- [ ] Game window size depends on screen resolution
+
 
