@@ -18,7 +18,10 @@ int snake_y = GRID_SIZE_Y / 2;
 
 //temp as global, put it into main later mby
 int score = 0;
-sf::Text text;      // for displaying score
+int highScore = 0;
+
+sf::Text ScoreText;      // for displaying score
+sf::Text HighScoreText;      // for displaying best score
 
 sf::Texture snakeTexture;
 sf::Sprite snakeSP;
@@ -106,7 +109,7 @@ PartycleSystem makeParticles(int particleDense = 100)
 
 void updateScore(int addToScore){
     score += addToScore;
-    text.setString("Score: " + std::to_string(score));
+    ScoreText.setString("Score: " + std::to_string(score));
 }
 
 // mby rework it, to check collision with array of
@@ -139,8 +142,9 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 }
 
 void drawField(sf::RenderWindow& window, Snake& snake, 
-                collectableObj& collObj, PartycleSystem &collectedApplePS,
-                 collectableObj &poisonedApple)
+
+                collectableObj& collObj, PartycleSystem &collectedApplePS)// sf::Text &ScoreText) 
+
 {  
     bodyPart* curr = snake.getHead();
     
@@ -177,8 +181,12 @@ void drawField(sf::RenderWindow& window, Snake& snake,
     }
 
     //drawing score
-    text.setPosition(20, 20);   
-    window.draw(text);
+    ScoreText.setPosition(20, 20);   
+    window.draw(ScoreText);
+
+    //drawing best score
+    HighScoreText.setPosition(300, 20);   
+    window.draw(HighScoreText);
 
 
     //drawing particle effect
@@ -228,11 +236,18 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 
 void setupScoreDisplayer( sf::Font &font)
 {
-    text.setFont(font); // font is a sf::Font
-    text.setString("Score: " + std::to_string(score));
-    text.setCharacterSize(48); // in pixels, not points!
-    text.setFillColor(sf::Color::Black);
-    text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    ScoreText.setFont(font); // font is a sf::Font
+    ScoreText.setString("Score: " + std::to_string(score));
+    ScoreText.setCharacterSize(48); // in pixels, not points!
+    ScoreText.setFillColor(sf::Color::Black);
+    ScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+    //HighScoreText
+    HighScoreText.setFont(font); // font is a sf::Font
+    HighScoreText.setString("Best Score: " + std::to_string(highScore));
+    HighScoreText.setCharacterSize(48); // in pixels, not points!
+    HighScoreText.setFillColor(sf::Color::Black);
+    HighScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 }
 
@@ -297,6 +312,18 @@ int run(std::string boardName = "")
     {
         std::cout<<"Font file missing"<<std::endl;
     }
+
+    //Loading highScore
+    std::fstream highScoreFile;
+    std::string hishScoreFileFullPath = SAVES_PATH + HIGH_SCORE_FILE_NAME;
+    highScoreFile.open(hishScoreFileFullPath.c_str(), std::ios::in | std::ios::binary);
+
+    highScore = 0;
+    
+    highScoreFile.read((char *) &highScore, sizeof(highScore));
+
+    highScoreFile.close();
+    //////////////////////////////////
     
     setupScoreDisplayer(font);
 
@@ -351,7 +378,8 @@ int run(std::string boardName = "")
                     gameOver.setVolume(50);
                     gameOver.play();
                     sf::sleep(sf::milliseconds(2500));
-                    window.close();
+                    break;
+                    //window.close();
                 }
                 frameCounter = 0;
             }
@@ -359,8 +387,8 @@ int run(std::string boardName = "")
 
         window.clear(sf::Color(153,204,255,100));
         
-        drawField(window, snake, apple, collectedApplePS, poisonedApple);//, text);
 
+        drawField(window, snake, apple, collectedApplePS);//, ScoreText);
 
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS,collisonObjsAmount);
@@ -369,7 +397,23 @@ int run(std::string boardName = "")
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
+    
+    if(score > highScore)
+    {
+    
+        highScoreFile.open(hishScoreFileFullPath.c_str(), 
+                    std::ios::out | std::ios::trunc | std::ios::binary);
+        std::string scoreAsString = std::to_string(score);
+
+        highScoreFile.write((char *) &score, sizeof(score));
+
+        highScoreFile.close();
+    }
+
     deleteParticle(collectedApplePS);
+
+
+
     
     return EXIT_SUCCESS;
 }
