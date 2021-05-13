@@ -25,18 +25,18 @@
 
 - [ ] Background sprite for game
 
--[ ] Walls
+- [ ] Walls
 
--[ ] Settings in menu
+- [ ] Settings in menu
 
--[ ] pause menu
+- [ ] pause menu
 
--[ ] high score (aka save system)
+- [ ] high score (aka save system)
 
--[ ] mode with opponen (mby like snake.io gameplay??)
+- [ ] mode with opponen (mby like snake.io gameplay??)
 
--[ ] 3 types of apples (poisoned, golden, normal)
+- [ ] 3 types of apples (poisoned, golden, normal)
 
--[ ] menu with mouse input  
+- [ ] menu with mouse input  
 
 
