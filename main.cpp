@@ -140,7 +140,7 @@ int EnterMenu()
 	windSelectBoard.setPosition(TEXT_X, 461.f + SPACING);
 	
 	
-	menuMusic.play(); 
+	//menuMusic.play(); 
 	menuMusic.setVolume(50.f);
 	//starting main Menu loop
 	while (menuWindow.isOpen())
