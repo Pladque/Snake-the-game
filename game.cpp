@@ -2,6 +2,7 @@
 #include "snake.cpp"
 #include "collectableObj.cpp"
 #include "particle.cpp"
+#include "BoardReader.cpp"
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -27,6 +28,8 @@ sf::Sprite appleSP;
 
 const int window_width = GRID_SIZE_X * cell_size_pix;
 const int window_height = GRID_SIZE_Y * cell_size_pix;
+
+BoardReader boardReader;
 
 
 
@@ -162,6 +165,26 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 
     //*/
 
+    //Drawing board (with walls)
+
+    wall* currWall = boardReader.wallHead;
+
+    while(currWall!= nullptr)
+    {
+        //temp, to show how reading from boardReader works
+        sf::CircleShape shape(10);
+
+         shape.setPosition(
+            currWall->getX() * cell_size_pix, 
+            currWall->getY() * cell_size_pix);
+
+        shape.setFillColor(sf::Color(255, 255, 255));
+
+        window.draw(shape);
+
+        currWall = currWall->getNext();
+    }
+
 }
 
 void setupScoreDisplayer( sf::Font &font)
@@ -213,7 +236,7 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
 
 
 
-int run()
+int run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
@@ -224,6 +247,11 @@ int run()
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar | sf::Style::Close);
     initGame(appleEatingSound, appleEating);
 
+    // Loading Board
+    if(boardName != "")
+    {
+        boardReader.readBoard(boardName);
+    }
     //loading font
     sf::Font font;
     if (!font.loadFromFile(FONTS_PATH+"cabin-sketch.bold.ttf"))

@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #pragma once
 #include "snake.hpp"

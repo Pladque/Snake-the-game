@@ -218,7 +218,8 @@ int main(int, char const**)
 {
 	if (EnterMenu() == 0)
 	{
-		run();
+		//run();		
+		run(BOARDS_PATH + "wallsAroundBoard.txt");
 	}
 	else
 	{
