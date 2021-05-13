@@ -172,7 +172,7 @@ void drawField(sf::RenderWindow& window, Snake& snake,
     if(poisonedAppleOn)
     {
         tempAppleSP = appleSP;
-        tempAppleSP.setColor(sf::Color(0,215,0));
+        tempAppleSP.setColor(sf::Color(0,0,0));
 
         tempAppleSP.setPosition(poisonedApple.getPosX() * cell_size_pix, poisonedApple.getPosY()* cell_size_pix);
         window.draw(tempAppleSP);
