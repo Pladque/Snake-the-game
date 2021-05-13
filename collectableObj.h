@@ -17,9 +17,10 @@ private:
 	bool isGolden;
 	bool isPoisoned;
     bool prevIsGolden;
+    bool prevIsPoisoned;
 	
 public:
-	collectableObj(std::string newName, int posX, int posY, int newScoreBonus, int newSizeBonus);
+	collectableObj(std::string newName, int posX, int posY, int newScoreBonus, int newSizeBonus, bool isPoisoned1);
 	std::string getName();
 	int getSizeBonus();
 	int getScoreBonus();
@@ -31,6 +32,7 @@ public:
 	bool getIsGolden();
     bool getPrevIsGolden();
 	bool getIsPoisoned();
+    bool getPrevIsPoisoned();
 	void makePosion();
 	
 };

@@ -108,6 +108,9 @@ PartycleSystem makeParticles(int particleDense = 100)
 
 
 void updateScore(int addToScore){
+    if(score + addToScore < 0) {
+        return;
+    }
     score += addToScore;
     ScoreText.setString("Score: " + std::to_string(score));
 }
@@ -123,10 +126,10 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
     
     for(int i = 0; i <  collObjAmount; i++)
     {
-        
+
         if(snake->getHead()->x == objects[i]->getPosX() &&  snake->getHead()->y == objects[i]->getPosY() )
         {
-            std::cout<<objects[i]->getScoreBonus()<<std::endl;
+//            std::cout<<objects[i]->getScoreBonus() <<std::endl;
             appleEatingPS = makeParticles();
             appleEatingPS.setPosition(objects[i] ->getPosX() * cell_size_pix, 
             objects[i] ->getPosY() * cell_size_pix);
@@ -163,7 +166,7 @@ void drawField(sf::RenderWindow& window, Snake& snake,
     sf::Sprite tempAppleSP = appleSP;
     if(collObj.getIsGolden())
         tempAppleSP.setColor(sf::Color(255,215,0));    //golden aplle color
-    else
+    else if(!collObj.getIsGolden() && !collObj.getIsPoisoned())
         tempAppleSP.setColor(sf::Color(255, 0, 0));
 
     tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
@@ -340,7 +343,7 @@ int run(std::string boardName = "")
     collectableObj poisonedApple("none", 0, 0 ,0 ,0);
     if(poisonedAppleOn)
     {
-        poisonedApple = collectableObj("poisonedApple", 0, 0, -5, -1);
+        poisonedApple = collectableObj("poisonedApple", 0, 0, -5, -1, true);
         poisonedApple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
         poisonedApple.makePosion();
     }
@@ -390,7 +393,7 @@ int run(std::string boardName = "")
         drawField(window, snake, apple, collectedApplePS, poisonedApple);//, text);
 
 
-        snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS,collisonObjsAmount);
+        snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
         collectedApplePS.blowUp();
         window.display();
         sf::sleep(sf::milliseconds(frameFreezeTime));

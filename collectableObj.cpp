@@ -4,7 +4,7 @@
 #include <time.h>       /* time */
 
 
-collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, int newScoreBonus, int newSizeBonus)
+collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, int newScoreBonus, int newSizeBonus, bool isPoisoned1 = false)
 {
 	this->name= newName;
 	this->posX = newPosX;
@@ -13,6 +13,8 @@ collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, in
 	this->sizeBonus = newSizeBonus;
     this->isGolden = false;
     this->prevIsGolden = false;
+    this->prevIsPoisoned= false;
+    this->isPoisoned = isPoisoned1;
 }
 
 std::string collectableObj::getName()
@@ -38,25 +40,29 @@ bool collectableObj::getIsGolden()
 bool collectableObj::getPrevIsGolden() {
     return this->prevIsGolden;
 }
+bool collectableObj::getPrevIsPoisoned() {
+    return this->prevIsPoisoned;
+}
 
 int field[GRID_SIZE_Y][GRID_SIZE_X];
 
 bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head){
     srand (time(NULL));
-
-    if(rand()%goldenAppleProbability == 0)
-    {
-        this->prevIsGolden = this->isGolden;
-        this->isGolden = true;
-        this->scoreBonus = goldenAppleScoreBonus;
-        this->sizeBonus = goldenAppleSizeBonus;
-    }
-    else
-    {
-        this->prevIsGolden = this->isGolden;
-        this->isGolden = false;
-        this->scoreBonus = redAppleScoreBonus;
-        this->sizeBonus = redAppleSizeBonus;
+    if(!isPoisoned){
+        if(rand()%goldenAppleProbability == 0)
+        {
+            this->prevIsGolden = this->isGolden;
+            this->isGolden = true;
+            this->scoreBonus = goldenAppleScoreBonus;
+            this->sizeBonus = goldenAppleSizeBonus;
+        }
+        else
+        {
+            this->prevIsGolden = this->isGolden;
+            this->isGolden = false;
+            this->scoreBonus = redAppleScoreBonus;
+            this->sizeBonus = redAppleSizeBonus;
+        }
     }
     
 	if(head == nullptr)	//changing position to random, and dont care where is snake
@@ -78,6 +84,8 @@ bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head){
             field[temp->y][temp->x] = 1;
             temp = temp->next;
         }
+        
+        
         
         wall* temp2 = firstWall;
         while(temp2) {
