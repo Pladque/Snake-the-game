@@ -229,9 +229,5 @@ int main(int, char const**)
 		//run();
 		run(BOARDS_PATH + "wallsAroundBoard.txt");
 	}
-	else
-	{
-		return 0;
-	}
 	return 0;
 }
