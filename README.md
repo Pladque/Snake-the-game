@@ -10,17 +10,17 @@
 
 - [ ] pause menu
 
-- [ ] high score (aka save system)    (Pladq)
+- [ ] high score (aka save system) 
 
 - [ ] mode with opponen (mby like snake.io gameplay??)
 
-- [ ] 3 types of apples (poisoned, golden, normal)  (Pladq)
+- [ ] 3 types of apples (poisoned, golden, normal)
 
 - [ ] menu with mouse input  
 
 - [ ] Game window size depends on screen resolution
 
-- [ ] Fix particle system   (Pladq)
+- [ ] Fix particle system 
 
 ## Update v1.1 ##
 
