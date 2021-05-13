@@ -41,4 +41,6 @@
 
 - [ ] Game window size depends on screen resolution
 
+- [ ] Fix particle system
+
 
