@@ -24,7 +24,6 @@
 
 ## Update v1.1 ##
 
-//write update here
 Changes since 1.0:
 
 *snake.c/hpp - main snake class. Snake is represented as the one-sided list, with one distinguished element, called the snake head. Other segments of program could interfere with a head, using methods of this class. Whole body contain set of single elements, belonging to the snake list, which are made to "follow" the head whenever it moves. Methods in this class allow the snake to grow, change directions and fade.
