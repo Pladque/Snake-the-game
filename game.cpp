@@ -44,9 +44,19 @@ void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
     appleEatingSound.loadFromFile(SOUNDS_PATH+"applebite.wav");
     appleEating.setBuffer(appleEatingSound);
 }
-void resizeSnake(Snake& snake, int size){
-    for(int i = 0; i < size; i++)
-        snake.grow();
+void resizeSnake(Snake& snake, int size)
+{
+    if(size > 0)
+    {
+        for(int i = 0; i < size; i++)
+            snake.grow();
+    }
+    else
+    {
+        for(int i = 0; i < size; i++)
+            snake.fade();
+    }
+    
 }
 
 PartycleSystem makeParticles(int particleDense = 100)
@@ -105,9 +115,7 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
         
         if(snake->getHead()->x == objects[i]->getPosX() &&  snake->getHead()->y == objects[i]->getPosY() )
         {
-    //        std::cout<<score<<std::endl;
-            // we can add golden aplles, that will f.e add 2 to size
-            // and 5 to score
+            std::cout<<objects[i]->getScoreBonus()<<std::endl;
             appleEatingPS = makeParticles();
             appleEatingPS.setPosition(objects[i] ->getPosX() * cell_size_pix, 
             objects[i] ->getPosY() * cell_size_pix);
@@ -307,7 +315,7 @@ int run(std::string boardName = "")
     int i = 0;
 
     //saving all objects snake can collide with
-    int collisonObjsAmount = 1;
+    int collisonObjsAmount = 2;
     collectableObj* AllCollectableObjs[10];
 
     AllCollectableObjs[0] = &apple;
