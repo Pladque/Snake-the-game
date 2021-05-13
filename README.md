@@ -6,11 +6,11 @@
 
 - [ ] Walls
 
-- [ ] Settings in menu
+- [X] Settings in menu      (13.05.2021)
 
 - [ ] pause menu
 
-- [ ] high score (aka save system) 
+- [X] high score (aka save system) (13.05.2021)
 
 - [ ] mode with opponent (mby like snake.io gameplay??)
 
@@ -20,7 +20,7 @@
 
 - [ ] Game window size depends on screen resolution
 
-- [ ] Fix particle system 
+- [X] Fix particle system  (13.05.2021)
 
 - [ ] GameBoards to choose
 
