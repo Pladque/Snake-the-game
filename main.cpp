@@ -5,9 +5,10 @@
  */ 
 
 #define MULT 2
-#define REACT_X 28.f
-#define TEXT_X 30.f
-//#define REACT_Y
+#define REACT_X 25.f
+#define TEXT_X 26.f
+#define REACT_WIDTH 250.f
+#define REACT_HEIGHT 40.f
 
 int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
@@ -39,78 +40,78 @@ int EnterMenu()
 	sf::Text windDifficultyLevel, windSnakesCount, windMusic, windReturnFromOptions;
 													//end of Menu init
 													
-	sf::RectangleShape rectangleBasic(sf::Vector2f(232.f, 25.f));
+	sf::RectangleShape rectangleBasic(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
     rectangleBasic.setFillColor(sf::Color(20, 100, 150));
-    rectangleBasic.setPosition(REACT_X, 115.f);
+    rectangleBasic.setPosition(REACT_X, 215.f);
     rectangleBasic.setOutlineThickness(5.f);
 	rectangleBasic.setOutlineColor(sf::Color(250, 150, 100));
 	
-	sf::RectangleShape rectangleBasic2(sf::Vector2f(232.f, 25.f));
+	sf::RectangleShape rectangleBasic2(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
     rectangleBasic2.setFillColor(sf::Color(20, 100, 150));
-    rectangleBasic2.setPosition(REACT_X, 178.f);		
+    rectangleBasic2.setPosition(REACT_X, 278.f);		
     rectangleBasic2.setOutlineThickness(5.f);
 	rectangleBasic2.setOutlineColor(sf::Color(250, 150, 100));
     
-    sf::RectangleShape rectangleBasic3(sf::Vector2f(232.f, 25.f));
+    sf::RectangleShape rectangleBasic3(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
     rectangleBasic3.setFillColor(sf::Color(20, 100, 150));
-    rectangleBasic3.setPosition(REACT_X, 241.f);		
+    rectangleBasic3.setPosition(REACT_X, 341.f);		
     rectangleBasic3.setOutlineThickness(5.f);
 	rectangleBasic3.setOutlineColor(sf::Color(250, 150, 100));		
 	
-	sf::RectangleShape rectangleBasic4(sf::Vector2f(232.f, 25.f));
+	sf::RectangleShape rectangleBasic4(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
     rectangleBasic4.setFillColor(sf::Color(20, 100, 150));
-    rectangleBasic4.setPosition(REACT_X, 304.f);		
+    rectangleBasic4.setPosition(REACT_X, 404.f);		
     rectangleBasic4.setOutlineThickness(5.f);
 	rectangleBasic4.setOutlineColor(sf::Color(250, 150, 100));								
 													
 	mainText.setFont(menuFont);
 	mainText.setString("SNAKE 2D");
-	mainText.setCharacterSize(36);
+	mainText.setCharacterSize(38);
 	mainText.setFillColor(sf::Color::Red);
 	mainText.setPosition(570.f, 5.f);
 	mainText.setStyle(sf::Text::Bold);
 	
 	windStartGame.setFont(menuFont);
 	windStartGame.setString("New game: press 'P'");
-	windStartGame.setCharacterSize(18);
+	windStartGame.setCharacterSize(19);
 	windStartGame.setFillColor(sf::Color::Black);
-	windStartGame.setPosition(TEXT_X, 116.f);
+	windStartGame.setPosition(TEXT_X, 216.f);
 	
 	windOptions.setFont(menuFont);
 	windOptions.setString("Options: press 'S'");
-	windOptions.setCharacterSize(18);
+	windOptions.setCharacterSize(19);
 	windOptions.setFillColor(sf::Color::Black);
-	windOptions.setPosition(TEXT_X, 179.f);
+	windOptions.setPosition(TEXT_X, 279.f);
 	
 	windQuitGame.setFont(menuFont);
 	windQuitGame.setString("Quit game: press 'Q'");
-	windQuitGame.setCharacterSize(18);
+	windQuitGame.setCharacterSize(19);
 	windQuitGame.setFillColor(sf::Color::Black);
-	windQuitGame.setPosition(TEXT_X, 242.f);
+	windQuitGame.setPosition(TEXT_X, 342.f);
 	
 	windSnakesCount.setFont(menuFont);
 	windSnakesCount.setString("Snakes number: " + snakes_count + " ('N')");
-	windSnakesCount.setCharacterSize(18);
+	windSnakesCount.setCharacterSize(19);
 	windSnakesCount.setFillColor(sf::Color::Black);
-	windSnakesCount.setPosition(TEXT_X, 116.f);
+	windSnakesCount.setPosition(TEXT_X, 216.f);
 	
 	windDifficultyLevel.setFont(menuFont);
 	windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
-	windDifficultyLevel.setCharacterSize(18);
+	windDifficultyLevel.setCharacterSize(19);
 	windDifficultyLevel.setFillColor(sf::Color::Black);
-	windDifficultyLevel.setPosition(TEXT_X, 179.f);
+	windDifficultyLevel.setPosition(TEXT_X, 279.f);
 	
 	windMusic.setFont(menuFont);
 	windMusic.setString("Music: " + music_on_off + " ('M')");
-	windMusic.setCharacterSize(18);
+	windMusic.setCharacterSize(19);
 	windMusic.setFillColor(sf::Color::Black);
-	windMusic.setPosition(TEXT_X, 242.f);
+	windMusic.setPosition(TEXT_X, 342.f);
 	
 	windReturnFromOptions.setFont(menuFont);
 	windReturnFromOptions.setString("Return to menu ('Esc')");
-	windReturnFromOptions.setCharacterSize(18);
+	windReturnFromOptions.setCharacterSize(19);
 	windReturnFromOptions.setFillColor(sf::Color::Black);
-	windReturnFromOptions.setPosition(TEXT_X, 305.f);
+	windReturnFromOptions.setPosition(TEXT_X, 405.f);
 	
 	
 	menuMusic.play(); 
