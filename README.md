@@ -26,7 +26,7 @@
 
 Changes since 1.0:
 
-*snake.c/hpp - main snake class. Snake is represented as the one-sided list, with one distinguished element, called the snake head. Other segments of program could interfere with a head, using methods of this class. Whole body contain set of single elements, belonging to the snake list, which are made to "follow" the head whenever it moves. Methods in this class allow the snake to grow, change directions and fade.
+*snake.c/hpp - main snake class. Snake is represented as the linked list, with one distinguished element, called the snake head. Other segments of program could interfere with a head, using methods of this class. Whole body contain set of single elements, belonging to the snake list, which are made to "follow" the head whenever it moves. Methods in this class allow the snake to grow, change directions and fade.
 
 *settings.cpp - this file contains basic game configuration, such as snake speed, grid size, score bonuses, etc. Settings should be able to be altered from options in game main menu.
 
@@ -40,7 +40,7 @@ Changes since 1.0:
 
 *main.cpp - main file, providing main menu and basic interaction with user, game.cpp is included here. Options/settings will be accesible from this part of the code. If user decides to start the game, game.cpp will be started.
 
-
+*Difficulties: creating particles system, buges with windows dimensions
 
 ## Update v1.0 ##
 
