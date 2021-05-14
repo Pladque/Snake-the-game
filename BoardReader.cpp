@@ -6,6 +6,12 @@
 #include <fstream>
 #include <iostream>
 
+#include <filesystem>
+#include <experimental/filesystem>
+
+namespace fs = std::experimental::filesystem;
+
+
 class wall
 {
     int xPos;
@@ -81,4 +87,28 @@ public:
         }
     }
 
+    void CreateSpritesForAll(std::string boardsTXTPath, std::string boardsPPMPath)
+    {
+
+        for (const auto & boardTxt : fs::directory_iterator(boardsTXTPath))
+        {
+            readBoard(boardTxt.path());
+            std::fstream newBoardPPM;
+
+            std::string boardPPMFULLName = boardTxt.path();
+
+            std::string boardPPMName = boardTxt.path();
+
+            for(int i = 0; i< boardPPMFULLName.length(); i++)
+            {
+                //saving chars that are not path 
+                if(i>=boardsTXTPath.length())
+                    boardPPMName += boardPPMFULLName[i];
+            }
+
+            newBoardPPM.open(BOARDS_IMGS_PATH + boardPPMName, std::ios::out);
+
+            newBoardPPM<<"P "<<GRID_SIZE_X<<" "<<GRID_SIZE_Y;
+        }
+    }
 };

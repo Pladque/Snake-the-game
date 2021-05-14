@@ -7,6 +7,8 @@ const std::string TEXTURES_PATH = "./Assets/Graphic/";
 const std::string SOUNDS_PATH = "./Assets/Sounds/";
 const std::string BOARDS_PATH = "./Assets/Boards/";
 const std::string SAVES_PATH = "./Assets/Saves/";
+const std::string BOARDS_IMGS_PATH = "./Assets/BoardsSprites(test)/";
+
 
 const std::string HIGH_SCORE_FILE_NAME = "hightScore.txt";
 
