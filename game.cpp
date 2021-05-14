@@ -318,11 +318,11 @@ int run(std::string boardName = "")
      if (gameMusicOn == true)
      {
 		 sf::Music backgroundMusic;
-		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic"))
+		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic.ogg"))
 		 {
 			 return EXIT_FAILURE;
 		 }
-		 backgroundMusic.setVolume(40.f);
+		 backgroundMusic.setVolume(50.f);
 		 backgroundMusic.setLoop(true);
 		 backgroundMusic.play();
 	 }
