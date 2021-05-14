@@ -14,7 +14,6 @@
 #define MOUSE_CORRECTION 0.f
 
 
-int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard, 3 - titan
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
 bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main Menu,
 							//otherwise to move on with logic
@@ -386,10 +385,30 @@ int EnterMenu()
 
 int main(int, char const**)
 {
-	if (EnterMenu() == 0)
+	short run_return = 1;
+	while (true)
 	{
-		//run();
-		run(BOARDS_PATH + "wallsAroundBoard.txt");
+		if (run_return == 1)
+		{
+			if (EnterMenu() == 0)
+			{
+				run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");	
+			}
+			else
+			{
+				return 0;	
+			}
+		}
+		else
+		{
+			run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");
+		}
 	}
+	
+	//if (EnterMenu() == 0)
+	//{
+		//run();
+	//	run(BOARDS_PATH + "wallsAroundBoard.txt");
+	//}
 	return 0;
 }
