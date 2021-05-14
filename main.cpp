@@ -25,7 +25,7 @@ int EnterMenu()
 	std::string snakes_count = "1";
 	std::string difficulty_level = "normal";
 	std::string allowedPoisonedApple = "on";
-	std::string music_on_off = "off";
+	std::string music_on_off = "on";
 	extern int snakeSpeed;
 	extern bool poisonedAppleOn;
 	
@@ -145,8 +145,8 @@ int EnterMenu()
 	windSelectBoard.setPosition(TEXT_X, 461.f + SPACING);
 	
 	
-	//menuMusic.play(); 
 	menuMusic.setVolume(50.f);
+	menuMusic.play(); 
 	//starting main Menu loop
 	while (menuWindow.isOpen())
 	{
