@@ -38,7 +38,7 @@ int EnterMenu()
 	else
 	{
 		//
-		allowePoisonedApple = "on";
+		allowedPoisonedApple = "on";
 	}
 		
 	if (difficulty == 0)
