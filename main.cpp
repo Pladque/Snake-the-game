@@ -23,15 +23,50 @@ int EnterMenu()
 {
 	//Main function -> depending on its return, game would start or not
 	std::string snakes_count = "1";
-	std::string difficulty_level = "normal";
-	std::string allowedPoisonedApple = "on";
-	std::string music_on_off = "on";
+	std::string difficulty_level;
+	std::string allowedPoisonedApple;
+	std::string music_on_off;
 	extern int snakeSpeed;
 	extern bool poisonedAppleOn;
 	extern bool gameMusicOn;
 	
 	if (poisonedAppleOn == false)
+	{
+		//
 		allowedPoisonedApple = "off";
+	}
+	else
+	{
+		//
+		allowePoisonedApple = "on";
+	}
+		
+	if (difficulty == 0)
+	{
+		difficulty_level = "easy";
+	}
+	else if (difficulty == 1)
+	{
+		difficulty_level = "normal";
+	}
+	else if (difficulty == 2)
+	{
+		difficulty_level = "hard";
+	}
+	else
+	{
+		difficulty_level = "titan";
+		enemySnakePresent = true;
+	}
+		
+	if (gameMusicOn == true)
+	{
+		music_on_off = "on";
+	}
+	else
+	{
+		music_on_off = "off";
+	}
 	
 	sf::Vector2i localMousePosition;	//Variable holding mouse position;
 	sf::Texture menuTexture;
@@ -149,9 +184,8 @@ int EnterMenu()
 	menuMusic.setVolume(50.f);
 	menuMusic.setLoop(true);
 	if (gameMusicOn == true)
-	{
 		menuMusic.play();
-	}
+		 
 	//starting main Menu loop
 	while (menuWindow.isOpen())
 	{
@@ -197,7 +231,7 @@ int EnterMenu()
 						music_on_off = "on";
 						gameMusicOn = true;
 						windMusic.setString("Music: " + music_on_off + " ('M')");
-						menuMusic.play();
+						//menuMusic.play();
 						menuMusic.setVolume(50.f);
 						
 					}
@@ -339,7 +373,7 @@ int EnterMenu()
 							music_on_off = "on";
 							gameMusicOn = true;
 							windMusic.setString("Music: " + music_on_off + " ('M')");
-							menuMusic.play();
+							//menuMusic.play();
 							menuMusic.setVolume(50.f);
 						}
 					}
