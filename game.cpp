@@ -399,7 +399,9 @@ short run(std::string boardName = "")
     int i = 0;
 
     //saving all objects snake can collide with
-    int collisonObjsAmount = 2;
+    int collisonObjsAmount = 1;
+    if(poisonedAppleOn)
+        collisonObjsAmount = 2;
     collectableObj* AllCollectableObjs[10];
 
     AllCollectableObjs[0] = &apple;
