@@ -3,7 +3,7 @@
 #include "BoardReader.cpp"
 #include "collectableObj.cpp"
 #include "particle.cpp"
-
+#include "TexturesAndSprites.cpp"
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -20,27 +20,10 @@ int snake_y = GRID_SIZE_Y / 2;
 int score = 0;
 int highScore = 0;
 
-sf::Text ScoreText;      // for displaying score
-sf::Text HighScoreText;      // for displaying best score
-
-sf::Texture snakeTexture;
-sf::Sprite snakeSP;
-sf::Texture headTexture;
-sf::Sprite head;
-sf::Texture appleTexture;
-sf::Sprite appleSP;
-sf::Texture wallTexture;
-sf::Sprite wallSP;
-sf::Texture playTexture;
-sf::Sprite playSP;
-sf::Texture pauseTexture;
-sf::Sprite pauseSP;
-
 const int window_width = GRID_SIZE_X * cell_size_pix;
 const int window_height = GRID_SIZE_Y * cell_size_pix;
 
 BoardReader boardReader;
-
 
 void deleteParticle(PartycleSystem &toDelete){
     Particle* temp = toDelete.getFirstParticle();
@@ -51,6 +34,9 @@ void deleteParticle(PartycleSystem &toDelete){
         temp = help;
     }
 }
+
+///INITS:
+
 void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
     snakeTexture.loadFromFile(TEXTURES_PATH+"snake.png");
     snakeSP.setTexture(snakeTexture);
@@ -64,9 +50,75 @@ void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
     playSP.setTexture(playTexture);
     pauseTexture.loadFromFile(TEXTURES_PATH+"pause.png");
     pauseSP.setTexture(pauseTexture);
+
+    /// SOUNDS ///
     appleEatingSound.loadFromFile(SOUNDS_PATH+"applebite.wav");
     appleEating.setBuffer(appleEatingSound);
+
+    gameOverSound.loadFromFile(SOUNDS_PATH + "gameover2.wav");
+    gameOver.setBuffer(gameOverSound);
+    gameOver.setVolume(50);
+
+    appleEating.setVolume(40);
 }
+
+void initMusic()
+{
+    if (gameMusicOn == true)
+     {
+		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic.ogg"))
+		 {
+			std::cout<<"Music File error! Couldn't load: " 
+                        + SOUNDS_PATH + "gameMusic.ogg"<<std::endl;
+		 }
+		 backgroundMusic.setVolume(30.f);
+		 backgroundMusic.setLoop(true);
+	 }
+}
+
+void setupScoreDisplayers( sf::Font &font)
+{
+    ScoreText.setFont(font); // font is a sf::Font
+    ScoreText.setString("Score: " + std::to_string(score));
+    ScoreText.setCharacterSize(48); // in pixels, not points!
+    ScoreText.setFillColor(sf::Color::Black);
+    ScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+    //HighScoreText
+    HighScoreText.setFont(font); // font is a sf::Font
+    HighScoreText.setString("Best Score: " + std::to_string(highScore));
+    HighScoreText.setCharacterSize(48); // in pixels, not points!
+    HighScoreText.setFillColor(sf::Color::Black);
+    HighScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+}
+
+void loadHighScore()
+{
+    std::fstream highScoreFile;
+    std::string hishScoreFileFullPath = SAVES_PATH + HIGH_SCORE_FILE_NAME;
+    highScoreFile.open(hishScoreFileFullPath.c_str(), std::ios::in | std::ios::binary);
+    highScore = 0;
+    highScoreFile.read((char *) &highScore, sizeof(highScore));
+    highScoreFile.close();
+}
+
+void saveHighScore()
+{
+    if(score > highScore)
+    {
+        std::fstream highScoreFile;
+        std::string hishScoreFileFullPath = SAVES_PATH + HIGH_SCORE_FILE_NAME;
+        highScoreFile.open(hishScoreFileFullPath.c_str(), 
+                    std::ios::out | std::ios::trunc | std::ios::binary);
+        std::string scoreAsString = std::to_string(score);
+
+        highScoreFile.write((char *) &score, sizeof(score));
+
+        highScoreFile.close();
+    }
+}
+
 void resizeSnake(Snake& snake, int size)
 {
     if(size > 0)
@@ -81,9 +133,8 @@ void resizeSnake(Snake& snake, int size)
     }
     
 }
-//1 - red
-//2 - gold
-//3 - black
+
+//3 - black     //2 - gold      //1 - red
 PartycleSystem makeParticles(int color = 1, int particleDense = 100)
 {
     srand (time(NULL));
@@ -129,21 +180,14 @@ void updateScore(int addToScore){
     ScoreText.setString("Score: " + std::to_string(score));
 }
 
-// mby rework it, to check collision with array of
-//collectableObj - it will allow us to add fe poison apple, bombs etc
-// and other staff that snake can collide with
-
 void snakeHeadCollision(Snake *snake, collectableObj* objects[], 
     sf::Sound& appleEating, PartycleSystem &appleEatingPS, int collObjAmount = 0)
 {
-    
-    
     for(int i = 0; i <  collObjAmount; i++)
     {
 
         if(snake->getHead()->x == objects[i]->getPosX() &&  snake->getHead()->y == objects[i]->getPosY() )
         {
-//            std::cout<<objects[i]->getScoreBonus() <<std::endl;
             if(objects[i]->getIsGolden())
                 appleEatingPS = makeParticles(2);
             else if(objects[i]->getIsPoisoned())
@@ -161,13 +205,12 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
     }
 
 }
-void drawField(sf::RenderWindow& window, Snake& snake, 
+
+void drawAll(sf::RenderWindow& window, Snake& snake, 
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
                  collectableObj &poisonedApple, bool& gamePaused)
 
 {
-    
-    
     bodyPart* curr = snake.getHead();
     
     while(curr)
@@ -234,8 +277,6 @@ void drawField(sf::RenderWindow& window, Snake& snake,
         particleToDraw = particleToDraw->next;
     }
 
-    //*/
-
     //Drawing board (with walls)
 
     wall* currWall = boardReader.wallHead;
@@ -250,7 +291,8 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 
         currWall = currWall->getNext();
     }
-    
+
+    //pause menu
     if(!gamePaused) {
         playSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 0);
         window.draw(playSP);
@@ -261,22 +303,6 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 
 }
 
-void setupScoreDisplayer( sf::Font &font)
-{
-    ScoreText.setFont(font); // font is a sf::Font
-    ScoreText.setString("Score: " + std::to_string(score));
-    ScoreText.setCharacterSize(48); // in pixels, not points!
-    ScoreText.setFillColor(sf::Color::Black);
-    ScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
-    //HighScoreText
-    HighScoreText.setFont(font); // font is a sf::Font
-    HighScoreText.setString("Best Score: " + std::to_string(highScore));
-    HighScoreText.setCharacterSize(48); // in pixels, not points!
-    HighScoreText.setFillColor(sf::Color::Black);
-    HighScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
-}
 
 void windowPollEvent(sf::RenderWindow &window,
 sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
@@ -322,50 +348,17 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
     }
 }
 
-void saveHighScore()
-{
-    if(score > highScore)
-    {
-        std::fstream highScoreFile;
-        std::string hishScoreFileFullPath = SAVES_PATH + HIGH_SCORE_FILE_NAME;
-        highScoreFile.open(hishScoreFileFullPath.c_str(), 
-                    std::ios::out | std::ios::trunc | std::ios::binary);
-        std::string scoreAsString = std::to_string(score);
-
-        highScoreFile.write((char *) &score, sizeof(score));
-
-        highScoreFile.close();
-    }
-}
-
-
 short run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
+   
     // Init game
-    sf::Music backgroundMusic;	//used to play music in the background
-    sf::SoundBuffer appleEatingSound;
-    sf::Sound appleEating;
-    appleEating.setVolume(40);
+    
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar | sf::Style::Close);
     initGame(appleEatingSound, appleEating);
     
-    /*
-     * if gameMusicOn is set to "true", this fragment should execute
-     */	
-     if (gameMusicOn == true)
-     {
-		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic.ogg"))
-		 {
-			 return EXIT_FAILURE;
-		 }
-		 backgroundMusic.setVolume(30.f);
-		 backgroundMusic.setLoop(true);
-	 }
-     /*
-      * end of game music config
-      */
+    initMusic();
 
     // Loading Board
     if(boardName != "")
@@ -379,19 +372,8 @@ short run(std::string boardName = "")
         std::cout<<"Font file missing"<<std::endl;
     }
 
-    //Loading highScore
-    std::fstream highScoreFile;
-    std::string hishScoreFileFullPath = SAVES_PATH + HIGH_SCORE_FILE_NAME;
-    highScoreFile.open(hishScoreFileFullPath.c_str(), std::ios::in | std::ios::binary);
-
-    highScore = 0;
-    
-    highScoreFile.read((char *) &highScore, sizeof(highScore));
-
-    highScoreFile.close();
-    //////////////////////////////////
-    
-    setupScoreDisplayer(font);
+    loadHighScore();
+    setupScoreDisplayers(font);
 
     PartycleSystem collectedApplePS;
     
@@ -433,7 +415,6 @@ short run(std::string boardName = "")
         i++;
         sf::Event ev;
         
-        
         windowPollEvent(window, ev, newDir, snake, gamePaused);
         
         if(!gamePaused){
@@ -442,15 +423,11 @@ short run(std::string boardName = "")
             {      
                 snake.changeDirection(newDir);
                 if(!snake.move(&boardReader)){
-                    sf::SoundBuffer gameOverSound;
-                    sf::Sound gameOver;
-                    gameOverSound.loadFromFile(SOUNDS_PATH + "gameover2.wav");
-                    gameOver.setBuffer(gameOverSound);
-                    gameOver.setVolume(50);
+                    
                     gameOver.play();
                     sf::sleep(sf::milliseconds(2500));
-                    break;
-                    //window.close();
+                    saveHighScore();
+                    return 1;
                 }
                 frameCounter = 0;
             }
@@ -459,9 +436,11 @@ short run(std::string boardName = "")
         window.clear(sf::Color(153,204,255,100));
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
-        drawField(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
         collectedApplePS.blowUp();
+
+        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
         window.display();
+        
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
@@ -469,9 +448,6 @@ short run(std::string boardName = "")
     saveHighScore();
 
     deleteParticle(collectedApplePS);
-
-
-
     
     return 1;       //lost, run again
 }
