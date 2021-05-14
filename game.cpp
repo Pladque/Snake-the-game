@@ -29,6 +29,10 @@ sf::Texture headTexture;
 sf::Sprite head;
 sf::Texture appleTexture;
 sf::Sprite appleSP;
+sf::Texture playTexture;
+sf::Sprite playSP;
+sf::Texture pauseTexture;
+sf::Sprite pauseSP;
 
 const int window_width = GRID_SIZE_X * cell_size_pix;
 const int window_height = GRID_SIZE_Y * cell_size_pix;
@@ -52,6 +56,10 @@ void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
     head.setTexture(headTexture);
     appleTexture.loadFromFile(TEXTURES_PATH+"apple.png");
     appleSP.setTexture(appleTexture);
+    playTexture.loadFromFile(TEXTURES_PATH+"play.png");
+    playSP.setTexture(playTexture);
+    pauseTexture.loadFromFile(TEXTURES_PATH+"pause.png");
+    pauseSP.setTexture(pauseTexture);
     appleEatingSound.loadFromFile(SOUNDS_PATH+"applebite.wav");
     appleEating.setBuffer(appleEatingSound);
 }
@@ -152,9 +160,11 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 }
 void drawField(sf::RenderWindow& window, Snake& snake, 
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
-                 collectableObj &poisonedApple)
+                 collectableObj &poisonedApple, bool& gamePaused)
 
-{  
+{
+    
+    
     bodyPart* curr = snake.getHead();
     
     while(curr)
@@ -242,6 +252,14 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 
         currWall = currWall->getNext();
     }
+    
+    if(!gamePaused) {
+        playSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 0);
+        window.draw(playSP);
+    }else{
+        pauseSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 0);
+        window.draw(pauseSP);
+    }
 
 }
 
@@ -266,36 +284,43 @@ void windowPollEvent(sf::RenderWindow &window,
 sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
 {
     while(window.pollEvent(ev)) {
-                if(ev.type == sf::Event::Closed) {
-                    window.close();
-                }else if(ev.key.code == sf::Keyboard::Escape) {
-//                    gamePaused = true;
-                }else if(ev.type == sf::Event::KeyPressed) {
-                    switch (ev.key.code) {
-                        case sf::Keyboard::W:
-                            if(snake.getDirection() == Direction::up || snake.getDirection() == Direction::down)
-                                break;
-                            newDir = Direction::up;
-                            break;
-                        case sf::Keyboard::S:
-                            if(snake.getDirection() == Direction::down || snake.getDirection() == Direction::up)
-                                break;;
-                            newDir = Direction::down;
-                            break;
-                        case sf::Keyboard::A:
-                            if(snake.getDirection() == Direction::left || snake.getDirection() == Direction::right)
-                                break;
-                            newDir = Direction::left;
-                            break;
-                        case sf::Keyboard::D:
-                            if(snake.getDirection() == Direction::right || snake.getDirection() == Direction::left)
-                                break;
-                            newDir = Direction::right;
-                            break;
-                        default:
-                            break;
-                    }
+        if(ev.type == sf::Event::Closed) {
+            window.close();
+        }else if(ev.type == sf::Event::KeyPressed) {
+            if(gamePaused){
+                if(ev.key.code == sf::Keyboard::Escape) {
+                    gamePaused = false;
                 }
+            }else{
+                switch (ev.key.code) {
+                    case sf::Keyboard::W:
+                        if(snake.getDirection() == Direction::up || snake.getDirection() == Direction::down)
+                            break;
+                        newDir = Direction::up;
+                        break;
+                    case sf::Keyboard::S:
+                        if(snake.getDirection() == Direction::down || snake.getDirection() == Direction::up)
+                            break;;
+                        newDir = Direction::down;
+                        break;
+                    case sf::Keyboard::A:
+                        if(snake.getDirection() == Direction::left || snake.getDirection() == Direction::right)
+                            break;
+                        newDir = Direction::left;
+                        break;
+                    case sf::Keyboard::D:
+                        if(snake.getDirection() == Direction::right || snake.getDirection() == Direction::left)
+                            break;
+                        newDir = Direction::right;
+                        break;
+                    case sf::Keyboard::Escape:
+                        gamePaused = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 }
 
@@ -425,7 +450,7 @@ int run(std::string boardName = "")
 
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
-        drawField(window, snake, apple, collectedApplePS, poisonedApple);//, text);
+        drawField(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
         collectedApplePS.blowUp();
         window.display();
         sf::sleep(sf::milliseconds(frameFreezeTime));
