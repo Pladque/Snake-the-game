@@ -15,7 +15,7 @@
 
 std::string music_on_off = "off";
 
-int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard
+int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard, 3 - titan
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
 bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main Menu,
 							//otherwise to move on with logic
@@ -26,9 +26,12 @@ int EnterMenu()
 	//Main function -> depending on its return, game would start or not
 	std::string snakes_count = "1";
 	std::string difficulty_level = "normal";
+	std::string allowedPoisonedApple = "on";
 	extern int snakeSpeed;
 	extern bool poisonedAppleOn;
 	
+	if (poisonedAppleOn == false)
+		allowedPoisonedApple = "off";
 	
 	sf::Vector2i localMousePosition;	//Variable holding mouse position;
 	sf::Texture menuTexture;
@@ -47,7 +50,7 @@ int EnterMenu()
     if (!menuFont.loadFromFile("./Assets/Fonts/JosefinSans-SemiBoldItalic.ttf"))
         return -1;
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
-	sf::Text windDifficultyLevel, windSnakesCount, windMusic, windReturnFromOptions;		//in consecutive windows
+	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
 	sf::Text windSelectBoard;
 													//end of Menu init
 													
@@ -112,11 +115,11 @@ int EnterMenu()
 	windQuitGame.setFillColor(sf::Color::Black);
 	windQuitGame.setPosition(TEXT_X, 335.f + SPACING);
 	
-	windSnakesCount.setFont(menuFont);
-	windSnakesCount.setString("Snakes number: " + snakes_count + " ('N')");
-	windSnakesCount.setCharacterSize(CHAR_SIZE);
-	windSnakesCount.setFillColor(sf::Color::Black);
-	windSnakesCount.setPosition(TEXT_X, 209.f + SPACING);
+	windPoisonedFruit.setFont(menuFont);
+	windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+	windPoisonedFruit.setCharacterSize(CHAR_SIZE);
+	windPoisonedFruit.setFillColor(sf::Color::Black);
+	windPoisonedFruit.setPosition(TEXT_X, 209.f + SPACING);
 	
 	windDifficultyLevel.setFont(menuFont);
 	windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
@@ -200,7 +203,7 @@ int EnterMenu()
 				else if (menuEvent.key.code == sf::Keyboard::L && entered_settings == 1)
 				{
 					difficulty++; 
-					difficulty = difficulty % 3;
+					difficulty = difficulty % 4;
 					if (difficulty == 0)
 					{
 						difficulty_level = "easy";
@@ -213,11 +216,33 @@ int EnterMenu()
 						snakeSpeed = 7;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 					}
-					else
+					else if (difficulty == 2)
 					{
 						difficulty_level = "hard";
 						snakeSpeed = 4;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+					}
+					else
+					{
+						difficulty_level = "titan";
+						snakeSpeed = 4;
+						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+					}
+					
+				}
+				else if (menuEvent.key.code == sf::Keyboard::N && entered_settings == 1)
+				{
+					if (poisonedAppleOn == false)
+					{
+						poisonedAppleOn = true;
+						allowedPoisonedApple = "on";
+						windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+					}
+					else
+					{
+						poisonedAppleOn = false;
+						allowedPoisonedApple = "off";
+						windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
 					}
 				}
 				else
@@ -250,13 +275,24 @@ int EnterMenu()
 					}
 					else if (localMousePosition.y >= (205.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (205.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
-						//snakes_count/apple_counts window
+						if (poisonedAppleOn == false)
+						{
+							poisonedAppleOn = true;
+							allowedPoisonedApple = "on";
+							windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+						}
+						else
+						{
+							poisonedAppleOn = false;
+							allowedPoisonedApple = "off";
+							windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+						}
 					}
 					else if (localMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//difficulty window was cliked by mouse
 						difficulty++; 
-						difficulty = difficulty % 3;
+						difficulty = difficulty % 4;
 						if (difficulty == 0)
 						{
 							difficulty_level = "easy";
@@ -269,9 +305,15 @@ int EnterMenu()
 							snakeSpeed = 7;
 							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 						}
-						else
+						else if (difficulty == 2)
 						{
 							difficulty_level = "hard";
+							snakeSpeed = 4;
+							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+						}
+						else
+						{
+							difficulty_level = "titan";
 							snakeSpeed = 4;
 							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 						}
@@ -328,7 +370,7 @@ int EnterMenu()
 			menuWindow.draw(rectangleBasic5);
 			menuWindow.draw(rectangleBoard);
 			menuWindow.draw(windDifficultyLevel);
-			menuWindow.draw(windSnakesCount);
+			menuWindow.draw(windPoisonedFruit);
 	        menuWindow.draw(windReturnFromOptions);
 	        menuWindow.draw(windMusic);
 	        menuWindow.draw(windSelectBoard);
