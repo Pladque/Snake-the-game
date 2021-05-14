@@ -36,7 +36,7 @@ Snake::Snake(unsigned short startX, unsigned  short startY)
 }
 
 //updated once per frame postion updater
-bool Snake::move()
+bool Snake::move(BoardReader* wallsCotainer)
 {
     bodyPart previousPositionOfBodyPart = bodyPart(*head);
 
@@ -102,6 +102,20 @@ bool Snake::move()
         previousPositionOfBodyPart = temp;
 
         currBodyPart = currBodyPart->next;
+    }
+
+    if(!validMove)
+        return false;
+
+    wall* currWall = wallsCotainer->wallHead;
+
+    while(currWall!= nullptr)
+    {
+        if((currWall->getX() == head->x  &&  currWall->getY() == head->y) 
+        && (currWall->getNext() != nullptr))
+            validMove = false;
+
+        currWall = currWall->getNext();
     }
 
     return validMove;

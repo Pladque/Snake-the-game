@@ -29,6 +29,8 @@ sf::Texture headTexture;
 sf::Sprite head;
 sf::Texture appleTexture;
 sf::Sprite appleSP;
+sf::Texture wallTexture;
+sf::Sprite wallSP;
 sf::Texture playTexture;
 sf::Sprite playSP;
 sf::Texture pauseTexture;
@@ -56,6 +58,8 @@ void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
     head.setTexture(headTexture);
     appleTexture.loadFromFile(TEXTURES_PATH+"apple.png");
     appleSP.setTexture(appleTexture);
+    wallTexture.loadFromFile(TEXTURES_PATH+"wall.png");
+    wallSP.setTexture(wallTexture);
     playTexture.loadFromFile(TEXTURES_PATH+"play.png");
     playSP.setTexture(playTexture);
     pauseTexture.loadFromFile(TEXTURES_PATH+"pause.png");
@@ -157,6 +161,9 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 
         }
     }
+
+
+
 }
 void drawField(sf::RenderWindow& window, Snake& snake, 
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
@@ -239,16 +246,11 @@ void drawField(sf::RenderWindow& window, Snake& snake,
 
     while(currWall!= nullptr)
     {
-        //temp, to show how reading from boardReader works
-        sf::CircleShape shape(10);
-
-         shape.setPosition(
+         wallSP.setPosition(
             currWall->getX() * cell_size_pix, 
             currWall->getY() * cell_size_pix);
 
-        shape.setFillColor(sf::Color(255, 255, 255));
-
-        window.draw(shape);
+        window.draw(wallSP);
 
         currWall = currWall->getNext();
     }
@@ -323,7 +325,6 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
         }
     }
 }
-
 
 
 int run(std::string boardName = "")
@@ -428,7 +429,7 @@ int run(std::string boardName = "")
             if(frameCounter % snakeSpeed == 0)
             {      
                 snake.changeDirection(newDir);
-                if(!snake.move()){
+                if(!snake.move(&boardReader)){
                     sf::SoundBuffer gameOverSound;
                     sf::Sound gameOver;
                     gameOverSound.loadFromFile(SOUNDS_PATH + "gameover2.wav");
