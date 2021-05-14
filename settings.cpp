@@ -12,3 +12,4 @@ int redAppleScoreBonus = 1;
 
 bool poisonedAppleOn = true;
 bool gameMusicOn = true;
+int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard, 3 - titan
