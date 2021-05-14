@@ -11,4 +11,4 @@ int redAppleSizeBonus = 1;
 int redAppleScoreBonus = 1;
 
 bool poisonedAppleOn = true;
-bool gameMusicOn = false;
+bool gameMusicOn = true;
