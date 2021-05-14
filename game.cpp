@@ -347,7 +347,7 @@ int run(std::string boardName = "")
 		 {
 			 return EXIT_FAILURE;
 		 }
-		 backgroundMusic.setVolume(35.f);
+		 backgroundMusic.setVolume(30.f);
 		 backgroundMusic.setLoop(true);
 	 }
      /*
