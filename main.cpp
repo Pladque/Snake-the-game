@@ -13,13 +13,11 @@
 #define SPACING -60.f
 #define MOUSE_CORRECTION 0.f
 
-std::string music_on_off = "off";
 
 int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard, 3 - titan
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
 bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main Menu,
 							//otherwise to move on with logic
-
 
 int EnterMenu()
 {
@@ -27,6 +25,7 @@ int EnterMenu()
 	std::string snakes_count = "1";
 	std::string difficulty_level = "normal";
 	std::string allowedPoisonedApple = "on";
+	std::string music_on_off = "off";
 	extern int snakeSpeed;
 	extern bool poisonedAppleOn;
 	
@@ -390,7 +389,7 @@ int main(int, char const**)
 	if (EnterMenu() == 0)
 	{
 		//run();
-		run(BOARDS_PATH + "wallsAroundBoard.txt", music_on_off);
+		run(BOARDS_PATH + "wallsAroundBoard.txt");
 	}
 	return 0;
 }
