@@ -10,6 +10,9 @@ int goldenAppleScoreBonus = 5;
 int redAppleSizeBonus = 1;
 int redAppleScoreBonus = 1;
 
+//Main game settings, changing them will take effects in whole game
+//EnterMenu() functions modify/retrieves them in order to affect the game
+bool enemySnakePresent = false;
 bool poisonedAppleOn = true;
 bool gameMusicOn = true;
 int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard, 3 - titan
