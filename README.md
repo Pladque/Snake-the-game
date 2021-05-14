@@ -14,11 +14,11 @@
 
 - [ ] mode with opponent (mby like snake.io gameplay??)
 
-- [ ] 3 types of apples (poisoned, golden, normal)
+- [X] 3 types of apples (poisoned, golden, normal)    (14.05.2021)
+  
+- [X] menu with mouse input     (14.05.2021)
 
-- [ ] menu with mouse input  
-
-- [ ] Game window size depends on screen resolution
+- [X] Game window size depends on screen resolution (14.05.2021)
 
 - [X] Fix particle system  (13.05.2021)
 
