@@ -148,7 +148,10 @@ int EnterMenu()
 	
 	menuMusic.setVolume(50.f);
 	menuMusic.setLoop(true);
-	menuMusic.play(); 
+	if (gameMusicOn == true)
+	{
+		menuMusic.play();
+	}
 	//starting main Menu loop
 	while (menuWindow.isOpen())
 	{
