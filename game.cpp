@@ -301,7 +301,7 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
 
 
 
-int run(std::string boardName = "")
+int run(std::string boardName = "", std::string musicOnOff = "Off")
 {
     bool gamePaused = false;
     int frameCounter = 0;
@@ -311,6 +311,24 @@ int run(std::string boardName = "")
     appleEating.setVolume(40);
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar | sf::Style::Close);
     initGame(appleEatingSound, appleEating);
+    
+    /*
+     * if musicOnOff is set to "On", this fragment should execute
+     */	
+     if (musicOnOff == "On")
+     {
+		 sf::Music backgroundMusic;
+		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic"))
+		 {
+			 return EXIT_FAILURE;
+		 }
+		 backgroundMusic.setVolume(40.f);
+		 backgroundMusic.setLoop(true);
+		 backgroundMusic.play();
+	 }
+     /*
+      * end of game music config
+      */
 
     // Loading Board
     if(boardName != "")
