@@ -306,6 +306,7 @@ int run(std::string boardName = "")
     bool gamePaused = false;
     int frameCounter = 0;
     // Init game
+    sf::Music backgroundMusic;	//used to play music in the background
     sf::SoundBuffer appleEatingSound;
     sf::Sound appleEating;
     appleEating.setVolume(40);
@@ -317,14 +318,12 @@ int run(std::string boardName = "")
      */	
      if (gameMusicOn == true)
      {
-		 sf::Music backgroundMusic;
 		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic.ogg"))
 		 {
 			 return EXIT_FAILURE;
 		 }
-		 backgroundMusic.setVolume(50.f);
+		 backgroundMusic.setVolume(35.f);
 		 backgroundMusic.setLoop(true);
-		 backgroundMusic.play();
 	 }
      /*
       * end of game music config
@@ -387,10 +386,15 @@ int run(std::string boardName = "")
     if(poisonedAppleOn)
         AllCollectableObjs[1] = &poisonedApple;
 
+	if (gameMusicOn == true)
+	{
+		backgroundMusic.play();
+	}
 
     while(window.isOpen()){
         i++;
         sf::Event ev;
+        
         
         windowPollEvent(window, ev, newDir, snake, gamePaused);
         
