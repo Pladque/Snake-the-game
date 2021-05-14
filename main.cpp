@@ -14,6 +14,7 @@
 #define MOUSE_CORRECTION 0.f
 
 
+//DO NOT MODIFY/DELETE!!!
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
 bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main Menu,
 							//otherwise to move on with logic
@@ -27,6 +28,7 @@ int EnterMenu()
 	std::string music_on_off = "on";
 	extern int snakeSpeed;
 	extern bool poisonedAppleOn;
+	extern bool gameMusicOn;
 	
 	if (poisonedAppleOn == false)
 		allowedPoisonedApple = "off";
@@ -50,7 +52,7 @@ int EnterMenu()
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
 	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
 	sf::Text windSelectBoard;
-													//end of Menu init
+	
 													
 	sf::RectangleShape rectangleBasic(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
     rectangleBasic.setFillColor(sf::Color(20, 100, 150));
@@ -145,6 +147,7 @@ int EnterMenu()
 	
 	
 	menuMusic.setVolume(50.f);
+	menuMusic.setLoop(true);
 	menuMusic.play(); 
 	//starting main Menu loop
 	while (menuWindow.isOpen())
@@ -179,15 +182,17 @@ int EnterMenu()
 				}
 				else if (menuEvent.key.code == sf::Keyboard::M && entered_settings == 1)
 				{
-					if (music_on_off == "on")
+					if (gameMusicOn == true)
 					{
 						music_on_off = "off";
+						gameMusicOn = false;
 						windMusic.setString("Music: " + music_on_off + " ('M')");
 						menuMusic.stop();
 					}
 					else
 					{
 						music_on_off = "on";
+						gameMusicOn = true;
 						windMusic.setString("Music: " + music_on_off + " ('M')");
 						menuMusic.play();
 						menuMusic.setVolume(50.f);
@@ -319,15 +324,17 @@ int EnterMenu()
 					else if (localMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//music window was clicked by mouse
-						if (music_on_off == "on")
+						if (gameMusicOn == true)
 						{
 							music_on_off = "off";
+							gameMusicOn = false;
 							windMusic.setString("Music: " + music_on_off + " ('M')");
 							menuMusic.stop();
 						}
 						else
 						{
 							music_on_off = "on";
+							gameMusicOn = true;
 							windMusic.setString("Music: " + music_on_off + " ('M')");
 							menuMusic.play();
 							menuMusic.setVolume(50.f);
