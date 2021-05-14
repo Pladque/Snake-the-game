@@ -2,6 +2,9 @@
 #include "consts.cpp"
 #pragma once
 #include "settings.cpp"
+#pragma once
+#include "BoardReader.cpp"
+
 
 
 class bodyPart
@@ -24,7 +27,7 @@ private:
     Direction direction;
 
 public:
-    bool move();    //false if collided with own body
+    bool move(BoardReader* wallsCotainer);    //false if collided with own body
     Snake();
     Snake(unsigned short startX, unsigned  short startY);
     void grow();
