@@ -231,7 +231,7 @@ int EnterMenu()
 						music_on_off = "on";
 						gameMusicOn = true;
 						windMusic.setString("Music: " + music_on_off + " ('M')");
-						//menuMusic.play();
+						menuMusic.play();
 						menuMusic.setVolume(50.f);
 						
 					}
@@ -373,7 +373,7 @@ int EnterMenu()
 							music_on_off = "on";
 							gameMusicOn = true;
 							windMusic.setString("Music: " + music_on_off + " ('M')");
-							//menuMusic.play();
+							menuMusic.play();
 							menuMusic.setVolume(50.f);
 						}
 					}
