@@ -69,8 +69,10 @@ void resizeSnake(Snake& snake, int size)
     }
     
 }
-
-PartycleSystem makeParticles(int particleDense = 100)
+//1 - red
+//2 - gold
+//3 - black
+PartycleSystem makeParticles(int color = 1, int particleDense = 100)
 {
     srand (time(NULL));
     Particle* firstParticle = 
@@ -79,7 +81,7 @@ PartycleSystem makeParticles(int particleDense = 100)
         rand() %  200 / 100.0   //speedY
         , 2.5 + rand() % 100 / 100.0,      //ttl
         1.5 + rand() % 300 / 1000.0,      //size
-        1 ,                     //color
+        color ,                     //color
         rand() % 50/100.0 - 0.25,   //velocityX
         rand() % 50/100.0 - 0.25);   //velocityY
 
@@ -93,7 +95,7 @@ PartycleSystem makeParticles(int particleDense = 100)
         rand() %  200 / 100.0   //speedY
         , 2.5 + rand() % 100 / 100.0,      //ttl
         1.5 + rand() % 300 / 1000.0,      //size
-        1 ,                     //color
+        color ,                     //color
         rand() % 50/100.0 - 0.25,   //velocityX
         rand() % 50/100.0 - 0.25);   //velocityY
 
@@ -108,19 +110,10 @@ PartycleSystem makeParticles(int particleDense = 100)
 
 
 void updateScore(int addToScore){
-<<<<<<< HEAD
     if(score + addToScore < 0) {
         score = 0;
     }else
         score += addToScore;
-=======
-    //if(score + addToScore < 0) {
-     //   return;
-    //}
-    score += addToScore;
-    if (score < 0)
-        score = 0;
->>>>>>> 85e15e381dc9832f9682ec8df9614acdd975e8b9
     ScoreText.setString("Score: " + std::to_string(score));
 }
 
@@ -139,7 +132,12 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
         if(snake->getHead()->x == objects[i]->getPosX() &&  snake->getHead()->y == objects[i]->getPosY() )
         {
 //            std::cout<<objects[i]->getScoreBonus() <<std::endl;
-            appleEatingPS = makeParticles();
+            if(objects[i]->getIsGolden())
+                appleEatingPS = makeParticles(2);
+            else if(objects[i]->getIsPoisoned())
+                appleEatingPS = makeParticles(3);
+            else
+                appleEatingPS = makeParticles(1);
             appleEatingPS.setPosition(objects[i] ->getPosX() * cell_size_pix, 
             objects[i] ->getPosY() * cell_size_pix);
 
@@ -175,12 +173,12 @@ void drawField(sf::RenderWindow& window, Snake& snake,
     sf::Sprite tempAppleSP = appleSP;
     if(collObj.getIsGolden())
         tempAppleSP.setColor(sf::Color(255,215,0));    //golden aplle color
-    else if(!collObj.getIsGolden() && !collObj.getIsPoisoned())
+    else if(!collObj.getIsPoisoned())
         tempAppleSP.setColor(sf::Color(255, 0, 0));
 
     tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
     window.draw(tempAppleSP);
-
+    
     if(poisonedAppleOn)
     {
         tempAppleSP = appleSP;
@@ -208,9 +206,9 @@ void drawField(sf::RenderWindow& window, Snake& snake,
         if(particleToDraw ->ttl >=0)
         {
             sf::CircleShape shape(particleToDraw->size);
-            if(!collObj.getPrevIsGolden() && !collObj.getIsPoisoned()){
+            if(particleToDraw->color == 1){
                 shape.setFillColor(sf::Color(255, 0, 0));
-            }else if(collObj.getPrevIsGolden())
+            }else if(particleToDraw->color == 2)
                 shape.setFillColor(sf::Color(255,215,0));
             else
                 shape.setFillColor(sf::Color(0,0,0));
@@ -271,7 +269,7 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
                 if(ev.type == sf::Event::Closed) {
                     window.close();
                 }else if(ev.key.code == sf::Keyboard::Escape) {
-                    gamePaused = true;
+//                    gamePaused = true;
                 }else if(ev.type == sf::Event::KeyPressed) {
                     switch (ev.key.code) {
                         case sf::Keyboard::W:
@@ -401,10 +399,11 @@ int run(std::string boardName = "")
         window.clear(sf::Color(153,204,255,100));
         
 
-        drawField(window, snake, apple, collectedApplePS, poisonedApple);//, text);
+        
 
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
+        drawField(window, snake, apple, collectedApplePS, poisonedApple);//, text);
         collectedApplePS.blowUp();
         window.display();
         sf::sleep(sf::milliseconds(frameFreezeTime));
