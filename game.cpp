@@ -157,12 +157,8 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
             resizeSnake(*snake, objects[i]->getSizeBonus());
             updateScore(objects[i]->getScoreBonus());
             objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead());
-
-
         }
     }
-
-
 
 }
 void drawField(sf::RenderWindow& window, Snake& snake, 
@@ -326,8 +322,24 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
     }
 }
 
+void saveHighScore()
+{
+    if(score > highScore)
+    {
+        std::fstream highScoreFile;
+        std::string hishScoreFileFullPath = SAVES_PATH + HIGH_SCORE_FILE_NAME;
+        highScoreFile.open(hishScoreFileFullPath.c_str(), 
+                    std::ios::out | std::ios::trunc | std::ios::binary);
+        std::string scoreAsString = std::to_string(score);
 
-int run(std::string boardName = "")
+        highScoreFile.write((char *) &score, sizeof(score));
+
+        highScoreFile.close();
+    }
+}
+
+
+short run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
@@ -445,10 +457,6 @@ int run(std::string boardName = "")
         }
 
         window.clear(sf::Color(153,204,255,100));
-        
-
-        
-
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
         drawField(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
@@ -457,23 +465,13 @@ int run(std::string boardName = "")
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
-    
-    if(score > highScore)
-    {
-    
-        highScoreFile.open(hishScoreFileFullPath.c_str(), 
-                    std::ios::out | std::ios::trunc | std::ios::binary);
-        std::string scoreAsString = std::to_string(score);
 
-        highScoreFile.write((char *) &score, sizeof(score));
-
-        highScoreFile.close();
-    }
+    saveHighScore();
 
     deleteParticle(collectedApplePS);
 
 
 
     
-    return EXIT_SUCCESS;
+    return 1;       //lost, run again
 }
