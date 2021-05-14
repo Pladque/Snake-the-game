@@ -301,7 +301,7 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
 
 
 
-int run(std::string boardName = "", std::string musicOnOff = "Off")
+int run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
@@ -313,9 +313,9 @@ int run(std::string boardName = "", std::string musicOnOff = "Off")
     initGame(appleEatingSound, appleEating);
     
     /*
-     * if musicOnOff is set to "On", this fragment should execute
+     * if gameMusicOn is set to "true", this fragment should execute
      */	
-     if (musicOnOff == "On")
+     if (gameMusicOn == true)
      {
 		 sf::Music backgroundMusic;
 		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic"))
