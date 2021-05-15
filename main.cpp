@@ -14,6 +14,7 @@
 #define MOUSE_CORRECTION 0.f
 
 
+//DO NOT MODIFY/DELETE!!!
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
 bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main Menu,
 							//otherwise to move on with logic
@@ -22,14 +23,50 @@ int EnterMenu()
 {
 	//Main function -> depending on its return, game would start or not
 	std::string snakes_count = "1";
-	std::string difficulty_level = "normal";
-	std::string allowedPoisonedApple = "on";
-	std::string music_on_off = "on";
+	std::string difficulty_level;
+	std::string allowedPoisonedApple;
+	std::string music_on_off;
 	extern int snakeSpeed;
 	extern bool poisonedAppleOn;
+	extern bool gameMusicOn;
 	
 	if (poisonedAppleOn == false)
+	{
+		//
 		allowedPoisonedApple = "off";
+	}
+	else
+	{
+		//
+		allowedPoisonedApple = "on";
+	}
+		
+	if (difficulty == 0)
+	{
+		difficulty_level = "easy";
+	}
+	else if (difficulty == 1)
+	{
+		difficulty_level = "normal";
+	}
+	else if (difficulty == 2)
+	{
+		difficulty_level = "hard";
+	}
+	else
+	{
+		difficulty_level = "titan";
+		enemySnakePresent = true;
+	}
+		
+	if (gameMusicOn == true)
+	{
+		music_on_off = "on";
+	}
+	else
+	{
+		music_on_off = "off";
+	}
 	
 	sf::Vector2i localMousePosition;	//Variable holding mouse position;
 	sf::Texture menuTexture;
@@ -50,7 +87,7 @@ int EnterMenu()
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
 	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
 	sf::Text windSelectBoard;
-													//end of Menu init
+	
 													
 	sf::RectangleShape rectangleBasic(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
     rectangleBasic.setFillColor(sf::Color(20, 100, 150));
@@ -145,7 +182,10 @@ int EnterMenu()
 	
 	
 	menuMusic.setVolume(50.f);
-	menuMusic.play(); 
+	menuMusic.setLoop(true);
+	if (gameMusicOn == true)
+		menuMusic.play();
+		 
 	//starting main Menu loop
 	while (menuWindow.isOpen())
 	{
@@ -179,15 +219,17 @@ int EnterMenu()
 				}
 				else if (menuEvent.key.code == sf::Keyboard::M && entered_settings == 1)
 				{
-					if (music_on_off == "on")
+					if (gameMusicOn == true)
 					{
 						music_on_off = "off";
+						gameMusicOn = false;
 						windMusic.setString("Music: " + music_on_off + " ('M')");
 						menuMusic.stop();
 					}
 					else
 					{
 						music_on_off = "on";
+						gameMusicOn = true;
 						windMusic.setString("Music: " + music_on_off + " ('M')");
 						menuMusic.play();
 						menuMusic.setVolume(50.f);
@@ -319,15 +361,17 @@ int EnterMenu()
 					else if (localMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//music window was clicked by mouse
-						if (music_on_off == "on")
+						if (gameMusicOn == true)
 						{
 							music_on_off = "off";
+							gameMusicOn = false;
 							windMusic.setString("Music: " + music_on_off + " ('M')");
 							menuMusic.stop();
 						}
 						else
 						{
 							music_on_off = "on";
+							gameMusicOn = true;
 							windMusic.setString("Music: " + music_on_off + " ('M')");
 							menuMusic.play();
 							menuMusic.setVolume(50.f);
@@ -374,7 +418,7 @@ int EnterMenu()
 	        menuWindow.draw(windSelectBoard);
 		}
         menuWindow.display();
-	sf::sleep(sf::milliseconds(10));
+	sf::sleep(sf::milliseconds(6));
 	}
 	return -1;
 }
@@ -386,7 +430,7 @@ int EnterMenu()
 int main(int, char const**)
 {
 	short run_return = 1;
-	while (true)
+	while (stay_in_menu == 1)
 	{
 		if (run_return == 1)
 		{
