@@ -195,6 +195,37 @@ int EnterMenu()
         {
 			//menuMusic.play();
             // Close window: exit
+            rectangleBasic.setFillColor(sf::Color(20, 100, 150));
+            localMousePosition = sf::Mouse::getPosition(menuWindow);
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 205.f + SPACING && localMousePosition.y <= 205.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic2.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 268.f + SPACING && localMousePosition.y <= 268.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic2.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic3.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 331.f + SPACING && localMousePosition.y <= 331.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic3.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic4.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 394.f + SPACING && localMousePosition.y <= 394.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic4.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic5.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 457.f + SPACING && localMousePosition.y <= 457.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic5.setFillColor(sf::Color(20, 90, 110));
+            }
+            
 			if (menuEvent.type == sf::Event::Closed)
 			{
 				menuWindow.close();
@@ -437,7 +468,7 @@ int main(int, char const**)
 		{
 			if (EnterMenu() == 0)
 			{
-				run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");	
+				run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");
 			}
 			else
 			{
