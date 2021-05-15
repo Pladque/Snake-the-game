@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 
+bool isFirstGame = true;
 
 int snake_x = GRID_SIZE_X / 2;
 int snake_y = GRID_SIZE_Y / 2;
