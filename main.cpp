@@ -82,6 +82,7 @@ int EnterMenu()
 	sf::Sprite boardSprite(boardTexture);
 	sf::Event menuEvent;
 	sf::Font menuFont;
+    while (menuWindow.pollEvent(menuEvent));
     if (!menuFont.loadFromFile("./Assets/Fonts/JosefinSans-SemiBoldItalic.ttf"))
         return -1;
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
