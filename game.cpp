@@ -53,6 +53,8 @@ void initGame() {
     
     pauseTexture.loadFromFile(TEXTURES_PATH+"pause.png");
     
+    homeTexture.loadFromFile(TEXTURES_PATH+"home.png");
+    
     /// SOUNDS ///
     
 }
@@ -293,8 +295,10 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         playSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 16);
         window.draw(playSP);
     }else{
+        homeSP.setPosition((GRID_SIZE_X - 2) * cell_size_pix - 10, 16);
         pauseSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 16);
         window.draw(pauseSP);
+        window.draw(homeSP);
     }
     
     //drawing score
@@ -360,6 +364,7 @@ void setTexture() {
     wallSP.setTexture(wallTexture);
     playSP.setTexture(playTexture);
     pauseSP.setTexture(pauseTexture);
+    homeSP.setTexture(homeTexture);
 }
 
 short run(std::string boardName = "")

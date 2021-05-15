@@ -18,6 +18,8 @@ sf::Texture playTexture;
 sf::Sprite playSP;
 sf::Texture pauseTexture;
 sf::Sprite pauseSP;
+sf::Texture homeTexture;
+sf::Sprite homeSP;
 
 //sounds
 
