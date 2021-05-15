@@ -37,33 +37,33 @@ void deleteParticle(PartycleSystem &toDelete){
 
 ///INITS:
 
-void initGame(sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating) {
+
+void initGame() {
     snakeTexture.loadFromFile(TEXTURES_PATH+"snake.png");
-    snakeSP.setTexture(snakeTexture);
+    
     headTexture.loadFromFile(TEXTURES_PATH+"head.png");
-    head.setTexture(headTexture);
+    
     appleTexture.loadFromFile(TEXTURES_PATH+"apple.png");
-    appleSP.setTexture(appleTexture);
+    
     wallTexture.loadFromFile(TEXTURES_PATH+"wall.png");
-    wallSP.setTexture(wallTexture);
+    
     playTexture.loadFromFile(TEXTURES_PATH+"play.png");
-    playSP.setTexture(playTexture);
+    
     pauseTexture.loadFromFile(TEXTURES_PATH+"pause.png");
-    pauseSP.setTexture(pauseTexture);
-
+    
     /// SOUNDS ///
-    appleEatingSound.loadFromFile(SOUNDS_PATH+"applebite.wav");
-    appleEating.setBuffer(appleEatingSound);
+    
+}
 
+
+void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating, sf::SoundBuffer& gameOverSound, sf::Sound& gameOver){
+    
+    appleEatingSound.loadFromFile(SOUNDS_PATH+"applebite.wav");
     gameOverSound.loadFromFile(SOUNDS_PATH + "gameover2.wav");
     gameOver.setBuffer(gameOverSound);
     gameOver.setVolume(50);
-
+    appleEating.setBuffer(appleEatingSound);
     appleEating.setVolume(40);
-}
-
-void initMusic()
-{
     if (gameMusicOn == true)
      {
 		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic.ogg"))
@@ -71,8 +71,8 @@ void initMusic()
 			std::cout<<"Music File error! Couldn't load: " 
                         + SOUNDS_PATH + "gameMusic.ogg"<<std::endl;
 		 }
-		 backgroundMusic.setVolume(30.f);
-		 backgroundMusic.setLoop(true);
+         backgroundMusic.setVolume(30.f);
+         backgroundMusic.setLoop(true);
 	 }
 }
 
@@ -348,18 +348,37 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
     }
 }
 
+void setTexture() {
+    snakeSP.setTexture(snakeTexture);
+    head.setTexture(headTexture);
+    appleSP.setTexture(appleTexture);
+    wallSP.setTexture(wallTexture);
+    playSP.setTexture(playTexture);
+    pauseSP.setTexture(pauseTexture);
+}
+
 short run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
-   
+    
     // Init game
+    sf::Music backgroundMusic;    //used to play music in the background
+    sf::SoundBuffer appleEatingSound;
+    sf::Sound appleEating;
+    sf::SoundBuffer gameOverSound;
+    sf::Sound gameOver;
     
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar | sf::Style::Close);
-    initGame(appleEatingSound, appleEating);
     
-    initMusic();
-
+    if(isFirstGame) {
+        initGame();
+    }
+    initMusic(backgroundMusic,appleEatingSound, appleEating, gameOverSound, gameOver);
+    setTexture();
+    
+    
+    isFirstGame = false;
     // Loading Board
     if(boardName != "")
     {

@@ -20,8 +20,4 @@ sf::Texture pauseTexture;
 sf::Sprite pauseSP;
 
 //sounds
-sf::Music backgroundMusic;	//used to play music in the background
-sf::SoundBuffer appleEatingSound;
-sf::Sound appleEating;
-sf::SoundBuffer gameOverSound;
-sf::Sound gameOver;
+
