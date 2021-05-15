@@ -364,6 +364,12 @@ void windowPollEvent(sf::RenderWindow &window,
             if(localMousePosition.x >= (GRID_SIZE_X - 2) * cell_size_pix - 10.f
                && localMousePosition.x <= (GRID_SIZE_X - 2) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
                 window.close();
+            }else if(localMousePosition.x >= (GRID_SIZE_X - 1) * cell_size_pix - 10.f
+                     && localMousePosition.x <= (GRID_SIZE_X - 1) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
+                if(gamePaused)
+                    gamePaused = false;
+                else
+                    gamePaused = true;
             }
         }
     }
@@ -383,7 +389,7 @@ short run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
-    
+    score = 0;
     // Init game
     sf::Music backgroundMusic;    //used to play music in the background
     sf::SoundBuffer appleEatingSound;
