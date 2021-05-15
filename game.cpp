@@ -407,11 +407,12 @@ short run(std::string boardName = "")
     AllCollectableObjs[0] = &apple;
     if(poisonedAppleOn)
         AllCollectableObjs[1] = &poisonedApple;
-
-	if (gameMusicOn == true)
+        
+    if (gameMusicOn == true)
 	{
 		backgroundMusic.play();
 	}
+
 
     while(window.isOpen()){
         i++;
@@ -429,6 +430,7 @@ short run(std::string boardName = "")
                     gameOver.play();
                     sf::sleep(sf::milliseconds(2500));
                     saveHighScore();
+                    backgroundMusic.stop();
                     return 1;
                 }
                 frameCounter = 0;
@@ -450,8 +452,6 @@ short run(std::string boardName = "")
     saveHighScore();
 
     deleteParticle(collectedApplePS);
-	
-	backgroundMusic.stop();
-    
+	    
     return 1;       //lost, run again
 }
