@@ -418,7 +418,7 @@ int EnterMenu()
 	        menuWindow.draw(windSelectBoard);
 		}
         menuWindow.display();
-	sf::sleep(sf::milliseconds(10));
+	sf::sleep(sf::milliseconds(6));
 	}
 	return -1;
 }
@@ -430,7 +430,7 @@ int EnterMenu()
 int main(int, char const**)
 {
 	short run_return = 1;
-	while (true)
+	while (stay_in_menu == 1)
 	{
 		if (run_return == 1)
 		{
