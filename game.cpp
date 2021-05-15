@@ -83,7 +83,7 @@ void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf
 	 }
 }
 
-void setupScoreDisplayers( sf::Font &font)
+void setupText( sf::Font &font, sf::Font &fontForPause)
 {
     ScoreText.setFont(font); // font is a sf::Font
     ScoreText.setString("Score: " + std::to_string(score));
@@ -97,6 +97,12 @@ void setupScoreDisplayers( sf::Font &font)
     HighScoreText.setCharacterSize(48); // in pixels, not points!
     HighScoreText.setFillColor(sf::Color::Black);
     HighScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    
+    PauseText.setFont(fontForPause); // font is a sf::Font
+    PauseText.setString("PAUSE");
+    PauseText.setCharacterSize(120); // in pixels, not points!
+    PauseText.setFillColor(sf::Color::Black);
+    PauseText.setStyle(sf::Text::Bold);
 
 }
 
@@ -302,6 +308,8 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
     }else{
         homeSP.setPosition((GRID_SIZE_X - 2) * cell_size_pix - 10, 16);
         pauseSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 16);
+        PauseText.setPosition((window_width - PauseText.getLocalBounds().width) / 2, (window_height - PauseText.getLocalBounds().height) / 2);
+        window.draw(PauseText);
         window.draw(pauseSP);
         window.draw(homeSP);
     }
@@ -413,14 +421,18 @@ short run(std::string boardName = "")
         boardReader.readBoard(boardName);
     }
     //loading font
-    sf::Font font;
+    sf::Font font, fontForPause;
     if (!font.loadFromFile(FONTS_PATH+"cabin-sketch.bold.ttf"))
+    {
+        std::cout<<"Font file missing"<<std::endl;
+    }
+    if (!fontForPause.loadFromFile(FONTS_PATH+"GoblinOne-Regular.ttf"))
     {
         std::cout<<"Font file missing"<<std::endl;
     }
 
     loadHighScore();
-    setupScoreDisplayers(font);
+    setupText(font, fontForPause);
 
     PartycleSystem collectedApplePS;
     
