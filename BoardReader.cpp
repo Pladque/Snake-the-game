@@ -60,12 +60,13 @@ public:
         wall* curr = wallHead;
 
         //std::cout<<"here0"<<std::endl;
-
+        yPosCounter = scoreBarHeight / 32;
         while(boardFile>>tempCell)
         {
             //std::cout<<"here"<<xPosCounter<<std::endl;
             if (tempCell == 'X')
             {
+                
                 curr->setNext( new wall(xPosCounter, yPosCounter));
                 curr = curr ->getNext();
                 

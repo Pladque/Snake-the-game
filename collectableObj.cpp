@@ -44,7 +44,7 @@ bool collectableObj::getPrevIsPoisoned() {
     return this->prevIsPoisoned;
 }
 
-int field[GRID_SIZE_Y][GRID_SIZE_X];
+int field[GRID_SIZE_Y + scoreBarHeight/32][GRID_SIZE_X];
 
 bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head){
     srand (time(NULL));
@@ -72,7 +72,8 @@ bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head){
 	}
 	else	//changins position to only not ocupated by snake
 	{
-        for(int i = 0; i < GRID_SIZE_Y; i++){
+        
+        for(int i = scoreBarHeight / 32; i < GRID_SIZE_Y + scoreBarHeight/32; i++){
             for(int j = 0; j < GRID_SIZE_X; j++) {
                 field[i][j] = 0;
             }
@@ -100,18 +101,20 @@ bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head){
         int randomIndex = rand() % (GRID_SIZE_X*GRID_SIZE_Y - counter);
         counter = 0;
         
-        for(int i = 0; i < GRID_SIZE_Y; i++) {
+        for(int i = scoreBarHeight / 32; i < GRID_SIZE_Y + scoreBarHeight/32; i++) {
             for(int j = 0; j < GRID_SIZE_X; j++) {
                 if(field[i][j] == 0){
                     if(counter == randomIndex) {
                         this-> posX = j;
                         this-> posY = i;
+                        
                         return true;
                     }
                     counter++;
                 }
             }
         }
+        
         
 	}
 	

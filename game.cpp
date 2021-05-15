@@ -15,14 +15,15 @@
 bool isFirstGame = true;
 
 int snake_x = GRID_SIZE_X / 2;
-int snake_y = GRID_SIZE_Y / 2;
+int snake_y = (GRID_SIZE_Y + scoreBarHeight / 32) / 2;
 
 //temp as global, put it into main later mby
 int score = 0;
 int highScore = 0;
 
+
 const int window_width = GRID_SIZE_X * cell_size_pix;
-const int window_height = GRID_SIZE_Y * cell_size_pix;
+const int window_height = GRID_SIZE_Y * cell_size_pix + scoreBarHeight;
 
 BoardReader boardReader;
 
@@ -225,6 +226,7 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         }
         curr = curr->next;
     }
+    
 
     // drawing apple
     sf::Sprite tempAppleSP = appleSP;
@@ -245,19 +247,12 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         window.draw(tempAppleSP);
 
     }
-
-    //drawing score
-    ScoreText.setPosition(20, 20);   
-    window.draw(ScoreText);
-
-    //drawing best score
-    HighScoreText.setPosition(300, 20);   
-    window.draw(HighScoreText);
-
+   
+    
 
     //drawing particle effect
     Particle* particleToDraw = collectedApplePS.getFirstParticle();
-
+    
     while(particleToDraw)
     {
         if(particleToDraw ->ttl >=0)
@@ -277,7 +272,7 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         }
         particleToDraw = particleToDraw->next;
     }
-
+    
     //Drawing board (with walls)
 
     wall* currWall = boardReader.wallHead;
@@ -295,12 +290,21 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
 
     //pause menu
     if(!gamePaused) {
-        playSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 0);
+        playSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 16);
         window.draw(playSP);
     }else{
-        pauseSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 0);
+        pauseSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 16);
         window.draw(pauseSP);
     }
+    
+    //drawing score
+    
+    ScoreText.setPosition(20, 3);
+    window.draw(ScoreText);
+
+    //drawing best score
+    HighScoreText.setPosition(300, 3);
+    window.draw(HighScoreText);
 
 }
 
@@ -370,7 +374,7 @@ short run(std::string boardName = "")
     sf::SoundBuffer gameOverSound;
     sf::Sound gameOver;
     
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar);
     
     if(isFirstGame) {
         initGame();
@@ -413,7 +417,7 @@ short run(std::string boardName = "")
         poisonedApple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
         poisonedApple.makePosion();
     }
-
+    
     Direction newDir;
     newDir = snake.getDirection();
     int i = 0;
@@ -435,6 +439,7 @@ short run(std::string boardName = "")
 
 
     while(window.isOpen()){
+        
         i++;
         sf::Event ev;
         
@@ -456,13 +461,15 @@ short run(std::string boardName = "")
                 frameCounter = 0;
             }
         }
-
+        
         window.clear(sf::Color(153,204,255,100));
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
+        
         collectedApplePS.blowUp();
-
+        
         drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+        
         window.display();
         
         sf::sleep(sf::milliseconds(frameFreezeTime));

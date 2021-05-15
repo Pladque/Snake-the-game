@@ -54,7 +54,7 @@ bool Snake::move(BoardReader* wallsCotainer)
     }
     else if(direction ==  Direction::down)
     {
-        if(head->y + 1 < GRID_SIZE_Y) //able to move down
+        if(head->y + 1 < GRID_SIZE_Y + scoreBarHeight) //able to move down
         {
 
             head->y += 1;
