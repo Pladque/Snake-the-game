@@ -80,6 +80,7 @@ public:
                 yPosCounter++;
             }
         }
+        curr->setNext(nullptr);
     }
     
     ~BoardReader() {
@@ -91,6 +92,7 @@ public:
             delete temp;
             temp = temp2;
         }
+        wallHead = nullptr;
     }
 
 };

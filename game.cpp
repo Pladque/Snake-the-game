@@ -500,6 +500,7 @@ short run(std::string boardName = "")
                     saveHighScore();
                     backgroundMusic.stop();
                     deleteParticle(collectedApplePS);
+                    boardReader.~BoardReader();
                     return 1;
                 }
                 frameCounter = 0;
@@ -523,10 +524,10 @@ short run(std::string boardName = "")
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
-
+    boardReader.~BoardReader();
     saveHighScore();
     backgroundMusic.stop();
     deleteParticle(collectedApplePS);
-	    
+    
     return 1;       //lost, run again
 }
