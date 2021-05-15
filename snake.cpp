@@ -146,7 +146,7 @@ Direction Snake::getDirection() {
 void Snake::fade()
 {
     bodyPart* currBodyPart = head;
-    bodyPart* newLastBodyPart;
+    bodyPart* newLastBodyPart = head;
     while(currBodyPart->next)
     {
         newLastBodyPart = currBodyPart;
@@ -154,8 +154,13 @@ void Snake::fade()
     }
 
     newLastBodyPart->next = nullptr;
-
-    delete currBodyPart;
+    
+    if(currBodyPart == head){
+        delete currBodyPart;
+        head = nullptr;
+    }else {
+        delete currBodyPart;
+    }
 }
 
 bodyPart* Snake::getHead()

@@ -244,7 +244,7 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         }
         curr = curr->next;
     }
-    
+
 
     // drawing apple
     sf::Sprite tempAppleSP = appleSP;
@@ -270,26 +270,28 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
 
     //drawing particle effect
     Particle* particleToDraw = collectedApplePS.getFirstParticle();
-    
-    while(particleToDraw)
-    {
-        if(particleToDraw ->ttl >=0)
+    if(snake.getHead()){
+        while(particleToDraw)
         {
-            sf::CircleShape shape(particleToDraw->size);
-            if(particleToDraw->color == 1){
-                shape.setFillColor(sf::Color(255, 0, 0));
-            }else if(particleToDraw->color == 2)
-                shape.setFillColor(sf::Color(255,215,0));
-            else
-                shape.setFillColor(sf::Color(0,0,0));
-            shape.setPosition(
-            (snake.getHead()->x * cell_size_pix + particleToDraw->positionX + cell_size_pix/2), 
-            (snake.getHead()->y * cell_size_pix + particleToDraw->positionY + cell_size_pix/2));
-            
-            window.draw(shape);
+            if(particleToDraw ->ttl >=0)
+            {
+                sf::CircleShape shape(particleToDraw->size);
+                if(particleToDraw->color == 1){
+                    shape.setFillColor(sf::Color(255, 0, 0));
+                }else if(particleToDraw->color == 2)
+                    shape.setFillColor(sf::Color(255,215,0));
+                else
+                    shape.setFillColor(sf::Color(0,0,0));
+                shape.setPosition(
+                (snake.getHead()->x * cell_size_pix + particleToDraw->positionX + cell_size_pix/2),
+                (snake.getHead()->y * cell_size_pix + particleToDraw->positionY + cell_size_pix/2));
+                
+                window.draw(shape);
+            }
+            particleToDraw = particleToDraw->next;
         }
-        particleToDraw = particleToDraw->next;
     }
+    
     
     //Drawing board (with walls)
 
@@ -327,7 +329,7 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
     //drawing best score
     HighScoreText.setPosition(300, 3);
     window.draw(HighScoreText);
-
+    
 }
 
 
@@ -446,7 +448,7 @@ short run(std::string boardName = "")
     srand(time(NULL));
     Snake snake = Snake(snake_x, snake_y);
     snake.changeDirection(Direction::left);
-    resizeSnake(snake, 5);
+    resizeSnake(snake, 2);
 
     collectableObj apple = collectableObj("apple", 0, 0, 1, 1);
     apple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
@@ -513,7 +515,11 @@ short run(std::string boardName = "")
         drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
         
         window.display();
-        
+        if(snake.getHead() == nullptr){
+            gameOver.play();
+            sf::sleep(sf::milliseconds(2000));
+            window.close();
+        }
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
