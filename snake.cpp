@@ -43,25 +43,25 @@ bool Snake::move(BoardReader* wallsCotainer)
     //moving head
     if(this->direction == Direction::up)
     {
-        if(head->y - 1 >= 0) //able to move up
+        if(head->y - 1 >= scoreBarHeight / 32) //able to move up
         {
             head->y -= 1;
         }
         else    //teleport head to other side of grid
         {
-            head->y = GRID_SIZE_Y - 1;
+            head->y = GRID_SIZE_Y + scoreBarHeight / 32 - 1;
         }
     }
     else if(direction ==  Direction::down)
     {
-        if(head->y + 1 < GRID_SIZE_Y + scoreBarHeight) //able to move down
+        if(head->y + 1 < GRID_SIZE_Y + scoreBarHeight / 32) //able to move down
         {
 
             head->y += 1;
         }
         else //teleport head to other side of grid
         {
-            head->y = 0;
+            head->y = scoreBarHeight / 32;
 
         }
     }
