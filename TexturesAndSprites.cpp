@@ -21,6 +21,8 @@ sf::Texture pauseTexture;
 sf::Sprite pauseSP;
 sf::Texture homeTexture;
 sf::Sprite homeSP;
+sf::Texture backgroundTexture;
+sf::Sprite backgroundSP;
 
 sf::RectangleShape scoreBar;
 

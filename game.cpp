@@ -55,6 +55,8 @@ void initGame() {
     
     homeTexture.loadFromFile(TEXTURES_PATH+"home.png");
     
+    backgroundTexture.loadFromFile(TEXTURES_PATH+"background.png");
+    
     scoreBar.setSize(sf::Vector2f(GRID_SIZE_X * cell_size_pix, scoreBarHeight));
     
     
@@ -223,9 +225,12 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
                  collectableObj &poisonedApple, bool& gamePaused)
 {
-    scoreBar.setFillColor(sf::Color(104, 143, 173));
+    scoreBar.setFillColor(sf::Color(247, 152, 98));
     scoreBar.setPosition(0.f, 0.f);
     window.draw(scoreBar);
+    
+    backgroundSP.setPosition(0, scoreBarHeight);
+    window.draw(backgroundSP);
     bodyPart* curr = snake.getHead();
     
     while(curr)
@@ -391,6 +396,7 @@ void setTexture() {
     playSP.setTexture(playTexture);
     pauseSP.setTexture(pauseTexture);
     homeSP.setTexture(homeTexture);
+    backgroundSP.setTexture(backgroundTexture);
 }
 
 short run(std::string boardName = "")
