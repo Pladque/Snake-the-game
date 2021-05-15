@@ -70,7 +70,7 @@ int EnterMenu()
 	
 	sf::Vector2i localMousePosition;	//Variable holding mouse position;
 	sf::Texture menuTexture;
-	if (!menuTexture.loadFromFile(TEXTURES_PATH + "mainSnake2.jpg"))
+	if (!menuTexture.loadFromFile("./Assets/Graphic/mainSnake2.jpg"))
 		return -1;
 	sf::Texture boardTexture;
 	sf::Music menuMusic;

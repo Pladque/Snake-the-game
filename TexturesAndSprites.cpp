@@ -21,5 +21,8 @@ sf::Sprite pauseSP;
 sf::Texture homeTexture;
 sf::Sprite homeSP;
 
+sf::RectangleShape scoreBar;
+
+
 //sounds
 

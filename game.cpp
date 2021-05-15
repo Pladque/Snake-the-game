@@ -55,6 +55,9 @@ void initGame() {
     
     homeTexture.loadFromFile(TEXTURES_PATH+"home.png");
     
+    scoreBar.setSize(sf::Vector2f(GRID_SIZE_X * cell_size_pix, scoreBarHeight));
+    
+    
     /// SOUNDS ///
     
 }
@@ -213,8 +216,10 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 void drawAll(sf::RenderWindow& window, Snake& snake, 
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
                  collectableObj &poisonedApple, bool& gamePaused)
-
 {
+    scoreBar.setFillColor(sf::Color(104, 143, 173));
+    scoreBar.setPosition(0.f, 0.f);
+    window.draw(scoreBar);
     bodyPart* curr = snake.getHead();
     
     while(curr)
@@ -314,8 +319,9 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
 
 
 void windowPollEvent(sf::RenderWindow &window,
-sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
+                     sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
 {
+    sf::Vector2i localMousePosition;
     while(window.pollEvent(ev)) {
         if(ev.type == sf::Event::Closed) {
             window.close();
@@ -352,6 +358,12 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
                     default:
                         break;
                 }
+            }
+        }else if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            localMousePosition = sf::Mouse::getPosition(window);
+            if(localMousePosition.x >= (GRID_SIZE_X - 2) * cell_size_pix - 10.f
+               && localMousePosition.x <= (GRID_SIZE_X - 2) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
+                window.close();
             }
         }
     }
@@ -461,6 +473,7 @@ short run(std::string boardName = "")
                     sf::sleep(sf::milliseconds(2500));
                     saveHighScore();
                     backgroundMusic.stop();
+                    deleteParticle(collectedApplePS);
                     return 1;
                 }
                 frameCounter = 0;
@@ -482,7 +495,7 @@ short run(std::string boardName = "")
     }
 
     saveHighScore();
-
+    backgroundMusic.stop();
     deleteParticle(collectedApplePS);
 	    
     return 1;       //lost, run again
