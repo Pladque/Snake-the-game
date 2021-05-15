@@ -81,5 +81,16 @@ public:
             }
         }
     }
+    
+    ~BoardReader() {
+        wall* temp = wallHead;
+        wall* temp2;
+        
+        while(temp) {
+            temp2 = temp->getNext();
+            delete temp;
+            temp = temp2;
+        }
+    }
 
 };

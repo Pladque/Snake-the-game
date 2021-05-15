@@ -203,6 +203,7 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 
         if(snake->getHead()->x == objects[i]->getPosX() &&  snake->getHead()->y == objects[i]->getPosY() )
         {
+            deleteParticle(appleEatingPS);
             if(objects[i]->getIsGolden())
                 appleEatingPS = makeParticles(2);
             else if(objects[i]->getIsPoisoned())
@@ -211,7 +212,6 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
                 appleEatingPS = makeParticles(1);
             appleEatingPS.setPosition(objects[i] ->getPosX() * cell_size_pix, 
             objects[i] ->getPosY() * cell_size_pix);
-
             appleEating.play();
             resizeSnake(*snake, objects[i]->getSizeBonus());
             updateScore(objects[i]->getScoreBonus());
