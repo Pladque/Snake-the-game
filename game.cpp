@@ -450,6 +450,8 @@ short run(std::string boardName = "")
     saveHighScore();
 
     deleteParticle(collectedApplePS);
+	
+	backgroundMusic.stop();
     
     return 1;       //lost, run again
 }
