@@ -223,6 +223,10 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
             if(!objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead(), objects)) {
                 isWon = true;
             }
+            //changing position of poisoned apple even if snake ate good one
+            if(!objects[i]->getIsPoisoned())
+                if(collObjAmount>=2)
+                    objects[1]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead(), objects);
         }
     }
 
