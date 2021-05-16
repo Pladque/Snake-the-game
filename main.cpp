@@ -74,7 +74,7 @@ int EnterMenu()
 	{
 		music_on_off = "off";
 	}
-	
+    
 	sf::Vector2i localMousePosition;	//Variable holding mouse position;
 	sf::Texture menuTexture;
 	if (!menuTexture.loadFromFile("./Assets/Graphic/mainSnake2.jpg"))
@@ -206,7 +206,7 @@ int EnterMenu()
 	menuMusic.setLoop(true);
 	if (gameMusicOn == true)
 		menuMusic.play();
-		 
+    while (menuWindow.pollEvent(menuEvent));
 	//starting main Menu loop
 	while (menuWindow.isOpen())
 	{
