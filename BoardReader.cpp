@@ -6,6 +6,11 @@
 #include <fstream>
 #include <iostream>
 
+#include <dirent.h>
+#include <sys/types.h>
+#include <sstream>
+#include <vector>
+
 class wall
 {
     int xPos;
@@ -95,4 +100,83 @@ public:
         wallHead = nullptr;
     }
 
+    std::vector<std::string> list_dir(const char *path) {
+    struct dirent *entry;
+        DIR *dir = opendir(path);
+        
+        std::stringstream ss;
+        
+        while ((entry = readdir(dir)) != NULL) {
+        ss << entry->d_name << std::endl;
+        }
+        closedir(dir);
+
+        std::vector<std::string> allFIles;
+        std::string temp;
+        while(ss>>temp)
+            allFIles.push_back(temp);
+
+
+        return allFIles;
+    }
+
+    void CreateSpritesForAll(std::string boardsTXTPath)
+    {
+        //for (const auto & file : fs::recursive_directory_iterator(boardsTXTPath.c_str()))
+            //std::cout << file.path() << std::endl;
+
+        for (const auto & boardTxt : list_dir(boardsTXTPath.c_str()))
+        {
+            readBoard(BOARDS_PATH + boardTxt);
+            std::ofstream newBoardPPM;
+
+            newBoardPPM.open(BOARDS_IMGS_PATH + boardTxt + ".ppm");
+
+            newBoardPPM<<"P3 "<<GRID_SIZE_X<<" "<<GRID_SIZE_Y<<" 255"<<'\n';
+            
+            std::string black = "0 0 0";
+            std::string white = "255 255 255";
+
+            for(int x = 0; x< GRID_SIZE_X; x++)
+            {
+                for(int y = 2; y<= GRID_SIZE_Y + 1; y++)
+                {
+                    wall* curr = this->wallHead;
+
+                    bool found = false;
+                    while(curr)
+                    {
+                        if(curr->getX() == x &&  curr->getY() == y)
+                        {
+                            found = true;
+                            break;
+                        }
+
+                        curr = curr ->getNext();
+                    }
+
+                    if(found)
+                        newBoardPPM<<black<<" ";
+                    else
+                        newBoardPPM<<white<<" ";
+
+                }
+
+                newBoardPPM<<'\n';
+            }
+
+            /*////
+            wall* temp = wallHead;
+            wall* temp2;
+            
+            while(temp) {
+                temp2 = temp->getNext();
+                delete temp;
+                temp = temp2;
+            }
+            wallHead = nullptr;
+            ///*/
+        }
+        //*/
+    }
 };
