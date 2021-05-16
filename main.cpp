@@ -88,6 +88,8 @@ int EnterMenu()
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
 	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
 	sf::Text windSelectBoard;
+    sf::Text arrowRight;
+    sf::Text arrowLeft;
 	
 													
 	sf::RectangleShape rectangleBasic(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
@@ -180,6 +182,18 @@ int EnterMenu()
 	windSelectBoard.setCharacterSize(CHAR_SIZE);
 	windSelectBoard.setFillColor(sf::Color::Black);
 	windSelectBoard.setPosition(TEXT_X, 461.f + SPACING);
+    
+    arrowRight.setFont(menuFont);
+    arrowRight.setString(">");
+    arrowRight.setCharacterSize(40.f);
+    arrowRight.setFillColor(sf::Color::Black);
+    arrowRight.setPosition(REACT_X + REACT_WIDTH - arrowRight.getLocalBounds().width - 5.f, 520.f + SPACING + REACT_WIDTH / 2 - 31.f);
+    
+    arrowLeft.setFont(menuFont);
+    arrowLeft.setString("<");
+    arrowLeft.setCharacterSize(40.f);
+    arrowLeft.setFillColor(sf::Color::Black);
+    arrowLeft.setPosition(REACT_X + 5.f, 520.f + SPACING + REACT_WIDTH / 2 - 31.f);
 	
 	
 	menuMusic.setVolume(50.f);
@@ -225,6 +239,23 @@ int EnterMenu()
                && localMousePosition.y >= 457.f + SPACING && localMousePosition.y <= 457.f + SPACING + REACT_HEIGHT) {
                 rectangleBasic5.setFillColor(sf::Color(20, 90, 110));
             }
+            
+            arrowRight.setFillColor(sf::Color::Black);
+            if(localMousePosition.x >= REACT_X + REACT_WIDTH - arrowRight.getLocalBounds().width - 5.f
+               && localMousePosition.x <= REACT_X + REACT_WIDTH - 5.f
+               && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
+               && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowRight.getLocalBounds().height / 2) {
+                arrowRight.setFillColor(sf::Color(24, 0, 255));
+            }
+            
+            arrowLeft.setFillColor(sf::Color::Black);
+            if(localMousePosition.x >= REACT_X + 5.f
+               && localMousePosition.x <= REACT_X + 5.f + arrowLeft.getLocalBounds().width
+               && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
+               && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowLeft.getLocalBounds().height / 2) {
+                arrowLeft.setFillColor(sf::Color(24, 0, 255));
+            }
+            
             
 			if (menuEvent.type == sf::Event::Closed)
 			{
@@ -448,6 +479,8 @@ int EnterMenu()
 	        menuWindow.draw(windReturnFromOptions);
 	        menuWindow.draw(windMusic);
 	        menuWindow.draw(windSelectBoard);
+            menuWindow.draw(arrowLeft);
+            menuWindow.draw(arrowRight);
 		}
         menuWindow.display();
 	sf::sleep(sf::milliseconds(6));
