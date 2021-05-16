@@ -357,6 +357,21 @@ int EnterMenu()
 						windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
 					}
 				}
+				else if (menuEvent.key.code == sf::Keyboard::V && entered_settings == 1)
+				{
+					if (enemySnakePresent == false)
+					{
+						enemySnakePresent = true;
+						snakes_count = "2";
+						windSelectGameMode.setString("Game mode: " + snakes_count + " players ('V')");
+					}
+					else
+					{
+						enemySnakePresent = false;
+						snakes_count = "1";
+						windSelectGameMode.setString("Game mode: " + snakes_count + " player ('V')");
+					}
+				}
 				else
 				{
 					continue;
@@ -457,6 +472,18 @@ int EnterMenu()
 					else if (localMousePosition.y >= (457.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (457.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//Select board was clicked by mouse
+						if (enemySnakePresent == false)
+						{
+							enemySnakePresent = true;
+							snakes_count = "2";
+							windSelectGameMode.setString("Game mode: " + snakes_count + " players ('V')");
+						}
+						else
+						{
+							enemySnakePresent = false;
+							snakes_count = "1";
+							windSelectGameMode.setString("Game mode: " + snakes_count + " player ('V')");
+						}
 					}
 					else
 					{
