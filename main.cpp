@@ -30,6 +30,14 @@ int EnterMenu()
 	extern bool poisonedAppleOn;
 	extern bool gameMusicOn;
 	
+	if (enemySnakePresent == false)
+	{
+		snakes_count = "1";
+	}
+	else
+	{
+		snakes_count = "2";
+	}
 	if (poisonedAppleOn == false)
 	{
 		//
@@ -56,7 +64,6 @@ int EnterMenu()
 	else
 	{
 		difficulty_level = "titan";
-		enemySnakePresent = true;
 	}
 		
 	if (gameMusicOn == true)
@@ -86,7 +93,7 @@ int EnterMenu()
         return -1;
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
 	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
-	sf::Text windSelectBoard;
+	sf::Text windSelectGameMode;
     sf::Text arrowRight;
     sf::Text arrowLeft;
 	
@@ -176,11 +183,11 @@ int EnterMenu()
 	windReturnFromOptions.setFillColor(sf::Color::Black);
 	windReturnFromOptions.setPosition(TEXT_X, 398.f + SPACING);
 	
-	windSelectBoard.setFont(menuFont);
-	windSelectBoard.setString("Select board: ('V')");
-	windSelectBoard.setCharacterSize(CHAR_SIZE);
-	windSelectBoard.setFillColor(sf::Color::Black);
-	windSelectBoard.setPosition(TEXT_X, 461.f + SPACING);
+	windSelectGameMode.setFont(menuFont);
+	windSelectGameMode.setString("Game mode: " + snakes_count + " player ('V')");
+	windSelectGameMode.setCharacterSize(CHAR_SIZE);
+	windSelectGameMode.setFillColor(sf::Color::Black);
+	windSelectGameMode.setPosition(TEXT_X, 461.f + SPACING);
     
     arrowRight.setFont(menuFont);
     arrowRight.setString(">");
@@ -477,7 +484,7 @@ int EnterMenu()
 			menuWindow.draw(windPoisonedFruit);
 	        menuWindow.draw(windReturnFromOptions);
 	        menuWindow.draw(windMusic);
-	        menuWindow.draw(windSelectBoard);
+	        menuWindow.draw(windSelectGameMode);
             menuWindow.draw(arrowLeft);
             menuWindow.draw(arrowRight);
 		}
