@@ -66,12 +66,13 @@ public:
         wall* curr = wallHead;
 
         //std::cout<<"here0"<<std::endl;
-
+        yPosCounter = scoreBarHeight / 32;
         while(boardFile>>tempCell)
         {
             //std::cout<<"here"<<xPosCounter<<std::endl;
             if (tempCell == 'X')
             {
+                
                 curr->setNext( new wall(xPosCounter, yPosCounter));
                 curr = curr ->getNext();
                 
@@ -85,11 +86,24 @@ public:
                 yPosCounter++;
             }
         }
+        curr->setNext(nullptr);
+    }
+    
+    ~BoardReader() {
+        wall* temp = wallHead;
+        wall* temp2;
+        
+        while(temp) {
+            temp2 = temp->getNext();
+            delete temp;
+            temp = temp2;
+        }
+        wallHead = nullptr;
     }
 
-    void CreateSpritesForAll(std::string boardsTXTPath, std::string boardsPPMPath)
+    void CreateSpritesForAll(std::string boardsTXTPath)
     {
-
+        /*
         for (const auto & boardTxt : fs::directory_iterator(boardsTXTPath))
         {
             readBoard(boardTxt.path());
@@ -108,7 +122,48 @@ public:
 
             newBoardPPM.open(BOARDS_IMGS_PATH + boardPPMName, std::ios::out);
 
-            newBoardPPM<<"P "<<GRID_SIZE_X<<" "<<GRID_SIZE_Y;
+            newBoardPPM<<"P "<<GRID_SIZE_X<<" "<<GRID_SIZE_Y<<" 255"<<'\n';
+
+            std::string white = "0 0 0";
+            std::string black = "255 255 255";
+
+            for(int x = 0; x< GRID_SIZE_X; x++)
+            {
+                for(int y = 0; y< GRID_SIZE_Y; y++)
+                {
+                    wall* curr = this->wallHead;
+
+                    bool found = false;
+                    while(curr)
+                    {
+                        if(curr->getX() == x &&  curr->getY())
+                        {
+                            found = true;
+                        }
+                    }
+
+                if(found)
+                    newBoardPPM<<black<<"\t";
+                else
+                    newBoardPPM<<white<<"\t";
+
+                }
+
+                newBoardPPM<<'\n';
+            }
+
+            ////
+            wall* temp = wallHead;
+            wall* temp2;
+            
+            while(temp) {
+                temp2 = temp->getNext();
+                delete temp;
+                temp = temp2;
+            }
+            wallHead = nullptr;
+            ///
         }
+        */
     }
 };

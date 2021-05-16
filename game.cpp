@@ -13,16 +13,18 @@
 #include <string>
 
 bool isFirstGame = true;
+bool isWon = false;
 
 int snake_x = GRID_SIZE_X / 2;
-int snake_y = GRID_SIZE_Y / 2;
+int snake_y = (GRID_SIZE_Y + scoreBarHeight / 32) / 2;
 
 //temp as global, put it into main later mby
 int score = 0;
 int highScore = 0;
 
+
 const int window_width = GRID_SIZE_X * cell_size_pix;
-const int window_height = GRID_SIZE_Y * cell_size_pix;
+const int window_height = GRID_SIZE_Y * cell_size_pix + scoreBarHeight;
 
 BoardReader boardReader;
 
@@ -52,19 +54,29 @@ void initGame() {
     
     pauseTexture.loadFromFile(TEXTURES_PATH+"pause.png");
     
+    homeTexture.loadFromFile(TEXTURES_PATH+"home.png");
+    
+    backgroundTexture.loadFromFile(TEXTURES_PATH+"background.png");
+    
+    scoreBar.setSize(sf::Vector2f(GRID_SIZE_X * cell_size_pix, scoreBarHeight));
+    
+    
     /// SOUNDS ///
     
 }
 
 
-void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating, sf::SoundBuffer& gameOverSound, sf::Sound& gameOver){
+void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating, sf::SoundBuffer& gameOverSound, sf::Sound& gameOver, sf::SoundBuffer& winSound, sf::Sound& win){
     
     appleEatingSound.loadFromFile(SOUNDS_PATH+"applebite.wav");
     gameOverSound.loadFromFile(SOUNDS_PATH + "gameover2.wav");
+    winSound.loadFromFile(SOUNDS_PATH + "win.wav");
     gameOver.setBuffer(gameOverSound);
     gameOver.setVolume(50);
     appleEating.setBuffer(appleEatingSound);
     appleEating.setVolume(40);
+    win.setBuffer(winSound);
+    win.setVolume(50);
     if (gameMusicOn == true)
      {
 		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic.ogg"))
@@ -77,7 +89,7 @@ void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf
 	 }
 }
 
-void setupScoreDisplayers( sf::Font &font)
+void setupText( sf::Font &font, sf::Font &fontForPause)
 {
     ScoreText.setFont(font); // font is a sf::Font
     ScoreText.setString("Score: " + std::to_string(score));
@@ -91,6 +103,12 @@ void setupScoreDisplayers( sf::Font &font)
     HighScoreText.setCharacterSize(48); // in pixels, not points!
     HighScoreText.setFillColor(sf::Color::Black);
     HighScoreText.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    
+    PauseText.setFont(fontForPause); // font is a sf::Font
+    PauseText.setString("PAUSE");
+    PauseText.setCharacterSize(120); // in pixels, not points!
+    PauseText.setFillColor(sf::Color::Black);
+    PauseText.setStyle(sf::Text::Bold);
 
 }
 
@@ -189,6 +207,7 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 
         if(snake->getHead()->x == objects[i]->getPosX() &&  snake->getHead()->y == objects[i]->getPosY() )
         {
+            deleteParticle(appleEatingPS);
             if(objects[i]->getIsGolden())
                 appleEatingPS = makeParticles(2);
             else if(objects[i]->getIsPoisoned())
@@ -197,11 +216,12 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
                 appleEatingPS = makeParticles(1);
             appleEatingPS.setPosition(objects[i] ->getPosX() * cell_size_pix, 
             objects[i] ->getPosY() * cell_size_pix);
-
             appleEating.play();
             resizeSnake(*snake, objects[i]->getSizeBonus());
             updateScore(objects[i]->getScoreBonus());
-            objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead());
+            if(!objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead(), objects)) {
+                isWon = true;
+            }
         }
     }
 
@@ -210,8 +230,13 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 void drawAll(sf::RenderWindow& window, Snake& snake, 
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
                  collectableObj &poisonedApple, bool& gamePaused)
-
 {
+    scoreBar.setFillColor(sf::Color(247, 152, 98));
+    scoreBar.setPosition(0.f, 0.f);
+    window.draw(scoreBar);
+    
+    backgroundSP.setPosition(0, scoreBarHeight);
+    window.draw(backgroundSP);
     bodyPart* curr = snake.getHead();
     
     while(curr)
@@ -226,14 +251,18 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         curr = curr->next;
     }
 
+
     // drawing apple
     sf::Sprite tempAppleSP = appleSP;
     if(collObj.getIsGolden())
         tempAppleSP.setColor(sf::Color(255,215,0));    //golden aplle color
     else if(!collObj.getIsPoisoned())
         tempAppleSP.setColor(sf::Color(255, 0, 0));
-
-    tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
+    
+    if(!isWon) {
+        tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
+    }else
+        tempAppleSP.setPosition(100 * cell_size_pix, 100 * cell_size_pix);
     window.draw(tempAppleSP);
     
     if(poisonedAppleOn)
@@ -245,39 +274,34 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         window.draw(tempAppleSP);
 
     }
-
-    //drawing score
-    ScoreText.setPosition(20, 20);   
-    window.draw(ScoreText);
-
-    //drawing best score
-    HighScoreText.setPosition(300, 20);   
-    window.draw(HighScoreText);
-
+   
+    
 
     //drawing particle effect
     Particle* particleToDraw = collectedApplePS.getFirstParticle();
-
-    while(particleToDraw)
-    {
-        if(particleToDraw ->ttl >=0)
+    if(snake.getHead()){
+        while(particleToDraw)
         {
-            sf::CircleShape shape(particleToDraw->size);
-            if(particleToDraw->color == 1){
-                shape.setFillColor(sf::Color(255, 0, 0));
-            }else if(particleToDraw->color == 2)
-                shape.setFillColor(sf::Color(255,215,0));
-            else
-                shape.setFillColor(sf::Color(0,0,0));
-            shape.setPosition(
-            (snake.getHead()->x * cell_size_pix + particleToDraw->positionX + cell_size_pix/2), 
-            (snake.getHead()->y * cell_size_pix + particleToDraw->positionY + cell_size_pix/2));
-            
-            window.draw(shape);
+            if(particleToDraw ->ttl >=0)
+            {
+                sf::CircleShape shape(particleToDraw->size);
+                if(particleToDraw->color == 1){
+                    shape.setFillColor(sf::Color(255, 0, 0));
+                }else if(particleToDraw->color == 2)
+                    shape.setFillColor(sf::Color(255,215,0));
+                else
+                    shape.setFillColor(sf::Color(0,0,0));
+                shape.setPosition(
+                (snake.getHead()->x * cell_size_pix + particleToDraw->positionX + cell_size_pix/2),
+                (snake.getHead()->y * cell_size_pix + particleToDraw->positionY + cell_size_pix/2));
+                
+                window.draw(shape);
+            }
+            particleToDraw = particleToDraw->next;
         }
-        particleToDraw = particleToDraw->next;
     }
-
+    
+    
     //Drawing board (with walls)
 
     wall* currWall = boardReader.wallHead;
@@ -295,19 +319,33 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
 
     //pause menu
     if(!gamePaused) {
-        playSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 0);
+        playSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 16);
         window.draw(playSP);
     }else{
-        pauseSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 0);
+        homeSP.setPosition((GRID_SIZE_X - 2) * cell_size_pix - 10, 16);
+        pauseSP.setPosition((GRID_SIZE_X - 1) * cell_size_pix, 16);
+        PauseText.setPosition((window_width - PauseText.getLocalBounds().width) / 2, (window_height - PauseText.getLocalBounds().height) / 2);
+        window.draw(PauseText);
         window.draw(pauseSP);
+        window.draw(homeSP);
     }
+    
+    //drawing score
+    
+    ScoreText.setPosition(20, 3);
+    window.draw(ScoreText);
 
+    //drawing best score
+    HighScoreText.setPosition(300, 3);
+    window.draw(HighScoreText);
+    
 }
 
 
 void windowPollEvent(sf::RenderWindow &window,
-sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
+                     sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
 {
+    sf::Vector2i localMousePosition;
     while(window.pollEvent(ev)) {
         if(ev.type == sf::Event::Closed) {
             window.close();
@@ -345,6 +383,18 @@ sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused)
                         break;
                 }
             }
+        }else if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            localMousePosition = sf::Mouse::getPosition(window);
+            if(localMousePosition.x >= (GRID_SIZE_X - 2) * cell_size_pix - 10.f
+               && localMousePosition.x <= (GRID_SIZE_X - 2) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
+                window.close();
+            }else if(localMousePosition.x >= (GRID_SIZE_X - 1) * cell_size_pix - 10.f
+                     && localMousePosition.x <= (GRID_SIZE_X - 1) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
+                if(gamePaused)
+                    gamePaused = false;
+                else
+                    gamePaused = true;
+            }
         }
     }
 }
@@ -356,26 +406,30 @@ void setTexture() {
     wallSP.setTexture(wallTexture);
     playSP.setTexture(playTexture);
     pauseSP.setTexture(pauseTexture);
+    homeSP.setTexture(homeTexture);
+    backgroundSP.setTexture(backgroundTexture);
 }
 
 short run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
-    
+    score = 0;
     // Init game
     sf::Music backgroundMusic;    //used to play music in the background
     sf::SoundBuffer appleEatingSound;
     sf::Sound appleEating;
     sf::SoundBuffer gameOverSound;
     sf::Sound gameOver;
+    sf::SoundBuffer winSound;
+    sf::Sound win;
     
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar);
     
     if(isFirstGame) {
         initGame();
     }
-    initMusic(backgroundMusic,appleEatingSound, appleEating, gameOverSound, gameOver);
+    initMusic(backgroundMusic,appleEatingSound, appleEating, gameOverSound, gameOver, winSound, win);
     setTexture();
     
     
@@ -386,14 +440,18 @@ short run(std::string boardName = "")
         boardReader.readBoard(boardName);
     }
     //loading font
-    sf::Font font;
+    sf::Font font, fontForPause;
     if (!font.loadFromFile(FONTS_PATH+"cabin-sketch.bold.ttf"))
+    {
+        std::cout<<"Font file missing"<<std::endl;
+    }
+    if (!fontForPause.loadFromFile(FONTS_PATH+"GoblinOne-Regular.ttf"))
     {
         std::cout<<"Font file missing"<<std::endl;
     }
 
     loadHighScore();
-    setupScoreDisplayers(font);
+    setupText(font, fontForPause);
 
     PartycleSystem collectedApplePS;
     
@@ -401,19 +459,22 @@ short run(std::string boardName = "")
     srand(time(NULL));
     Snake snake = Snake(snake_x, snake_y);
     snake.changeDirection(Direction::left);
-    resizeSnake(snake, 5);
+    resizeSnake(snake, 2);
 
     collectableObj apple = collectableObj("apple", 0, 0, 1, 1);
     apple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
+    collectableObj* AllCollectableObjs[10];
+
+    AllCollectableObjs[0] = &apple;
     
     collectableObj poisonedApple("none", 0, 0 ,0 ,0);
     if(poisonedAppleOn)
     {
         poisonedApple = collectableObj("poisonedApple", 0, 0, -5, -1, true);
-        poisonedApple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
+        poisonedApple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead(), AllCollectableObjs);
         poisonedApple.makePosion();
     }
-
+    
     Direction newDir;
     newDir = snake.getDirection();
     int i = 0;
@@ -422,9 +483,7 @@ short run(std::string boardName = "")
     int collisonObjsAmount = 1;
     if(poisonedAppleOn)
         collisonObjsAmount = 2;
-    collectableObj* AllCollectableObjs[10];
-
-    AllCollectableObjs[0] = &apple;
+    
     if(poisonedAppleOn)
         AllCollectableObjs[1] = &poisonedApple;
         
@@ -435,6 +494,7 @@ short run(std::string boardName = "")
 
 
     while(window.isOpen()){
+        
         i++;
         sf::Event ev;
         
@@ -451,27 +511,40 @@ short run(std::string boardName = "")
                     sf::sleep(sf::milliseconds(2500));
                     saveHighScore();
                     backgroundMusic.stop();
+                    deleteParticle(collectedApplePS);
+                    boardReader.~BoardReader();
                     return 1;
                 }
                 frameCounter = 0;
             }
         }
-
+        
         window.clear(sf::Color(153,204,255,100));
 
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
-        collectedApplePS.blowUp();
-
-        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
-        window.display();
         
+        collectedApplePS.blowUp();
+        
+        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+        
+        window.display();
+        if(isWon) {
+            win.play();
+            sf::sleep(sf::milliseconds(1500));
+            window.close();
+        }
+        if(snake.getHead() == nullptr){
+            gameOver.play();
+            sf::sleep(sf::milliseconds(2000));
+            window.close();
+        }
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
-
+    boardReader.~BoardReader();
     saveHighScore();
-
+    backgroundMusic.stop();
     deleteParticle(collectedApplePS);
-	    
+    
     return 1;       //lost, run again
 }

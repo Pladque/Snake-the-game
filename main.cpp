@@ -21,6 +21,8 @@ bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main
 
 int EnterMenu()
 {
+	BoardReader br;
+	br.CreateSpritesForAll(BOARDS_PATH);
 	//Main function -> depending on its return, game would start or not
 	std::string snakes_count = "1";
 	std::string difficulty_level;
@@ -30,6 +32,14 @@ int EnterMenu()
 	extern bool poisonedAppleOn;
 	extern bool gameMusicOn;
 	
+	if (enemySnakePresent == false)
+	{
+		snakes_count = "1";
+	}
+	else
+	{
+		snakes_count = "2";
+	}
 	if (poisonedAppleOn == false)
 	{
 		//
@@ -56,7 +66,6 @@ int EnterMenu()
 	else
 	{
 		difficulty_level = "titan";
-		enemySnakePresent = true;
 	}
 		
 	if (gameMusicOn == true)
@@ -70,7 +79,7 @@ int EnterMenu()
 	
 	sf::Vector2i localMousePosition;	//Variable holding mouse position;
 	sf::Texture menuTexture;
-	if (!menuTexture.loadFromFile(TEXTURES_PATH + "mainSnake2.jpg"))
+	if (!menuTexture.loadFromFile("./Assets/Graphic/mainSnake2.jpg"))
 		return -1;
 	sf::Texture boardTexture;
 	sf::Music menuMusic;
@@ -82,12 +91,13 @@ int EnterMenu()
 	sf::Sprite boardSprite(boardTexture);
 	sf::Event menuEvent;
 	sf::Font menuFont;
-    while (menuWindow.pollEvent(menuEvent));
     if (!menuFont.loadFromFile("./Assets/Fonts/JosefinSans-SemiBoldItalic.ttf"))
         return -1;
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
 	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
-	sf::Text windSelectBoard;
+	sf::Text windSelectGameMode;
+    sf::Text arrowRight;
+    sf::Text arrowLeft;
 	
 													
 	sf::RectangleShape rectangleBasic(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
@@ -175,11 +185,23 @@ int EnterMenu()
 	windReturnFromOptions.setFillColor(sf::Color::Black);
 	windReturnFromOptions.setPosition(TEXT_X, 398.f + SPACING);
 	
-	windSelectBoard.setFont(menuFont);
-	windSelectBoard.setString("Select board: ('V')");
-	windSelectBoard.setCharacterSize(CHAR_SIZE);
-	windSelectBoard.setFillColor(sf::Color::Black);
-	windSelectBoard.setPosition(TEXT_X, 461.f + SPACING);
+	windSelectGameMode.setFont(menuFont);
+	windSelectGameMode.setString("Game mode: " + snakes_count + " player ('V')");
+	windSelectGameMode.setCharacterSize(CHAR_SIZE);
+	windSelectGameMode.setFillColor(sf::Color::Black);
+	windSelectGameMode.setPosition(TEXT_X, 461.f + SPACING);
+    
+    arrowRight.setFont(menuFont);
+    arrowRight.setString(">");
+    arrowRight.setCharacterSize(40.f);
+    arrowRight.setFillColor(sf::Color::Black);
+    arrowRight.setPosition(REACT_X + REACT_WIDTH - arrowRight.getLocalBounds().width - 5.f, 520.f + SPACING + REACT_WIDTH / 2 - 31.f);
+    
+    arrowLeft.setFont(menuFont);
+    arrowLeft.setString("<");
+    arrowLeft.setCharacterSize(40.f);
+    arrowLeft.setFillColor(sf::Color::Black);
+    arrowLeft.setPosition(REACT_X + 5.f, 520.f + SPACING + REACT_WIDTH / 2 - 31.f);
 	
 	
 	menuMusic.setVolume(50.f);
@@ -195,6 +217,54 @@ int EnterMenu()
         {
 			//menuMusic.play();
             // Close window: exit
+            rectangleBasic.setFillColor(sf::Color(20, 100, 150));
+            localMousePosition = sf::Mouse::getPosition(menuWindow);
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 205.f + SPACING && localMousePosition.y <= 205.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic2.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 268.f + SPACING && localMousePosition.y <= 268.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic2.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic3.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 331.f + SPACING && localMousePosition.y <= 331.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic3.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic4.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 394.f + SPACING && localMousePosition.y <= 394.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic4.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            rectangleBasic5.setFillColor(sf::Color(20, 100, 150));
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 457.f + SPACING && localMousePosition.y <= 457.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic5.setFillColor(sf::Color(20, 90, 110));
+            }
+            
+            arrowRight.setFillColor(sf::Color::Black);
+            if(localMousePosition.x >= REACT_X + REACT_WIDTH - arrowRight.getLocalBounds().width - 5.f
+               && localMousePosition.x <= REACT_X + REACT_WIDTH - 5.f
+               && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
+               && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowRight.getLocalBounds().height / 2) {
+                arrowRight.setFillColor(sf::Color(24, 0, 255));
+            }
+            
+            arrowLeft.setFillColor(sf::Color::Black);
+            if(localMousePosition.x >= REACT_X + 5.f
+               && localMousePosition.x <= REACT_X + 5.f + arrowLeft.getLocalBounds().width
+               && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
+               && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowLeft.getLocalBounds().height / 2) {
+                arrowLeft.setFillColor(sf::Color(24, 0, 255));
+            }
+            
+            
 			if (menuEvent.type == sf::Event::Closed)
 			{
 				menuWindow.close();
@@ -416,7 +486,9 @@ int EnterMenu()
 			menuWindow.draw(windPoisonedFruit);
 	        menuWindow.draw(windReturnFromOptions);
 	        menuWindow.draw(windMusic);
-	        menuWindow.draw(windSelectBoard);
+	        menuWindow.draw(windSelectGameMode);
+            menuWindow.draw(arrowLeft);
+            menuWindow.draw(arrowRight);
 		}
         menuWindow.display();
 	sf::sleep(sf::milliseconds(6));
@@ -437,7 +509,7 @@ int main(int, char const**)
 		{
 			if (EnterMenu() == 0)
 			{
-				run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");	
+				run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");
 			}
 			else
 			{

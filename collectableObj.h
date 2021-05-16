@@ -16,23 +16,19 @@ private:
 	//for apples
 	bool isGolden;
 	bool isPoisoned;
-    bool prevIsGolden;
-    bool prevIsPoisoned;
 	
 public:
-	collectableObj(std::string newName, int posX, int posY, int newScoreBonus, int newSizeBonus, bool isPoisoned1);
+	collectableObj(std::string newName, int posX, int posY, int newScoreBonus, int newSizeBonus, bool isPoisoned);
 	std::string getName();
 	int getSizeBonus();
 	int getScoreBonus();
-	bool goToFreeRandomPosistion(wall* firstWall, bodyPart* head = nullptr);
+	bool goToFreeRandomPosistion(wall* firstWall, bodyPart* head = nullptr, collectableObj** objects = nullptr);
 
 	int getPosX();
 	int getPosY();
 
 	bool getIsGolden();
-    bool getPrevIsGolden();
 	bool getIsPoisoned();
-    bool getPrevIsPoisoned();
 	void makePosion();
 	
 };

@@ -2,13 +2,13 @@
 
 #TODO
 
-- [ ] Background sprite for game
+- [X] Background sprite for game    (15.05.2021)
 
 - [ ] Walls
 
 - [X] Settings in menu      (13.05.2021)
 
-- [ ] pause menu
+- [X] pause menu     (15.05.2021)
 
 - [X] high score (aka save system) (13.05.2021)
 
