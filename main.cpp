@@ -23,6 +23,7 @@ int EnterMenu()
 {
 	BoardReader br;
 	br.CreateSpritesForAll(BOARDS_PATH);
+
 	//Main function -> depending on its return, game would start or not
 	std::string snakes_count = "1";
 	std::string difficulty_level;
@@ -509,7 +510,7 @@ int main(int, char const**)
 		{
 			if (EnterMenu() == 0)
 			{
-				run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");
+				run_return = run(BOARDS_PATH + "corners.txt");
 			}
 			else
 			{
@@ -518,7 +519,7 @@ int main(int, char const**)
 		}
 		else
 		{
-			run_return = run(BOARDS_PATH + "wallsAroundBoard.txt");
+			run_return = run(BOARDS_PATH + "corners.txt");
 		}
 	}
 	

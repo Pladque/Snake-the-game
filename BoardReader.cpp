@@ -6,11 +6,10 @@
 #include <fstream>
 #include <iostream>
 
-#include <filesystem>
-#include <experimental/filesystem>
-
-namespace fs = std::experimental::filesystem;
-
+#include <dirent.h>
+#include <sys/types.h>
+#include <sstream>
+#include <vector>
 
 class wall
 {
@@ -101,58 +100,72 @@ public:
         wallHead = nullptr;
     }
 
+    std::vector<std::string> list_dir(const char *path) {
+    struct dirent *entry;
+        DIR *dir = opendir(path);
+        
+        std::stringstream ss;
+        
+        while ((entry = readdir(dir)) != NULL) {
+        ss << entry->d_name << std::endl;
+        }
+        closedir(dir);
+
+        std::vector<std::string> allFIles;
+        std::string temp;
+        while(ss>>temp)
+            allFIles.push_back(temp);
+
+
+        return allFIles;
+    }
+
     void CreateSpritesForAll(std::string boardsTXTPath)
     {
-        /*
-        for (const auto & boardTxt : fs::directory_iterator(boardsTXTPath))
+        //for (const auto & file : fs::recursive_directory_iterator(boardsTXTPath.c_str()))
+            //std::cout << file.path() << std::endl;
+
+        for (const auto & boardTxt : list_dir(boardsTXTPath.c_str()))
         {
-            readBoard(boardTxt.path());
-            std::fstream newBoardPPM;
+            readBoard(BOARDS_PATH + boardTxt);
+            std::ofstream newBoardPPM;
 
-            std::string boardPPMFULLName = boardTxt.path();
+            newBoardPPM.open(BOARDS_IMGS_PATH + boardTxt + ".ppm");
 
-            std::string boardPPMName = boardTxt.path();
-
-            for(int i = 0; i< boardPPMFULLName.length(); i++)
-            {
-                //saving chars that are not path 
-                if(i>=boardsTXTPath.length())
-                    boardPPMName += boardPPMFULLName[i];
-            }
-
-            newBoardPPM.open(BOARDS_IMGS_PATH + boardPPMName, std::ios::out);
-
-            newBoardPPM<<"P "<<GRID_SIZE_X<<" "<<GRID_SIZE_Y<<" 255"<<'\n';
-
-            std::string white = "0 0 0";
-            std::string black = "255 255 255";
+            newBoardPPM<<"P3 "<<GRID_SIZE_X<<" "<<GRID_SIZE_Y<<" 255"<<'\n';
+            
+            std::string black = "0 0 0";
+            std::string white = "255 255 255";
 
             for(int x = 0; x< GRID_SIZE_X; x++)
             {
-                for(int y = 0; y< GRID_SIZE_Y; y++)
+                for(int y = 2; y<= GRID_SIZE_Y + 1; y++)
                 {
                     wall* curr = this->wallHead;
 
                     bool found = false;
                     while(curr)
                     {
-                        if(curr->getX() == x &&  curr->getY())
+                        if(curr->getX() == x &&  curr->getY() == y)
                         {
                             found = true;
+                            break;
                         }
+
+                        curr = curr ->getNext();
                     }
 
-                if(found)
-                    newBoardPPM<<black<<"\t";
-                else
-                    newBoardPPM<<white<<"\t";
+                    if(found)
+                        newBoardPPM<<black<<" ";
+                    else
+                        newBoardPPM<<white<<" ";
 
                 }
 
                 newBoardPPM<<'\n';
             }
 
-            ////
+            /*////
             wall* temp = wallHead;
             wall* temp2;
             
@@ -162,8 +175,8 @@ public:
                 temp = temp2;
             }
             wallHead = nullptr;
-            ///
+            ///*/
         }
-        */
+        //*/
     }
 };
