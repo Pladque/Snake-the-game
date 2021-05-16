@@ -14,6 +14,7 @@
 
 bool isFirstGame = true;
 bool isWon = false;
+bool withHealth = false;
 
 int snake_x = GRID_SIZE_X / 2;
 int snake_y = (GRID_SIZE_Y + scoreBarHeight / 32) / 2;
@@ -222,6 +223,10 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
             if(!objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead(), objects)) {
                 isWon = true;
             }
+            //changing position of poisoned apple even if snake ate good one
+            if(!objects[i]->getIsPoisoned())
+                if(collObjAmount>=2)
+                    objects[1]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead(), objects);
         }
     }
 
@@ -505,15 +510,71 @@ short run(std::string boardName = "")
             if(frameCounter % snakeSpeed == 0)
             {      
                 snake.changeDirection(newDir);
+                
                 if(!snake.move(&boardReader)){
-                    
-                    gameOver.play();
-                    sf::sleep(sf::milliseconds(2500));
-                    saveHighScore();
-                    backgroundMusic.stop();
-                    deleteParticle(collectedApplePS);
-                    boardReader.~BoardReader();
-                    return 1;
+                    if(withHealth){
+                        if(!snake.returnBack()){
+                            gameOver.play();
+                            sf::sleep(sf::milliseconds(2500));
+                            saveHighScore();
+                            backgroundMusic.stop();
+                            deleteParticle(collectedApplePS);
+                            boardReader.~BoardReader();
+                            return 1;
+                        }
+                        window.clear(sf::Color(153,204,255,100));
+                        
+                        collectedApplePS.blowUp();
+                        
+                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+                        sf::sleep(sf::milliseconds(1000));
+                        
+                        window.display();
+                        if(!snake.returnBack()){
+                            gameOver.play();
+                            sf::sleep(sf::milliseconds(2500));
+                            saveHighScore();
+                            backgroundMusic.stop();
+                            deleteParticle(collectedApplePS);
+                            boardReader.~BoardReader();
+                            return 1;
+                        }
+                        window.clear(sf::Color(153,204,255,100));
+                        
+                        collectedApplePS.blowUp();
+                        
+                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+                        
+                        window.display();
+                        sf::sleep(sf::milliseconds(1000));
+                        
+                        if(!snake.returnBack()){
+                            gameOver.play();
+                            sf::sleep(sf::milliseconds(2500));
+                            saveHighScore();
+                            backgroundMusic.stop();
+                            deleteParticle(collectedApplePS);
+                            boardReader.~BoardReader();
+                            return 1;
+                        }
+                        window.clear(sf::Color(153,204,255,100));
+                        
+                        collectedApplePS.blowUp();
+                        
+                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+                        
+                        window.display();
+                        sf::sleep(sf::milliseconds(1000));
+                        
+                    }else {
+                        gameOver.play();
+                        sf::sleep(sf::milliseconds(2500));
+                        saveHighScore();
+                        backgroundMusic.stop();
+                        deleteParticle(collectedApplePS);
+                        boardReader.~BoardReader();
+                        return 1;
+                    }
                 }
                 frameCounter = 0;
             }

@@ -12,6 +12,12 @@ class bodyPart
 public:
     unsigned short x;
     unsigned short y;
+    short prevx;
+    short prevy;
+    short prev2x;
+    short prev2y;
+    short prev3x;
+    short prev3y;
     bodyPart* next;
     bodyPart();
     bodyPart(unsigned short  newX, unsigned short  newY, bodyPart* newNext);
@@ -35,5 +41,6 @@ public:
     Direction getDirection();
     void changeDirection(Direction newDir);
     bodyPart* getHead();
+    bool returnBack();
     ~Snake();
 };
