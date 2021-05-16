@@ -4,7 +4,7 @@
 #include <time.h>       /* time */
 
 
-collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, int newScoreBonus, int newSizeBonus, bool isPoisoned1 = false)
+collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, int newScoreBonus, int newSizeBonus, bool isPoisoned = false)
 {
 	this->name= newName;
 	this->posX = newPosX;
@@ -12,9 +12,7 @@ collectableObj::collectableObj(std::string newName, int newPosX, int newPosY, in
 	this->scoreBonus = newScoreBonus;
 	this->sizeBonus = newSizeBonus;
     this->isGolden = false;
-    this->prevIsGolden = false;
-    this->prevIsPoisoned= false;
-    this->isPoisoned = isPoisoned1;
+    this->isPoisoned = isPoisoned;
 }
 
 std::string collectableObj::getName()
@@ -37,86 +35,78 @@ bool collectableObj::getIsGolden()
     return this->isGolden;
 }
 
-bool collectableObj::getPrevIsGolden() {
-    return this->prevIsGolden;
-}
-bool collectableObj::getPrevIsPoisoned() {
-    return this->prevIsPoisoned;
-}
-
 int field[GRID_SIZE_Y + scoreBarHeight/32][GRID_SIZE_X];
 
-bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head){
+bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head, collectableObj** objects){
     srand (time(NULL));
     if(!isPoisoned){
         if(rand()%goldenAppleProbability == 0)
         {
-            this->prevIsGolden = this->isGolden;
             this->isGolden = true;
             this->scoreBonus = goldenAppleScoreBonus;
             this->sizeBonus = goldenAppleSizeBonus;
         }
         else
         {
-            this->prevIsGolden = this->isGolden;
             this->isGolden = false;
             this->scoreBonus = redAppleScoreBonus;
             this->sizeBonus = redAppleSizeBonus;
         }
     }
     
-	if(head == nullptr)	//changing position to random, and dont care where is snake
-	{
-	  this-> posX= rand() % GRID_SIZE_X;
-	  this-> posY= rand() % GRID_SIZE_Y;
-	}
-	else	//changins position to only not ocupated by snake
-	{
-        
-        for(int i = scoreBarHeight / 32; i < GRID_SIZE_Y + scoreBarHeight/32; i++){
-            for(int j = 0; j < GRID_SIZE_X; j++) {
-                field[i][j] = 0;
+    
+    
+    for(int i = scoreBarHeight / 32; i < GRID_SIZE_Y + scoreBarHeight/32; i++){
+        for(int j = 0; j < GRID_SIZE_X; j++) {
+            field[i][j] = 0;
+        }
+    }
+    bodyPart* temp = head;
+    int counter = 0;
+    while(temp) {
+        counter++;
+        field[temp->y][temp->x] = 1;
+        temp = temp->next;
+    }
+    if(objects != nullptr){
+        if(poisonedAppleOn) {
+            if(isPoisoned) {
+                field[objects[0]->getPosY()][objects[0]->getPosX()] = 1;
+                counter++;
+            }else {
+                field[objects[1]->getPosY()][objects[1]->getPosX()] = 1;
+                counter++;
             }
         }
-        bodyPart* temp = head;
-        int counter = 0;
-        while(temp) {
-            counter++;
-            field[temp->y][temp->x] = 1;
-            temp = temp->next;
-        }
-        
-        
-        
-        wall* temp2 = firstWall;
-        while(temp2) {
-            counter++;
-            field[temp2->getY()][temp2->getX()] = 1;
-            temp2 = temp2->getNext();
-        }
-        
-        if(counter == 0)
-            return false;//if wasnt able to change position
-        
-        int randomIndex = rand() % (GRID_SIZE_X*GRID_SIZE_Y - counter);
-        counter = 0;
-        
-        for(int i = scoreBarHeight / 32; i < GRID_SIZE_Y + scoreBarHeight/32; i++) {
-            for(int j = 0; j < GRID_SIZE_X; j++) {
-                if(field[i][j] == 0){
-                    if(counter == randomIndex) {
-                        this-> posX = j;
-                        this-> posY = i;
-                        
-                        return true;
-                    }
-                    counter++;
+    }
+    wall* temp2 = firstWall;
+    while(temp2) {
+        counter++;
+        field[temp2->getY()][temp2->getX()] = 1;
+        temp2 = temp2->getNext();
+    }
+    
+    if(GRID_SIZE_X*GRID_SIZE_Y - counter < 5)
+        return false;//if wasnt able to change position
+    
+    int randomIndex = rand() % (GRID_SIZE_X*GRID_SIZE_Y - counter);
+    counter = 0;
+    
+    for(int i = scoreBarHeight / 32; i < GRID_SIZE_Y + scoreBarHeight/32; i++) {
+        for(int j = 0; j < GRID_SIZE_X; j++) {
+            if(field[i][j] == 0){
+                if(counter == randomIndex) {
+                    this-> posX = j;
+                    this-> posY = i;
+                    return true;
                 }
+                counter++;
             }
         }
+    }
         
         
-	}
+	
 	
 	return false; //wasnt able change posisiton
 }

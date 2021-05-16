@@ -13,6 +13,7 @@
 #include <string>
 
 bool isFirstGame = true;
+bool isWon = false;
 
 int snake_x = GRID_SIZE_X / 2;
 int snake_y = (GRID_SIZE_Y + scoreBarHeight / 32) / 2;
@@ -65,14 +66,17 @@ void initGame() {
 }
 
 
-void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating, sf::SoundBuffer& gameOverSound, sf::Sound& gameOver){
+void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating, sf::SoundBuffer& gameOverSound, sf::Sound& gameOver, sf::SoundBuffer& winSound, sf::Sound& win){
     
     appleEatingSound.loadFromFile(SOUNDS_PATH+"applebite.wav");
     gameOverSound.loadFromFile(SOUNDS_PATH + "gameover2.wav");
+    winSound.loadFromFile(SOUNDS_PATH + "win.wav");
     gameOver.setBuffer(gameOverSound);
     gameOver.setVolume(50);
     appleEating.setBuffer(appleEatingSound);
     appleEating.setVolume(40);
+    win.setBuffer(winSound);
+    win.setVolume(50);
     if (gameMusicOn == true)
      {
 		 if (!backgroundMusic.openFromFile(SOUNDS_PATH + "gameMusic.ogg"))
@@ -215,7 +219,9 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
             appleEating.play();
             resizeSnake(*snake, objects[i]->getSizeBonus());
             updateScore(objects[i]->getScoreBonus());
-            objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead());
+            if(!objects[i]->goToFreeRandomPosistion(boardReader.wallHead, snake->getHead(), objects)) {
+                isWon = true;
+            }
         }
     }
 
@@ -252,8 +258,11 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         tempAppleSP.setColor(sf::Color(255,215,0));    //golden aplle color
     else if(!collObj.getIsPoisoned())
         tempAppleSP.setColor(sf::Color(255, 0, 0));
-
-    tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
+    
+    if(!isWon) {
+        tempAppleSP.setPosition(collObj.getPosX() * cell_size_pix, collObj.getPosY()* cell_size_pix);
+    }else
+        tempAppleSP.setPosition(100 * cell_size_pix, 100 * cell_size_pix);
     window.draw(tempAppleSP);
     
     if(poisonedAppleOn)
@@ -412,13 +421,15 @@ short run(std::string boardName = "")
     sf::Sound appleEating;
     sf::SoundBuffer gameOverSound;
     sf::Sound gameOver;
+    sf::SoundBuffer winSound;
+    sf::Sound win;
     
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Snake Game", sf::Style::Titlebar);
     
     if(isFirstGame) {
         initGame();
     }
-    initMusic(backgroundMusic,appleEatingSound, appleEating, gameOverSound, gameOver);
+    initMusic(backgroundMusic,appleEatingSound, appleEating, gameOverSound, gameOver, winSound, win);
     setTexture();
     
     
@@ -452,12 +463,15 @@ short run(std::string boardName = "")
 
     collectableObj apple = collectableObj("apple", 0, 0, 1, 1);
     apple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
+    collectableObj* AllCollectableObjs[10];
+
+    AllCollectableObjs[0] = &apple;
     
     collectableObj poisonedApple("none", 0, 0 ,0 ,0);
     if(poisonedAppleOn)
     {
         poisonedApple = collectableObj("poisonedApple", 0, 0, -5, -1, true);
-        poisonedApple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead());
+        poisonedApple.goToFreeRandomPosistion(boardReader.wallHead, snake.getHead(), AllCollectableObjs);
         poisonedApple.makePosion();
     }
     
@@ -469,9 +483,7 @@ short run(std::string boardName = "")
     int collisonObjsAmount = 1;
     if(poisonedAppleOn)
         collisonObjsAmount = 2;
-    collectableObj* AllCollectableObjs[10];
-
-    AllCollectableObjs[0] = &apple;
+    
     if(poisonedAppleOn)
         AllCollectableObjs[1] = &poisonedApple;
         
@@ -516,6 +528,11 @@ short run(std::string boardName = "")
         drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
         
         window.display();
+        if(isWon) {
+            win.play();
+            sf::sleep(sf::milliseconds(1500));
+            window.close();
+        }
         if(snake.getHead() == nullptr){
             gameOver.play();
             sf::sleep(sf::milliseconds(2000));
