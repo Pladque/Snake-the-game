@@ -13,7 +13,7 @@
 
 bool isFirstGame = true;
 bool isWon = false;
-bool withHealth = false;
+bool withHealth = true;
 
 
 int snake_x = GRID_SIZE_X / 2;
@@ -592,9 +592,10 @@ short run(std::string boardName = "")
                         }
                         bool wasPressed = false;
                         while(!wasPressed) {
-                            while(window.pollEvent(ev)) {
-                                if(ev.type == sf::Event::KeyPressed) {
-                                    switch (ev.key.code) {
+                            sf::Event ev1;
+                            while(window.pollEvent(ev1)) {
+                                if(ev1.type == sf::Event::KeyPressed) {
+                                    switch (ev1.key.code) {
                                         case sf::Keyboard::W:
                                             if(snake.getDirection() == Direction::down)
                                                 break;

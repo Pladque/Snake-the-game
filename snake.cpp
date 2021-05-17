@@ -114,8 +114,11 @@ bool Snake::move(BoardReader* wallsCotainer)
     while(currBodyPart)
     {
         if(currBodyPart->isVisible){
-            if((currBodyPart->x == head->x  &&  currBodyPart->y == head->y) && (currBodyPart->next != nullptr || currBodyPart->next->isVisible))
-                validMove = false;
+            if((currBodyPart->x == head->x  &&  currBodyPart->y == head->y)){
+                if(currBodyPart->next != nullptr && currBodyPart->next->isVisible) {
+                    validMove = false;
+                }
+            }
         }
 
         bodyPart temp = bodyPart(*currBodyPart);
