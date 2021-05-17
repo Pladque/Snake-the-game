@@ -24,6 +24,8 @@ sf::Texture homeTexture;
 sf::Sprite homeSP;
 sf::Texture backgroundTexture;
 sf::Sprite backgroundSP;
+sf::Texture lifeTexture;
+sf::Sprite lifeSP;
 
 sf::RectangleShape scoreBar;
 

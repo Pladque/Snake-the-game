@@ -57,6 +57,8 @@ void initGame() {
     
     homeTexture.loadFromFile(TEXTURES_PATH+"home.png");
     
+    lifeTexture.loadFromFile(TEXTURES_PATH+"heart.png");
+    
     backgroundTexture.loadFromFile(TEXTURES_PATH+"background.png");
     
     scoreBar.setSize(sf::Vector2f(GRID_SIZE_X * cell_size_pix, scoreBarHeight));
@@ -239,7 +241,7 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 
 void drawAll(sf::RenderWindow& window, Snake& snake, 
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
-                 collectableObj &poisonedApple, bool& gamePaused)
+                 collectableObj &poisonedApple, bool& gamePaused, int lives)
 {
     scoreBar.setFillColor(sf::Color(247, 152, 98));
     scoreBar.setPosition(0.f, 0.f);
@@ -343,6 +345,12 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
         window.draw(pauseSP);
         window.draw(homeSP);
     }
+    if(withHealth) {
+        for(int i = 0; i < lives; i++) {
+            lifeSP.setPosition((GRID_SIZE_X - 3 - i) * cell_size_pix - 15*(i + 1), 16);
+            window.draw(lifeSP);
+        }
+    }
     
     //drawing score
     
@@ -422,12 +430,14 @@ void setTexture() {
     pauseSP.setTexture(pauseTexture);
     homeSP.setTexture(homeTexture);
     backgroundSP.setTexture(backgroundTexture);
+    lifeSP.setTexture(lifeTexture);
 }
 
 short run(std::string boardName = "")
 {
     bool gamePaused = false;
     int frameCounter = 0;
+    int lives = amountOfHealthes;
     score = 0;
     // Init game
     sf::Music backgroundMusic;    //used to play music in the background
@@ -524,6 +534,7 @@ short run(std::string boardName = "")
                 
                 if(!snake.move(&boardReader)){
                     if(withHealth){
+                        lives--;
                         if(!snake.returnBack()){
                             gameOver.play();
                             sf::sleep(sf::milliseconds(2500));
@@ -537,7 +548,7 @@ short run(std::string boardName = "")
 
                         collectedApplePS.blowUp();
 
-                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives);//, text);
                         sf::sleep(sf::milliseconds(1000));
 
                         window.display();
@@ -554,7 +565,7 @@ short run(std::string boardName = "")
 
                         collectedApplePS.blowUp();
 
-                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives);//, text);
 
                         window.display();
                         sf::sleep(sf::milliseconds(1000));
@@ -572,11 +583,10 @@ short run(std::string boardName = "")
 
                         collectedApplePS.blowUp();
 
-                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+                        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives);//, text);
                         ChangeDirectionText.setPosition((window_width - ChangeDirectionText.getLocalBounds().width) / 2, (window_height - ChangeDirectionText.getLocalBounds().height) / 2);
                         window.draw(ChangeDirectionText);
                         window.display();
-//                        sf::sleep(sf::milliseconds(2000));
                         if(snake.getHead()->y == snake.getHead()->next->y){
                             if(snake.getHead()->x > snake.getHead()->next->x) {
                                 snake.changeDirection(Direction::right);
@@ -648,7 +658,7 @@ short run(std::string boardName = "")
         
         collectedApplePS.blowUp();
         
-        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
+        drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives);//, text);
         
         window.display();
         if(isWon) {

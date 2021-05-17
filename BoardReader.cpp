@@ -164,8 +164,9 @@ public:
 
                 newBoardPPM<<'\n';
             }
-
-            /*////
+            
+            
+            
             wall* temp = wallHead;
             wall* temp2;
             
@@ -175,7 +176,7 @@ public:
                 temp = temp2;
             }
             wallHead = nullptr;
-            ///*/
+            
         }
         //*/
     }
