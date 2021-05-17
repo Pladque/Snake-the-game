@@ -84,7 +84,7 @@ int EnterMenu()
 		return -1;
 	sf::Texture boardTexture;
 	sf::Music menuMusic;
-	if (!menuMusic.openFromFile(SOUNDS_PATH + "menuMusic.ogg"))
+	if (!menuMusic.openFromFile("./Assets/Sounds/menuMusic.ogg"))
         return -1;
 	sf::RenderWindow menuWindow(sf::VideoMode(1280, 960), "SNAKE_2D");	//resolution may be changed, after every other thing works
 																		//as expected

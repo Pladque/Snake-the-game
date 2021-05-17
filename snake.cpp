@@ -8,29 +8,18 @@ bodyPart::bodyPart()
     this->next = nullptr;
 }
 
-bodyPart::bodyPart(unsigned short  newX, unsigned short  newY, bodyPart* newNext)
+bodyPart::bodyPart(unsigned short  newX, unsigned short  newY, bodyPart* newNext, bool isVisible = true)
 {
     this->x = newX;
     this->y = newY;
     this->next = newNext;
-    prevx = -1;
-    prevy = -1;
-    prev2x = -1;
-    prev2y = -1;
-    prev3x = -1;
-    prev3y = -1;
+    this->isVisible = isVisible;
 }
 
 bodyPart::bodyPart(const bodyPart& toCopy)
 {
     this->x = toCopy.x;
     this->y = toCopy.y;
-    this->prevx = toCopy.prevx;
-    this->prevy = toCopy.prevy;
-    this->prev2x = toCopy.prev2x;
-    this->prev2y = toCopy.prev2y;
-    this->prev3x = toCopy.prev3x;
-    this->prev3y = toCopy.prev3y;
     this->next = toCopy.next;
 }
 
@@ -38,12 +27,6 @@ void bodyPart::copyPos(bodyPart positionSource)
 {
     this->x = positionSource.x;
     this->y = positionSource.y;
-    this->prevx = positionSource.prevx;
-    this->prevy = positionSource.prevy;
-    this->prev2x = positionSource.prev2x;
-    this->prev2y = positionSource.prev2y;
-    this->prev3x = positionSource.prev3x;
-    this->prev3y = positionSource.prev3y;
 }
 
 Snake::Snake(unsigned short startX, unsigned  short startY)
@@ -53,22 +36,22 @@ Snake::Snake(unsigned short startX, unsigned  short startY)
 }
 
 bool Snake::returnBack() {
+    bodyPart* toDel = head;
     bodyPart* temp = head;
+    bool isFound = false;
     while(temp) {
-        if(temp->prevx == -1 || temp->prevy == -1){
-            return false;
+        if(temp->next && !temp->next->isVisible) {
+            temp->next->isVisible = true;
+            isFound = true;
+            break;
         }
-        temp->x = temp->prevx;
-        temp->y = temp->prevy;
-        temp->prevy = temp->prev2y;
-        temp->prevx = temp->prev2x;
-        temp->prev2y = temp->prev3y;
-        temp->prev2x = temp->prev3x;
-        temp->prev3y = -1;
-        temp->prev3x = -1;
         temp = temp->next;
     }
-    return true;
+    if(isFound){
+        head = head->next;
+        delete toDel;
+    }
+    return isFound;
 }
 
 //updated once per frame postion updater
@@ -79,13 +62,6 @@ bool Snake::move(BoardReader* wallsCotainer)
     //moving head
     if(this->direction == Direction::up)
     {
-        
-        head->prev3y = head->prev2y;
-        head->prev2y = head->prevy;
-        head->prevy = head->y;
-        head->prev3x = head->prev2x;
-        head->prev2x = head->prevx;
-        head->prevx = head->x;
         if(head->y - 1 >= scoreBarHeight / 32) //able to move up
         {
             head->y -= 1;
@@ -97,12 +73,6 @@ bool Snake::move(BoardReader* wallsCotainer)
     }
     else if(direction ==  Direction::down)
     {
-        head->prev3y = head->prev2y;
-        head->prev2y = head->prevy;
-        head->prevy = head->y;
-        head->prev3x = head->prev2x;
-        head->prev2x = head->prevx;
-        head->prevx = head->x;
         if(head->y + 1 < GRID_SIZE_Y + scoreBarHeight / 32) //able to move down
         {
 
@@ -116,12 +86,6 @@ bool Snake::move(BoardReader* wallsCotainer)
     }
     else if(direction ==  Direction::left)
     {
-        head->prev3y = head->prev2y;
-        head->prev2y = head->prevy;
-        head->prevy = head->y;
-        head->prev3x = head->prev2x;
-        head->prev2x = head->prevx;
-        head->prevx = head->x;
         if(head->x - 1 >= 0) //able to move left
         {
             head->x -= 1;
@@ -133,12 +97,6 @@ bool Snake::move(BoardReader* wallsCotainer)
     }
     else if(direction ==  Direction::right)
     {
-        head->prev3y = head->prev2y;
-        head->prev2y = head->prevy;
-        head->prevy = head->y;
-        head->prev3x = head->prev2x;
-        head->prev2x = head->prevx;
-        head->prevx = head->x;
         if(head->x + 1 < GRID_SIZE_X) //able to move right
         {
             head->x += 1;
@@ -155,8 +113,10 @@ bool Snake::move(BoardReader* wallsCotainer)
     bool validMove = true;
     while(currBodyPart)
     {
-        if((currBodyPart->x == head->x  &&  currBodyPart->y == head->y) && (currBodyPart->next != nullptr))
-            validMove = false;
+        if(currBodyPart->isVisible){
+            if((currBodyPart->x == head->x  &&  currBodyPart->y == head->y) && (currBodyPart->next != nullptr || currBodyPart->next->isVisible))
+                validMove = false;
+        }
 
         bodyPart temp = bodyPart(*currBodyPart);
         currBodyPart->copyPos(previousPositionOfBodyPart);
@@ -182,18 +142,18 @@ bool Snake::move(BoardReader* wallsCotainer)
     return validMove;
 }
 
-void Snake::grow()
+void Snake::grow(bool isVisible = true)
 {
 
     bodyPart* currBodyPart = head;
 
-    while(currBodyPart->next)
+    while(currBodyPart->next && currBodyPart->next->isVisible)
     {
         currBodyPart = currBodyPart->next;
     }
 
     //not sure if it is enough to make it work
-    currBodyPart->next = new bodyPart(*currBodyPart);
+    currBodyPart->next = new bodyPart(currBodyPart->x, currBodyPart->y, currBodyPart->next, isVisible);
 }
 
 void Snake::changeDirection(Direction newDir) {
@@ -208,13 +168,14 @@ void Snake::fade()
 {
     bodyPart* currBodyPart = head;
     bodyPart* newLastBodyPart = head;
-    while(currBodyPart->next)
+    while(currBodyPart->next && currBodyPart->next->isVisible)
     {
         newLastBodyPart = currBodyPart;
         currBodyPart = currBodyPart->next;
     }
-
-    newLastBodyPart->next = nullptr;
+    
+    newLastBodyPart->next = currBodyPart->next;
+    
     
     if(currBodyPart == head){
         delete currBodyPart;

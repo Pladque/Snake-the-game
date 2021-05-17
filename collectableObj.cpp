@@ -65,7 +65,8 @@ bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head, co
     int counter = 0;
     while(temp) {
         counter++;
-        field[temp->y][temp->x] = 1;
+        if(temp->isVisible)
+            field[temp->y][temp->x] = 1;
         temp = temp->next;
     }
     if(objects != nullptr){
