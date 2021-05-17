@@ -4,7 +4,7 @@
 
 - [X] Background sprite for game    (15.05.2021)
 
-- [ ] Walls
+- [X] Walls   (16.05.2021)
 
 - [X] Settings in menu      (13.05.2021)
 
