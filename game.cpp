@@ -13,7 +13,7 @@
 
 bool isFirstGame = true;
 bool isWon = false;
-bool withHealth = true;
+bool withHealth = false;
 
 
 int snake_x = GRID_SIZE_X / 2;
@@ -110,6 +110,12 @@ void setupText( sf::Font &font, sf::Font &fontForPause)
     PauseText.setCharacterSize(120); // in pixels, not points!
     PauseText.setFillColor(sf::Color::Black);
     PauseText.setStyle(sf::Text::Bold);
+    
+    ChangeDirectionText.setFont(fontForPause); // font is a sf::Font
+    ChangeDirectionText.setString("Choose the direction");
+    ChangeDirectionText.setCharacterSize(50); // in pixels, not points!
+    ChangeDirectionText.setFillColor(sf::Color::Black);
+    ChangeDirectionText.setStyle(sf::Text::Bold);
 
 }
 
@@ -567,9 +573,59 @@ short run(std::string boardName = "")
                         collectedApplePS.blowUp();
 
                         drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused);//, text);
-
+                        ChangeDirectionText.setPosition((window_width - ChangeDirectionText.getLocalBounds().width) / 2, (window_height - ChangeDirectionText.getLocalBounds().height) / 2);
+                        window.draw(ChangeDirectionText);
                         window.display();
-                        sf::sleep(sf::milliseconds(1000));
+//                        sf::sleep(sf::milliseconds(2000));
+                        if(snake.getHead()->y == snake.getHead()->next->y){
+                            if(snake.getHead()->x > snake.getHead()->next->x) {
+                                snake.changeDirection(Direction::right);
+                            }else {
+                                snake.changeDirection(Direction::left);
+                            }
+                        }else if(snake.getHead()->x == snake.getHead()->next->x){
+                            if(snake.getHead()->y > snake.getHead()->next->y) {
+                                snake.changeDirection(Direction::down);
+                            }else {
+                                snake.changeDirection(Direction::up);
+                            }
+                        }
+                        bool wasPressed = false;
+                        while(!wasPressed) {
+                            while(window.pollEvent(ev)) {
+                                if(ev.type == sf::Event::KeyPressed) {
+                                    switch (ev.key.code) {
+                                        case sf::Keyboard::W:
+                                            if(snake.getDirection() == Direction::down)
+                                                break;
+                                            newDir = Direction::up;
+                                            wasPressed = true;
+                                            break;
+                                        case sf::Keyboard::S:
+                                            if(snake.getDirection() == Direction::up)
+                                                break;;
+                                            newDir = Direction::down;
+                                            wasPressed = true;
+                                            break;
+                                        case sf::Keyboard::A:
+                                            if(snake.getDirection() == Direction::right)
+                                                break;
+                                            newDir = Direction::left;
+                                            wasPressed = true;
+                                            break;
+                                        case sf::Keyboard::D:
+                                            if(snake.getDirection() == Direction::left)
+                                                break;
+                                            newDir = Direction::right;
+                                            wasPressed = true;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        
                         
                     }else {
                         gameOver.play();
@@ -599,7 +655,7 @@ short run(std::string boardName = "")
             sf::sleep(sf::milliseconds(1500));
             window.close();
         }
-        if(snake.getHead() == nullptr){
+        if(snake.getHead()->next == nullptr || !snake.getHead()->next->isVisible){
             gameOver.play();
             sf::sleep(sf::milliseconds(2000));
             window.close();

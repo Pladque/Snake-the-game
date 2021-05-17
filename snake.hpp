@@ -26,6 +26,7 @@ private:
     int length;
     bodyPart* head;
     Direction direction;
+    
 
 public:
     bool move(BoardReader* wallsCotainer);    //false if collided with own body

@@ -6,6 +6,7 @@
 sf::Text ScoreText;      // for displaying score
 sf::Text HighScoreText;      // for displaying best score
 sf::Text PauseText;      // for displaying pause
+sf::Text ChangeDirectionText; 
 
 sf::Texture snakeTexture;
 sf::Sprite snakeSP;
