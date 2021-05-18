@@ -24,6 +24,8 @@
 
 - [X] GameBoards to choose  (14.05.2021)
 
+- [X] Menu after death   (18.05.2021)
+
 ## Update v1.1 ##
 
 Changes since 1.0:
