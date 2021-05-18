@@ -12,9 +12,33 @@
 #define CHAR_SIZE 20.f
 #define SPACING -60.f
 #define MOUSE_CORRECTION 0.f
+#define BOARD_COUNT 4
 
+//~ std::vector<std::string> list2_dir(const char *path) 
+//~ {
+    //~ struct dirent *entry;
+        //~ DIR *dir = opendir(path);
+        
+        //~ std::stringstream ss;
+        
+        //~ while ((entry = readdir(dir)) != NULL) {
+        //~ ss << entry->d_name << std::endl;
+        //~ }
+        //~ closedir(dir);
+
+        //~ std::vector<std::string> allFIles;
+        //~ std::string temp;
+        //~ while(ss>>temp)
+            //~ allFIles.push_back(temp);
+
+
+        //~ return allFIles;
+//~ }
 
 //DO NOT MODIFY/DELETE!!!
+//std::vector<std::string> boards_vector (list2_dir (BOARDS_PATH.c_str()));	-> doesn't seem to work
+//
+std::string board_number_to_pass = "";
 bool entered_settings = 0;	//value to determine if settings should be displayed on the screen
 bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main Menu,
 							//otherwise to move on with logic
@@ -82,14 +106,27 @@ int EnterMenu()
 	sf::Texture menuTexture;
 	if (!menuTexture.loadFromFile("./Assets/Graphic/mainSnake2.jpg"))
 		return -1;
-	sf::Texture boardTexture;
+	sf::Texture boardTexture0;
+	sf::Texture boardTexture1;
+	sf::Texture boardTexture2;
+	sf::Texture boardTexture3;
+	if (!boardTexture0.loadFromFile(BOARDS_IMGS_PATH + "allClear.txt_1.jpg"))
+		return -1;
+	if (!boardTexture1.loadFromFile(BOARDS_IMGS_PATH + "corners.txt_1.jpg"))
+		return -1;
+	if (!boardTexture2.loadFromFile(BOARDS_IMGS_PATH + "cornersInDistance.txt_1.jpg"))
+		return -1;
+	if (!boardTexture3.loadFromFile(BOARDS_IMGS_PATH + "aFewWaysOutBoard.txt_1.jpg"))
+		return -1;
+	//Loaded maps available to choose in main menu
+		
 	sf::Music menuMusic;
 	if (!menuMusic.openFromFile("./Assets/Sounds/menuMusic.ogg"))
         return -1;
 	sf::RenderWindow menuWindow(sf::VideoMode(1280, 960), "SNAKE_2D");	//resolution may be changed, after every other thing works
 																		//as expected
 	sf::Sprite menuSprite(menuTexture);
-	sf::Sprite boardSprite(boardTexture);
+	//sf::Sprite boardSprite(boardTexture0);
 	sf::Event menuEvent;
 	sf::Font menuFont;
     if (!menuFont.loadFromFile("./Assets/Fonts/JosefinSans-SemiBoldItalic.ttf"))
@@ -133,7 +170,8 @@ int EnterMenu()
 	
 	sf::RectangleShape rectangleBoard(sf::Vector2f(REACT_WIDTH, REACT_WIDTH));
     rectangleBoard.setFillColor(sf::Color(255, 255, 255));
-    rectangleBoard.setPosition(REACT_X, 520.f + SPACING);		
+    rectangleBoard.setPosition(REACT_X, 520.f + SPACING);	
+    rectangleBoard.setTexture(&boardTexture0);	
     //rectangleBasic5.setOutlineThickness(5.f);
 	//rectangleBasic5.setOutlineColor(sf::Color(250, 150, 100));					
 													
@@ -372,6 +410,64 @@ int EnterMenu()
 						windSelectGameMode.setString("Game mode: " + snakes_count + " player ('V')");
 					}
 				}
+				else if (menuEvent.key.code == sf::Keyboard::Right && entered_settings == 1)
+				{
+					boardNumber++;
+					boardNumber = boardNumber % BOARD_COUNT;
+					if (boardNumber == 0)
+					{
+						rectangleBoard.setTexture(&boardTexture0);
+						board_number_to_pass = "allClear.txt";
+						//board_number_to_pass = boards_vector[0];
+					}
+					else if (boardNumber == 1)
+					{
+						rectangleBoard.setTexture(&boardTexture1);
+						board_number_to_pass = "corners.txt";
+						//board_number_to_pass = boards_vector[1];
+					}
+					else if (boardNumber == 2)
+					{
+						rectangleBoard.setTexture(&boardTexture2);
+						board_number_to_pass = "cornersInDistance.txt";
+						//board_number_to_pass = boards_vector[2];
+					}
+					else
+					{
+						rectangleBoard.setTexture(&boardTexture3);
+						board_number_to_pass = "aFewWaysOutBoard.txt";
+						//board_number_to_pass = boards_vector[3];
+					}
+				}
+				else if (menuEvent.key.code == sf::Keyboard::Left && entered_settings == 1)
+				{
+					boardNumber += (BOARD_COUNT - 1);
+					boardNumber = boardNumber % BOARD_COUNT;
+					if (boardNumber == 0)
+					{
+						rectangleBoard.setTexture(&boardTexture0);
+						board_number_to_pass = "allClear.txt";
+						//board_number_to_pass = boards_vector[0];
+					}
+					else if (boardNumber == 1)
+					{
+						rectangleBoard.setTexture(&boardTexture1);
+						board_number_to_pass = "corners.txt";
+						//board_number_to_pass = boards_vector[1];
+					}
+					else if (boardNumber == 2)
+					{
+						rectangleBoard.setTexture(&boardTexture2);
+						board_number_to_pass = "cornersInDistance.txt";
+						//board_number_to_pass = boards_vector[2];
+					}
+					else
+					{
+						rectangleBoard.setTexture(&boardTexture3);
+						board_number_to_pass = "aFewWaysOutBoard.txt";
+						//board_number_to_pass = boards_vector[3];
+					}
+				}
 				else
 				{
 					continue;
@@ -471,7 +567,7 @@ int EnterMenu()
 					}
 					else if (localMousePosition.y >= (457.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (457.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
-						//Select board was clicked by mouse
+						//Select mode was clicked by mouse
 						if (enemySnakePresent == false)
 						{
 							enemySnakePresent = true;
@@ -488,7 +584,71 @@ int EnterMenu()
 					else
 					{
 						//nothing meaningful happened; proceed with loop 
-						continue;
+						//continue;
+					}
+				}
+				if (localMousePosition.x >= REACT_X + REACT_WIDTH - arrowRight.getLocalBounds().width - 5.f
+                && localMousePosition.x <= REACT_X + REACT_WIDTH - 5.f
+                && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
+                && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowRight.getLocalBounds().height / 2)
+				{
+					boardNumber++;
+					boardNumber = boardNumber % BOARD_COUNT;
+					if (boardNumber == 0)
+					{
+						rectangleBoard.setTexture(&boardTexture0);
+						board_number_to_pass = "allClear.txt";
+						//board_number_to_pass = boards_vector[0];
+					}
+					else if (boardNumber == 1)
+					{
+						rectangleBoard.setTexture(&boardTexture1);
+						board_number_to_pass = "corners.txt";
+						//board_number_to_pass = boards_vector[1];
+					}
+					else if (boardNumber == 2)
+					{
+						rectangleBoard.setTexture(&boardTexture2);
+						board_number_to_pass = "cornersInDistance.txt";
+						//board_number_to_pass = boards_vector[2];
+					}
+					else
+					{
+						rectangleBoard.setTexture(&boardTexture3);
+						board_number_to_pass = "aFewWaysOutBoard.txt";
+						//board_number_to_pass = boards_vector[3];
+					}
+				}
+				if (localMousePosition.x >= REACT_X + 5.f
+                && localMousePosition.x <= REACT_X + 5.f + arrowLeft.getLocalBounds().width
+                && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
+                && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowLeft.getLocalBounds().height / 2)
+				{
+					boardNumber += (BOARD_COUNT - 1);
+					boardNumber = boardNumber % BOARD_COUNT;
+					if (boardNumber == 0)
+					{
+						rectangleBoard.setTexture(&boardTexture0);
+						board_number_to_pass = "allClear.txt";
+						//board_number_to_pass = boards_vector[0];
+					}
+					else if (boardNumber == 1)
+					{
+						rectangleBoard.setTexture(&boardTexture1);
+						board_number_to_pass = "corners.txt";
+						//board_number_to_pass = boards_vector[1];
+					}
+					else if (boardNumber == 2)
+					{
+						rectangleBoard.setTexture(&boardTexture2);
+						board_number_to_pass = "cornersInDistance.txt";
+						//board_number_to_pass = boards_vector[2];
+					}
+					else
+					{
+						rectangleBoard.setTexture(&boardTexture3);
+						board_number_to_pass = "aFewWaysOutBoard.txt";
+						//board_number_to_pass = boards_vector[3];
 					}
 				}
 			}
@@ -510,16 +670,17 @@ int EnterMenu()
 			menuWindow.draw(rectangleBasic4);
 			menuWindow.draw(rectangleBasic5);
 			menuWindow.draw(rectangleBoard);
+			menuWindow.draw(arrowLeft);
+            menuWindow.draw(arrowRight);
 			menuWindow.draw(windDifficultyLevel);
 			menuWindow.draw(windPoisonedFruit);
 	        menuWindow.draw(windReturnFromOptions);
 	        menuWindow.draw(windMusic);
 	        menuWindow.draw(windSelectGameMode);
-            menuWindow.draw(arrowLeft);
-            menuWindow.draw(arrowRight);
+            
 		}
         menuWindow.display();
-	sf::sleep(sf::milliseconds(6));
+		sf::sleep(sf::milliseconds(6));
 	}
 	return -1;
 }
@@ -537,7 +698,7 @@ int main(int, char const**)
 		{
 			if (EnterMenu() == 0)
 			{
-				run_return = run(BOARDS_PATH + "corners.txt");
+				run_return = run(BOARDS_PATH + board_number_to_pass);
 			}
 			else
 			{
@@ -546,7 +707,7 @@ int main(int, char const**)
 		}
 		else
 		{
-			run_return = run(BOARDS_PATH + "corners.txt");
+			run_return = run(BOARDS_PATH + board_number_to_pass);
 		}
 	}
 	
