@@ -13,7 +13,7 @@
 
 bool isFirstGame = true;
 bool isWon = false;
-bool withHealth = true;
+bool withHealth = false;
 
 
 int snake_x = GRID_SIZE_X / 2;
@@ -118,6 +118,30 @@ void setupText( sf::Font &font, sf::Font &fontForPause)
     ChangeDirectionText.setCharacterSize(50); // in pixels, not points!
     ChangeDirectionText.setFillColor(sf::Color::Black);
     ChangeDirectionText.setStyle(sf::Text::Bold);
+    
+    TryAgainText.setFont(fontForPause); // font is a sf::Font
+    TryAgainText.setString("TRY AGAIN");
+    TryAgainText.setCharacterSize(50); // in pixels, not points!
+    TryAgainText.setFillColor(sf::Color::Black);
+    TryAgainText.setStyle(sf::Text::Bold);
+    
+    ExitText.setFont(fontForPause); // font is a sf::Font
+    ExitText.setString("EXIT");
+    ExitText.setCharacterSize(50); // in pixels, not points!
+    ExitText.setFillColor(sf::Color::Black);
+    ExitText.setStyle(sf::Text::Bold);
+    
+    GameOverText.setFont(fontForPause); // font is a sf::Font
+    GameOverText.setString("GAME OVER!");
+    GameOverText.setCharacterSize(70); // in pixels, not points!
+    GameOverText.setFillColor(sf::Color::Red);
+    GameOverText.setStyle(sf::Text::Bold);
+    
+    YouWinText.setFont(fontForPause); // font is a sf::Font
+    YouWinText.setString("YOU WIN!");
+    YouWinText.setCharacterSize(70); // in pixels, not points!
+    YouWinText.setFillColor(sf::Color::Red);
+    YouWinText.setStyle(sf::Text::Bold);
 
 }
 
@@ -241,7 +265,7 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
 
 void drawAll(sf::RenderWindow& window, Snake& snake, 
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
-                 collectableObj &poisonedApple, bool& gamePaused, int lives)
+             collectableObj &poisonedApple, bool& gamePaused, int lives, bool isGameOver = false)
 {
     scoreBar.setFillColor(sf::Color(247, 152, 98));
     scoreBar.setPosition(0.f, 0.f);
@@ -251,20 +275,22 @@ void drawAll(sf::RenderWindow& window, Snake& snake,
     window.draw(backgroundSP);
     bodyPart* curr = snake.getHead();
     
-    while(curr)
-    {
-        if(curr == snake.getHead()) {
-            if(curr->isVisible){
-                head.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
-                window.draw(head);
+    if(!isGameOver) {
+        while(curr)
+        {
+            if(curr == snake.getHead()) {
+                if(curr->isVisible){
+                    head.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
+                    window.draw(head);
+                }
+            }else{
+                if(curr->isVisible){
+                    snakeSP.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
+                    window.draw(snakeSP);
+                }
             }
-        }else{
-            if(curr->isVisible){
-                snakeSP.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
-                window.draw(snakeSP);
-            }
+            curr = curr->next;
         }
-        curr = curr->next;
     }
 
 
@@ -538,11 +564,66 @@ short run(std::string boardName = "")
                         if(!snake.returnBack()){
                             gameOver.play();
                             sf::sleep(sf::milliseconds(2500));
-                            saveHighScore();
-                            backgroundMusic.stop();
-                            deleteParticle(collectedApplePS);
-                            boardReader.~BoardReader();
-                            return 1;
+                            GameOverText.setPosition((window_width - GameOverText.getLocalBounds().width) / 2, (window_height) / 2 - GameOverText.getLocalBounds().height - 20);
+                            TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+                            ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+                            window.draw(GameOverText);
+                            window.draw(ExitText);
+                            window.draw(TryAgainText);
+                            window.display();
+                            bool wasPressed = false;
+                            sf::Event ev1;
+                            while(window.pollEvent(ev1));
+                            sf::Vector2i localMousePosition;
+                            while(window.isOpen()) {
+                                while(window.pollEvent(ev1)) {
+                                    localMousePosition = sf::Mouse::getPosition(window);
+                                    TryAgainText.setFillColor(sf::Color::Black);
+                                    if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                                       && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                                        TryAgainText.setFillColor(sf::Color(105, 105, 105));
+                                    }
+                                    ExitText.setFillColor(sf::Color::Black);
+                                    if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                                       && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                                       && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                        ExitText.setFillColor(sf::Color(105, 105, 105));
+                                    }
+                                    
+                                    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                                        localMousePosition = sf::Mouse::getPosition(window);
+                                        if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                                           && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                                           && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                                            saveHighScore();
+                                            backgroundMusic.stop();
+                                            deleteParticle(collectedApplePS);
+                                            boardReader.~BoardReader();
+                                            window.close();
+                                            return 2;
+                                        }else if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                                                 && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                                                 && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                            saveHighScore();
+                                            backgroundMusic.stop();
+                                            deleteParticle(collectedApplePS);
+                                            boardReader.~BoardReader();
+                                            window.close();
+                                            return 1;
+                                        }
+                                    }
+                                }
+                                window.clear(sf::Color(153,204,255,100));
+                                drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives, true);
+                                GameOverText.setPosition((window_width - GameOverText.getLocalBounds().width) / 2, (window_height) / 2 - GameOverText.getLocalBounds().height - 20);
+                                TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+                                ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+                                window.draw(GameOverText);
+                                window.draw(ExitText);
+                                window.draw(TryAgainText);
+                                window.display();
+                            }
                         }
                         window.clear(sf::Color(153,204,255,100));
 
@@ -604,7 +685,6 @@ short run(std::string boardName = "")
                         sf::Event ev1;
                         while(window.pollEvent(ev1));
                         while(!wasPressed) {
-                            
                             while(window.pollEvent(ev1)) {
                                 if(ev1.type == sf::Event::KeyPressed) {
                                     switch (ev1.key.code) {
@@ -638,16 +718,70 @@ short run(std::string boardName = "")
                                 }
                             }
                         }
-                        
-                        
                     }else {
                         gameOver.play();
                         sf::sleep(sf::milliseconds(2500));
-                        saveHighScore();
-                        backgroundMusic.stop();
-                        deleteParticle(collectedApplePS);
-                        boardReader.~BoardReader();
-                        return 1;
+                        GameOverText.setPosition((window_width - GameOverText.getLocalBounds().width) / 2, (window_height) / 2 - GameOverText.getLocalBounds().height - 20);
+                        TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+                        ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+                        window.draw(GameOverText);
+                        window.draw(ExitText);
+                        window.draw(TryAgainText);
+                        window.display();
+                        bool wasPressed = false;
+                        sf::Event ev1;
+                        while(window.pollEvent(ev1));
+                        sf::Vector2i localMousePosition;
+                        while(window.isOpen()) {
+                            while(window.pollEvent(ev1)) {
+                                localMousePosition = sf::Mouse::getPosition(window);
+                                TryAgainText.setFillColor(sf::Color::Black);
+                                if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                                   && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                                   && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                                    TryAgainText.setFillColor(sf::Color(105, 105, 105));
+                                }
+                                ExitText.setFillColor(sf::Color::Black);
+                                if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                                   && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                                   && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                    ExitText.setFillColor(sf::Color(105, 105, 105));
+                                }
+                                
+                                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                                    localMousePosition = sf::Mouse::getPosition(window);
+                                    if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                                       && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                                        saveHighScore();
+                                        backgroundMusic.stop();
+                                        deleteParticle(collectedApplePS);
+                                        boardReader.~BoardReader();
+                                        window.close();
+                                        return 2;
+                                    }else if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                                             && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                                             && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                        saveHighScore();
+                                        backgroundMusic.stop();
+                                        deleteParticle(collectedApplePS);
+                                        boardReader.~BoardReader();
+                                        window.close();
+                                        return 1;
+                                    }
+                                }
+                            }
+                            window.clear(sf::Color(153,204,255,100));
+                            drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives, true);
+                            GameOverText.setPosition((window_width - GameOverText.getLocalBounds().width) / 2, (window_height) / 2 - GameOverText.getLocalBounds().height - 20);
+                            TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+                            ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+                            window.draw(GameOverText);
+                            window.draw(ExitText);
+                            window.draw(TryAgainText);
+                            window.display();
+                        }
+                        
                     }
                 }
                 frameCounter = 0;
@@ -666,20 +800,140 @@ short run(std::string boardName = "")
         if(isWon) {
             win.play();
             sf::sleep(sf::milliseconds(1500));
-            window.close();
+            YouWinText.setPosition((window_width - YouWinText.getLocalBounds().width) / 2, (window_height) / 2 - YouWinText.getLocalBounds().height - 20);
+            TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+            ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+            window.draw(YouWinText);
+            window.draw(ExitText);
+            window.draw(TryAgainText);
+            window.display();
+            bool wasPressed = false;
+            sf::Event ev1;
+            while(window.pollEvent(ev1));
+            sf::Vector2i localMousePosition;
+            while(window.isOpen()) {
+                while(window.pollEvent(ev1)) {
+                    localMousePosition = sf::Mouse::getPosition(window);
+                    TryAgainText.setFillColor(sf::Color::Black);
+                    if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                       && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                        TryAgainText.setFillColor(sf::Color(105, 105, 105));
+                    }
+                    ExitText.setFillColor(sf::Color::Black);
+                    if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                       && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                       && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                        ExitText.setFillColor(sf::Color(105, 105, 105));
+                    }
+                    
+                    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        localMousePosition = sf::Mouse::getPosition(window);
+                        if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                           && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                           && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                            saveHighScore();
+                            backgroundMusic.stop();
+                            deleteParticle(collectedApplePS);
+                            boardReader.~BoardReader();
+                            window.close();
+                            return 2;
+                        }else if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                                 && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                                 && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                            saveHighScore();
+                            backgroundMusic.stop();
+                            deleteParticle(collectedApplePS);
+                            boardReader.~BoardReader();
+                            window.close();
+                            return 1;
+                        }
+                    }
+                }
+                window.clear(sf::Color(153,204,255,100));
+                drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives, true);
+                YouWinText.setPosition((window_width - YouWinText.getLocalBounds().width) / 2, (window_height) / 2 - YouWinText.getLocalBounds().height - 20);
+                TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+                ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+                window.draw(YouWinText);
+                window.draw(ExitText);
+                window.draw(TryAgainText);
+                window.display();
+            }
         }
         if(snake.getHead()->next == nullptr || !snake.getHead()->next->isVisible){
             gameOver.play();
             sf::sleep(sf::milliseconds(2000));
-            window.close();
+            GameOverText.setPosition((window_width - GameOverText.getLocalBounds().width) / 2, (window_height) / 2 - GameOverText.getLocalBounds().height - 20);
+            TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+            ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+            window.draw(GameOverText);
+            window.draw(ExitText);
+            window.draw(TryAgainText);
+            window.display();
+            bool wasPressed = false;
+            sf::Event ev1;
+            while(window.pollEvent(ev1));
+            sf::Vector2i localMousePosition;
+            while(window.isOpen()) {
+                while(window.pollEvent(ev1)) {
+                    localMousePosition = sf::Mouse::getPosition(window);
+                    TryAgainText.setFillColor(sf::Color::Black);
+                    if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                       && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                        TryAgainText.setFillColor(sf::Color(105, 105, 105));
+                    }
+                    ExitText.setFillColor(sf::Color::Black);
+                    if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                       && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                       && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                        ExitText.setFillColor(sf::Color(105, 105, 105));
+                    }
+                    
+                    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        localMousePosition = sf::Mouse::getPosition(window);
+                        if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
+                           && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
+                           && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                            saveHighScore();
+                            backgroundMusic.stop();
+                            deleteParticle(collectedApplePS);
+                            boardReader.~BoardReader();
+                            window.close();
+                            return 2;
+                        }else if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
+                                 && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
+                                 && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                            saveHighScore();
+                            backgroundMusic.stop();
+                            deleteParticle(collectedApplePS);
+                            boardReader.~BoardReader();
+                            window.close();
+                            return 1;
+                        }
+                    }
+                }
+                window.clear(sf::Color(153,204,255,100));
+                drawAll(window, snake, apple, collectedApplePS, poisonedApple, gamePaused, lives, true);
+                GameOverText.setPosition((window_width - GameOverText.getLocalBounds().width) / 2, (window_height) / 2 - GameOverText.getLocalBounds().height - 20);
+                TryAgainText.setPosition((window_width - TryAgainText.getLocalBounds().width) / 2, (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20);
+                ExitText.setPosition((window_width - ExitText.getLocalBounds().width) / 2, (window_height) / 2 + ExitText.getLocalBounds().height + 10);
+                window.draw(GameOverText);
+                window.draw(ExitText);
+                window.draw(TryAgainText);
+                window.display();
+            }
         }
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
     boardReader.~BoardReader();
     saveHighScore();
-    backgroundMusic.stop();
     deleteParticle(collectedApplePS);
+    backgroundMusic.stop();
+    
+    
     
     return 1;       //lost, run again
 }
