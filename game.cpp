@@ -601,8 +601,10 @@ short run(std::string boardName = "")
                             }
                         }
                         bool wasPressed = false;
+                        sf::Event ev1;
+                        while(window.pollEvent(ev1));
                         while(!wasPressed) {
-                            sf::Event ev1;
+                            
                             while(window.pollEvent(ev1)) {
                                 if(ev1.type == sf::Event::KeyPressed) {
                                     switch (ev1.key.code) {
