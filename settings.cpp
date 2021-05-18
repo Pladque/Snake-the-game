@@ -16,6 +16,7 @@ bool enemySnakePresent = false;
 bool poisonedAppleOn = true;
 bool gameMusicOn = true;
 int difficulty = 1;			//0 - easy, 1 - normal, 2 - hard, 3 - titan
+int boardNumber = 0;		//0 - clear board, 1 - corners, 2 - corners_in_distance, 3 - few_ways_out_of_a_board
 int amountOfHealthes = 3;
 
 const int scoreBarHeight = 64;
