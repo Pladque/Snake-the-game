@@ -134,6 +134,7 @@ int EnterMenu()
 	sf::Text mainText, windStartGame, windQuitGame, windOptions, windTryAgain, windResign;	//text, displayed  
 	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
 	sf::Text windSelectGameMode;
+	sf::Text windSelectBoard;
     sf::Text arrowRight;
     sf::Text arrowLeft;
 	
@@ -229,6 +230,12 @@ int EnterMenu()
 	windSelectGameMode.setCharacterSize(CHAR_SIZE);
 	windSelectGameMode.setFillColor(sf::Color::Black);
 	windSelectGameMode.setPosition(TEXT_X, 461.f + SPACING);
+	
+	windSelectBoard.setFont(menuFont);
+	windSelectBoard.setString("Select board:");
+	windSelectBoard.setCharacterSize(16.f);
+	windSelectBoard.setFillColor(sf::Color::Black);
+	windSelectBoard.setPosition(TEXT_X + 60.f, 530.f + SPACING);
     
     arrowRight.setFont(menuFont);
     arrowRight.setString(">");
@@ -359,24 +366,28 @@ int EnterMenu()
 						difficulty_level = "easy";
 						snakeSpeed = 9;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+						amountOfHealthes = 5;
 					}
 					else if (difficulty == 1)
 					{
 						difficulty_level = "normal";
 						snakeSpeed = 7;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+						amountOfHealthes = 3;
 					}
 					else if (difficulty == 2)
 					{
 						difficulty_level = "hard";
-						snakeSpeed = 4;
+						snakeSpeed = 5;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+						amountOfHealthes = 2;
 					}
 					else
 					{
 						difficulty_level = "titan";
-						snakeSpeed = 4;
+						snakeSpeed = 3;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+						amountOfHealthes = 1;
 					}
 					
 				}
@@ -521,24 +532,28 @@ int EnterMenu()
 							difficulty_level = "easy";
 							snakeSpeed = 9;
 							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+							amountOfHealthes = 5;
 						}
 						else if (difficulty == 1)
 						{
 							difficulty_level = "normal";
 							snakeSpeed = 7;
 							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+							amountOfHealthes = 3;
 						}
 						else if (difficulty == 2)
 						{
 							difficulty_level = "hard";
-							snakeSpeed = 4;
+							snakeSpeed = 5;
 							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+							amountOfHealthes = 2;
 						}
 						else
 						{
 							difficulty_level = "titan";
-							snakeSpeed = 4;
+							snakeSpeed = 3;
 							windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
+							amountOfHealthes = 1;
 						}
 					}
 					else if (localMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
@@ -677,6 +692,7 @@ int EnterMenu()
 	        menuWindow.draw(windReturnFromOptions);
 	        menuWindow.draw(windMusic);
 	        menuWindow.draw(windSelectGameMode);
+	        menuWindow.draw(windSelectBoard);
             
 		}
         menuWindow.display();
