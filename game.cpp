@@ -581,7 +581,7 @@ short run(std::string boardName = "")
                                     TryAgainText.setFillColor(sf::Color::Black);
                                     if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
                                        && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
-                                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height) / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
                                         TryAgainText.setFillColor(sf::Color(105, 105, 105));
                                     }
                                     ExitText.setFillColor(sf::Color::Black);
@@ -738,13 +738,13 @@ short run(std::string boardName = "")
                                 TryAgainText.setFillColor(sf::Color::Black);
                                 if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
                                    && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
-                                   && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                                   && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 + TryAgainText.getLocalBounds().height) {
                                     TryAgainText.setFillColor(sf::Color(105, 105, 105));
                                 }
                                 ExitText.setFillColor(sf::Color::Black);
                                 if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
                                    && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
-                                   && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                   && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 25 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 25 + ExitText.getLocalBounds().height) {
                                     ExitText.setFillColor(sf::Color(105, 105, 105));
                                 }
                                 
@@ -752,7 +752,7 @@ short run(std::string boardName = "")
                                     localMousePosition = sf::Mouse::getPosition(window);
                                     if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
                                        && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
-                                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 + TryAgainText.getLocalBounds().height) {
                                         saveHighScore();
                                         backgroundMusic.stop();
                                         deleteParticle(collectedApplePS);
@@ -761,7 +761,7 @@ short run(std::string boardName = "")
                                         return 2;
                                     }else if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
                                              && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
-                                             && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                             && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 25 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 25 + ExitText.getLocalBounds().height) {
                                         saveHighScore();
                                         backgroundMusic.stop();
                                         deleteParticle(collectedApplePS);
@@ -817,13 +817,13 @@ short run(std::string boardName = "")
                     TryAgainText.setFillColor(sf::Color::Black);
                     if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
                        && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
-                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 + TryAgainText.getLocalBounds().height) {
                         TryAgainText.setFillColor(sf::Color(105, 105, 105));
                     }
                     ExitText.setFillColor(sf::Color::Black);
                     if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
                        && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
-                       && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                       && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 25 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 25 + ExitText.getLocalBounds().height) {
                         ExitText.setFillColor(sf::Color(105, 105, 105));
                     }
                     
@@ -831,7 +831,7 @@ short run(std::string boardName = "")
                         localMousePosition = sf::Mouse::getPosition(window);
                         if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
                            && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
-                           && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                           && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 + TryAgainText.getLocalBounds().height) {
                             saveHighScore();
                             backgroundMusic.stop();
                             deleteParticle(collectedApplePS);
@@ -840,7 +840,7 @@ short run(std::string boardName = "")
                             return 2;
                         }else if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
                                  && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
-                                 && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                 && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 25 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 25 + ExitText.getLocalBounds().height) {
                             saveHighScore();
                             backgroundMusic.stop();
                             deleteParticle(collectedApplePS);
@@ -881,13 +881,13 @@ short run(std::string boardName = "")
                     TryAgainText.setFillColor(sf::Color::Black);
                     if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
                        && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
-                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                       && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 + TryAgainText.getLocalBounds().height) {
                         TryAgainText.setFillColor(sf::Color(105, 105, 105));
                     }
                     ExitText.setFillColor(sf::Color::Black);
                     if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
                        && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
-                       && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                       && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 25 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 25 + ExitText.getLocalBounds().height) {
                         ExitText.setFillColor(sf::Color(105, 105, 105));
                     }
                     
@@ -895,7 +895,7 @@ short run(std::string boardName = "")
                         localMousePosition = sf::Mouse::getPosition(window);
                         if(localMousePosition.x >= (window_width - TryAgainText.getLocalBounds().width) / 2
                            && localMousePosition.x <= (window_width - TryAgainText.getLocalBounds().width) / 2 + TryAgainText.getLocalBounds().width
-                           && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 20 + TryAgainText.getLocalBounds().height) {
+                           && localMousePosition.y >= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 && localMousePosition.y <= (window_height - TryAgainText.getLocalBounds().height)  / 2 + 35 + TryAgainText.getLocalBounds().height) {
                             saveHighScore();
                             backgroundMusic.stop();
                             deleteParticle(collectedApplePS);
@@ -904,7 +904,7 @@ short run(std::string boardName = "")
                             return 2;
                         }else if(localMousePosition.x >= (window_width - ExitText.getLocalBounds().width) / 2
                                  && localMousePosition.x <= (window_width - ExitText.getLocalBounds().width) / 2 + ExitText.getLocalBounds().width
-                                 && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 10 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 10 + ExitText.getLocalBounds().height) {
+                                 && localMousePosition.y >= (window_height) / 2 + ExitText.getLocalBounds().height + 25 && localMousePosition.y <= (window_height) / 2 + ExitText.getLocalBounds().height + 25 + ExitText.getLocalBounds().height) {
                             saveHighScore();
                             backgroundMusic.stop();
                             deleteParticle(collectedApplePS);

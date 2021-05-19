@@ -235,7 +235,7 @@ int EnterMenu()
 	windSelectBoard.setString("Select board:");
 	windSelectBoard.setCharacterSize(16.f);
 	windSelectBoard.setFillColor(sf::Color::Black);
-	windSelectBoard.setPosition(TEXT_X + 60.f, 530.f + SPACING);
+	windSelectBoard.setPosition(TEXT_X + 70.f, 530.f + SPACING);
     
     arrowRight.setFont(menuFont);
     arrowRight.setString(">");
