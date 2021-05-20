@@ -4,7 +4,7 @@
 
 - [X] Background sprite for game    (15.05.2021)
 
-- [ ] Walls
+- [X] Walls   (16.05.2021)
 
 - [X] Settings in menu      (13.05.2021)
 
@@ -23,6 +23,38 @@
 - [X] Fix particle system  (13.05.2021)
 
 - [X] GameBoards to choose  (14.05.2021)
+
+- [X] Menu after death   (18.05.2021)
+
+- [ ] Game saving system
+
+## Update v1.2 ##
+
+Changes since 1.1:
+
+*Added possobility to pause during the game and/or quit to main menu (special symbols display on the window)
+
+*Added possibility to try again/quit to menu after snake death
+
+*Added golden and poisoned apples with different properties (golden adds 5x score, 2x size, poisoned negative 5x score, decreases snake size)
+
+*New game boards, which player can choose in main menu
+
+*Expanded main menu, player can operate with mouse or keyboard
+
+*High score system, program will save and display high score during the game, current score also being displayed on top of the window
+
+*New textures added (boards, apples, walls)
+
+*New health system, current health being displayed during the game, correlated with difficulty level chosen by the player, snake returns to position before collision if having additional "hearts"
+
+*Snake speed depends on difficulty level
+
+*Poisoned apple changes it's position after consuming either one apple, fixed some bugs with poisoned/golden apples malfunction
+
+*Many other small fixes/upgrades
+
+*Difficulties: adding another snake
 
 ## Update v1.1 ##
 
