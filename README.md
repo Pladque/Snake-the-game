@@ -26,6 +26,32 @@
 
 - [X] Menu after death   (18.05.2021)
 
+- [ ] Game saving system
+
+## Update v1.2 ##
+
+Changes since 1.1:
+
+*Added possobility to pause during the game and/or quit to main menu (special symbols display on the window)
+
+*Added possibility to try again/quit to menu after snake death
+
+*Added golden and poisoned apples with different properties
+
+*New game boards, which player can choose in main menu
+
+*Expanded main menu, player can operate with mouse or keyboard
+
+*High score system, program will save and display high score during the game, current score also being displayed on top of the window
+
+*New textures added (boards, apples, walls)
+
+*New health system, current health being displayed during the game, correlated with difficulty level chosen by the player
+
+*Snake speed depends on difficulty level
+
+*Many other small fixes/upgrades
+
 ## Update v1.1 ##
 
 Changes since 1.0:
