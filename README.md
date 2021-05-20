@@ -46,9 +46,11 @@ Changes since 1.1:
 
 *New textures added (boards, apples, walls)
 
-*New health system, current health being displayed during the game, correlated with difficulty level chosen by the player
+*New health system, current health being displayed during the game, correlated with difficulty level chosen by the player, snake returns to position before collision if having additional "hearts"
 
 *Snake speed depends on difficulty level
+
+*Poisoned apple changes it's position after consuming either one apple, fixed some bugs with poisoned/golden apples malfunction
 
 *Many other small fixes/upgrades
 
