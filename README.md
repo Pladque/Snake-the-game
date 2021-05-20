@@ -54,6 +54,8 @@ Changes since 1.1:
 
 *Many other small fixes/upgrades
 
+*Difficulties: adding another snake
+
 ## Update v1.1 ##
 
 Changes since 1.0:
