@@ -36,7 +36,7 @@ Changes since 1.1:
 
 *Added possibility to try again/quit to menu after snake death
 
-*Added golden and poisoned apples with different properties
+*Added golden and poisoned apples with different properties (golden adds 5x score, 2x size, poisoned negative 5x score, decreases snake size)
 
 *New game boards, which player can choose in main menu
 
