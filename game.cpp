@@ -11,6 +11,51 @@
 #include <iostream>
 #include <string>
 
+#include<jsoncpp/json/writer.h>
+/////  TEST SAVE SYSTEM  /////   compile with -ljsoncpp
+
+void saveAll(int score, std::vector<Snake> snakes, 
+        std::vector<Direction> snake1Dir,
+        std::vector<collectableObj> apples,
+        std::string boardName,
+        std::string difficulty
+        )
+    {
+        Json::Value save;   
+
+        for(auto tempSnake : snakes)
+        {
+            Json::Value body(Json::arrayValue);
+
+            bodyPart* curr = tempSnake.getHead();
+
+            while(curr)
+            {
+                Json::Value bodyOnePart(Json::arrayValue);
+                bodyOnePart.append(Json::Value(curr->x));
+                bodyOnePart.append(Json::Value(curr->y));
+
+                body.append(Json::Value(bodyOnePart));
+
+                curr = curr->next;
+            }
+
+            save["snake"]["direction"] = "TEMP";
+            save["snake"]["body"] = body;
+            
+        }
+
+        for(auto apple : apples)
+        {
+            save["apple"] = "TEMP2";
+        }
+
+        std::cout << save << std::endl;
+    }
+
+
+//////////////////////
+
 bool isFirstGame = true;
 bool isWon = false;
 bool withHealth = false;
@@ -543,6 +588,19 @@ short run(std::string boardName = "")
 	{
 		backgroundMusic.play();
 	}
+
+    //// testing save system   ////
+    std::vector<Snake> snakes;
+    snakes.push_back(snake);
+
+    std::vector<Direction> dirs;
+    dirs.push_back(Direction::left);
+
+    std::vector<collectableObj> apples;
+    apples.push_back(apple);
+    saveAll(5, snakes, dirs, apples, "name", "diff");
+
+    /////////////////////////////
 
 
     while(window.isOpen()){
