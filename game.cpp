@@ -12,46 +12,95 @@
 #include <string>
 
 #include<jsoncpp/json/writer.h>
+#include <jsoncpp/json/json.h>
+#include <sstream>
+
 /////  TEST SAVE SYSTEM  /////   compile with -ljsoncpp
 
-void saveAll(int score, std::vector<Snake> snakes, 
-        std::vector<Direction> snake1Dir,
+struct vec2
+{
+    int x,y;
+    vec2(int nx, int ny) : x(nx), y(ny) {};
+};
+
+void saveAll(int score, std::vector<vec2> snake1, 
+        std::vector<Direction> snakesDir,
         std::vector<collectableObj> apples,
         std::string boardName,
-        std::string difficulty
+        int difficulty,
+        std::vector<vec2> snake2,
+        bool multiplayer = false
         )
     {
         Json::Value save;   
 
-        for(auto tempSnake : snakes)
+        save["Difficulty"] = difficulty;
+        save["healths"] = amountOfHealthes;
+        save["poisonedApples"] = poisonedAppleOn;
+        save["boardName"] = boardName;
+        save["score"] = score;
+
+        //saving sanke 1
+        Json::Value body(Json::arrayValue);
+        for(auto part : snake1)
         {
-            Json::Value body(Json::arrayValue);
 
-            bodyPart* curr = tempSnake.getHead();
+            Json::Value bodyOnePart(Json::arrayValue);
+            bodyOnePart.append(Json::Value(part.x));
+            bodyOnePart.append(Json::Value(part.y));
 
-            while(curr)
+            body.append(Json::Value(bodyOnePart)); 
+        }
+
+        save["snake1"]["direction"] =  snakesDir[0];
+        save["snake1"]["body"] = body;
+
+        //saving sanke 2
+        if(multiplayer)
+        {
+            Json::Value body2(Json::arrayValue);
+            for(auto part : snake2)
             {
+
                 Json::Value bodyOnePart(Json::arrayValue);
-                bodyOnePart.append(Json::Value(curr->x));
-                bodyOnePart.append(Json::Value(curr->y));
+                bodyOnePart.append(Json::Value(part.x));
+                bodyOnePart.append(Json::Value(part.y));
 
-                body.append(Json::Value(bodyOnePart));
-
-                curr = curr->next;
+                body2.append(Json::Value(bodyOnePart)); 
             }
 
-            save["snake"]["direction"] = "TEMP";
-            save["snake"]["body"] = body;
-            
+            save["snake2"]["direction"] = snakesDir[1];
+            save["snake2"]["body"] = body2;
         }
 
+        int appleID = 0;
         for(auto apple : apples)
         {
-            save["apple"] = "TEMP2";
+            Json::Value applePos(Json::arrayValue);
+
+            applePos.append(Json::Value(apple.getPosX()));
+            applePos.append(Json::Value(apple.getPosY()));
+
+            save["apple"+ std::to_string(appleID)]["pos"] = applePos;
+            save["apple"+ std::to_string(appleID)]["golden"] = apple.getIsGolden();
+            save["apple" + std::to_string(appleID)]["poisoned"] = apple.getIsPoisoned();
+
+            appleID++;
         }
 
-        std::cout << save << std::endl;
+        std::fstream saveFile;
+        saveFile.open(SAVES_PATH + "lastGame.json", std::ios::out);
+
+        Json::FastWriter fastWriter;
+        saveFile << fastWriter.write(save);
+
+        saveFile.close();
     }
+
+
+    ///  READINGS  ///
+    
+
 
 
 //////////////////////
@@ -590,15 +639,29 @@ short run(std::string boardName = "")
 	}
 
     //// testing save system   ////
-    std::vector<Snake> snakes;
-    snakes.push_back(snake);
+    std::vector<vec2> snake1;
+
+    bodyPart* curr = snake.getHead();
+
+    while(curr)
+    {
+        snake1.push_back(vec2(curr->x,curr->y) );
+
+        curr = curr->next;
+
+    }
+
 
     std::vector<Direction> dirs;
     dirs.push_back(Direction::left);
 
     std::vector<collectableObj> apples;
     apples.push_back(apple);
-    saveAll(5, snakes, dirs, apples, "name", "diff");
+
+     if(poisonedAppleOn)
+        apples.push_back(poisonedApple);
+
+    saveAll(5, snake1, dirs, apples, boardName, difficulty, snake1);
 
     /////////////////////////////
 
