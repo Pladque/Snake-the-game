@@ -29,7 +29,7 @@ private:
     
 
 public:
-    bool move(BoardReader* wallsCotainer);    //false if collided with own body
+    bool move(BoardReader* wallsCotainer, bodyPart* head2);    //false if collided with own body
     Snake();
     Snake(unsigned short startX, unsigned  short startY);
     void grow(bool isVisible);

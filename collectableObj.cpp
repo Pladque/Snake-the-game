@@ -44,7 +44,7 @@ void collectableObj::setAsGolden()
 
 int field[GRID_SIZE_Y + scoreBarHeight/32][GRID_SIZE_X];
 
-bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head, collectableObj** objects){
+bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head, collectableObj** objects, bodyPart* head2){
     srand (time(NULL));
     if(!isPoisoned){
         if(rand()%goldenAppleProbability == 0)
@@ -76,6 +76,15 @@ bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head, co
             field[temp->y][temp->x] = 1;
         temp = temp->next;
     }
+    
+    temp = head2;
+    while(temp) {
+        counter++;
+        if(temp->isVisible)
+            field[temp->y][temp->x] = 1;
+        temp = temp->next;
+    }
+    
     if(objects != nullptr){
         if(poisonedAppleOn) {
             if(isPoisoned) {

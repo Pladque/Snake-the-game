@@ -55,7 +55,7 @@ bool Snake::returnBack() {
 }
 
 //updated once per frame postion updater
-bool Snake::move(BoardReader* wallsCotainer)
+bool Snake::move(BoardReader* wallsCotainer, bodyPart* head2)
 {
     bodyPart previousPositionOfBodyPart = bodyPart(*head);
 
@@ -109,7 +109,6 @@ bool Snake::move(BoardReader* wallsCotainer)
 
     //moving rest of body
     bodyPart* currBodyPart = head->next;
-
     bool validMove = true;
     while(currBodyPart)
     {
@@ -120,12 +119,19 @@ bool Snake::move(BoardReader* wallsCotainer)
                 }
             }
         }
-
+        
         bodyPart temp = bodyPart(*currBodyPart);
         currBodyPart->copyPos(previousPositionOfBodyPart);
         previousPositionOfBodyPart = temp;
 
         currBodyPart = currBodyPart->next;
+    }
+    bodyPart* temp2 = head2;
+    while(temp2) {
+        if(head->x == temp2->x && head->y == temp2->y) {
+            validMove = false;
+        }
+        temp2 = temp2->next;
     }
 
     if(!validMove)
@@ -149,14 +155,16 @@ void Snake::grow(bool isVisible = true)
 {
 
     bodyPart* currBodyPart = head;
-
+    
     while(currBodyPart->next && currBodyPart->next->isVisible)
     {
+        
         currBodyPart = currBodyPart->next;
     }
-
+    
     //not sure if it is enough to make it work
     currBodyPart->next = new bodyPart(currBodyPart->x, currBodyPart->y, currBodyPart->next, isVisible);
+    
 }
 
 void Snake::changeDirection(Direction newDir) {

@@ -22,7 +22,7 @@ public:
 	std::string getName();
 	int getSizeBonus();
 	int getScoreBonus();
-	bool goToFreeRandomPosistion(wall* firstWall, bodyPart* head = nullptr, collectableObj** objects = nullptr);
+	bool goToFreeRandomPosistion(wall* firstWall, bodyPart* head = nullptr, collectableObj** objects = nullptr, bodyPart* head2 = nullptr);
 
 	int getPosX();
 	int getPosY();
