@@ -30,5 +30,7 @@ public:
 	bool getIsGolden();
 	bool getIsPoisoned();
 	void makePosion();
+
+	void setAsGolden();
 	
 };

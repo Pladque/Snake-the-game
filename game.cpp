@@ -13,6 +13,7 @@
 
 #include<jsoncpp/json/writer.h>
 #include <jsoncpp/json/json.h>
+#include <jsoncpp/json/value.h>
 #include <sstream>
 
 /////  TEST SAVE SYSTEM  /////   compile with -ljsoncpp
@@ -84,6 +85,8 @@ void saveAll(int score, std::vector<vec2> snake1,
             save["apple"+ std::to_string(appleID)]["pos"] = applePos;
             save["apple"+ std::to_string(appleID)]["golden"] = apple.getIsGolden();
             save["apple" + std::to_string(appleID)]["poisoned"] = apple.getIsPoisoned();
+            save["apple" + std::to_string(appleID)]["bonusSize"] = apple.getSizeBonus();
+            save["apple" + std::to_string(appleID)]["bonusScore"] = apple.getScoreBonus();
 
             appleID++;
         }
@@ -100,8 +103,92 @@ void saveAll(int score, std::vector<vec2> snake1,
 
     ///  READINGS  ///
     
+    std::vector<collectableObj> createApplesfromJSON()
+    {
+        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+        Json::Value lastGameJson;
+
+        lastGameFile >> lastGameJson;
+
+        int appleCounter = 0;
+
+        std::vector<collectableObj> apples;
+        while(true)
+        {
+            std::string appleName = "apple" + std::to_string(appleCounter++);
+            if(!lastGameJson.isMember(appleName))
+                break;
+            int posX  = lastGameJson[appleName]["pos"][0].asInt();
+            int posY = lastGameJson[appleName]["pos"][1].asInt();
+            int scoreBon = lastGameJson[appleName]["bonusScore"].asInt();
+            int sizeBon = lastGameJson[appleName]["bonusSize"].asInt();
 
 
+            collectableObj apple = collectableObj("apple", posX, posY, scoreBon, sizeBon);
+
+            if(lastGameJson[appleName]["poisoned"].asBool())
+                apple.makePosion();
+            else if(lastGameJson[appleName]["golden"].asBool())
+            {
+                apple.setAsGolden();
+            } 
+
+            apples.push_back(apple);
+        }
+
+        return apples;
+
+    }
+
+    int createScoreFromJSON()
+    {
+        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+        Json::Value lastGameJson;
+
+        lastGameFile >> lastGameJson;
+
+        return lastGameJson["score"].asInt();
+    }
+
+    int createDifficultyFromJSON()
+    {
+        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+        Json::Value lastGameJson;
+
+        lastGameFile >> lastGameJson;
+
+        return lastGameJson["Difficulty"].asInt();
+    }
+
+    int createHealthFromJSON()
+    {
+        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+        Json::Value lastGameJson;
+
+        lastGameFile >> lastGameJson;
+
+        return lastGameJson["healths"].asInt();
+    }
+
+    bool createIfPosionedApplesFromJSON()
+    {
+        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+        Json::Value lastGameJson;
+
+        lastGameFile >> lastGameJson;
+
+        return lastGameJson["poisonedApples"].asBool();
+    }
+
+    const char* createBoardNameFromJSON()
+    {
+        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+        Json::Value lastGameJson;
+
+        lastGameFile >> lastGameJson;
+
+        return lastGameJson["boardName"].asCString();
+    }
 
 //////////////////////
 
@@ -662,6 +749,8 @@ short run(std::string boardName = "")
         apples.push_back(poisonedApple);
 
     saveAll(5, snake1, dirs, apples, boardName, difficulty, snake1);
+
+    apple = createApplesfromJSON()[0];
 
     /////////////////////////////
 

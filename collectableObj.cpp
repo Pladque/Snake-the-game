@@ -35,6 +35,13 @@ bool collectableObj::getIsGolden()
     return this->isGolden;
 }
 
+void collectableObj::setAsGolden()
+{
+     this->isGolden = true;
+            this->scoreBonus = goldenAppleScoreBonus;
+            this->sizeBonus = goldenAppleSizeBonus;
+}
+
 int field[GRID_SIZE_Y + scoreBarHeight/32][GRID_SIZE_X];
 
 bool collectableObj::goToFreeRandomPosistion(wall* firstWall, bodyPart* head, collectableObj** objects){
