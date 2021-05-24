@@ -210,3 +210,24 @@ Snake::~Snake() {
         delete toDel;
     }
 }
+
+int Snake::getLen()
+{
+    int counter =  0;
+
+    bodyPart* currBodyPart = head;
+    
+    while(currBodyPart->next && currBodyPart->next->isVisible)
+    {
+        
+        currBodyPart = currBodyPart->next;
+        counter++;
+    }
+
+    return counter;
+}
+
+ void Snake::setHead(bodyPart* newHead)
+ {
+     this->head = newHead;
+ }
