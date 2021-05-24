@@ -39,4 +39,6 @@ public:
     void changeDirection(Direction newDir);
     bodyPart* getHead();
     ~Snake();
+    int getLen();
+    void setHead(bodyPart* newHead);
 };

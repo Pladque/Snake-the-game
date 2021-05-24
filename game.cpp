@@ -54,6 +54,7 @@ void saveAll(int score, std::vector<vec2> snake1,
         }
 
         save["snake1"]["direction"] =  snakesDir[0];
+        save["snake1"]["length"] = (int) snake1.size();
         save["snake1"]["body"] = body;
 
         //saving sanke 2
@@ -71,6 +72,7 @@ void saveAll(int score, std::vector<vec2> snake1,
             }
 
             save["snake2"]["direction"] = snakesDir[1];
+            save["snake2"]["length"] = (int) snake2.size();
             save["snake2"]["body"] = body2;
         }
 
@@ -188,6 +190,33 @@ void saveAll(int score, std::vector<vec2> snake1,
         lastGameFile >> lastGameJson;
 
         return lastGameJson["boardName"].asCString();
+    }
+
+    std::vector<vec2> createSnakeFromJson(int snakeNum = 1)
+    {
+         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+        Json::Value lastGameJson;
+
+        lastGameFile >> lastGameJson;
+
+         std::string name = "snake" + std::to_string(snakeNum);
+
+        int bodyPartsCounter = 0;
+
+        std::vector<vec2> bodyparts;
+        while(bodyPartsCounter++ < lastGameJson[name]["length"].asInt())
+        {
+            vec2 newPart(0,0);
+            newPart.x = lastGameJson[name]["body"][bodyPartsCounter][0].asInt();
+            newPart.y = lastGameJson[name]["body"][bodyPartsCounter][1].asInt();
+
+            bodyparts.push_back(newPart);
+
+        }
+
+        return bodyparts;
+       
+
     }
 
 //////////////////////
@@ -592,7 +621,8 @@ void drawAll(Snake& snake2, sf::RenderWindow& window, Snake& snake,
 
 void windowPollEvent(sf::RenderWindow &window,
                      sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused,
-                     Direction &newDir2, Snake &snake2)
+                     Direction &newDir2, Snake &snake2, collectableObj &apple, collectableObj &poisonedApple,
+                     std::string boardName)
 {
     sf::Vector2i localMousePosition;
     while(window.pollEvent(ev)) {
@@ -656,7 +686,35 @@ void windowPollEvent(sf::RenderWindow &window,
             localMousePosition = sf::Mouse::getPosition(window);
             if(localMousePosition.x >= (GRID_SIZE_X - 2) * cell_size_pix - 10.f
                && localMousePosition.x <= (GRID_SIZE_X - 2) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
-                window.close();
+                {
+                    //// testing save system   ////
+                    std::vector<vec2> snake1;
+
+                    bodyPart* curr = snake.getHead();
+
+                    while(curr)
+                    {
+                        snake1.push_back(vec2(curr->x,curr->y) );
+
+                        curr = curr->next;
+
+                    }
+
+                    std::vector<Direction> dirs;
+                    dirs.push_back(Direction::left);
+
+                    std::vector<collectableObj> apples;
+                    apples.push_back(apple);
+
+                    if(poisonedAppleOn)
+                        apples.push_back(poisonedApple);
+
+                    saveAll(5, snake1, dirs, apples, boardName, difficulty, snake1);
+                    ////// stop save system testng ////
+
+                    window.close();
+                }
+                
             }else if(localMousePosition.x >= (GRID_SIZE_X - 1) * cell_size_pix - 10.f
                      && localMousePosition.x <= (GRID_SIZE_X - 1) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
                 if(gamePaused)
@@ -787,34 +845,15 @@ short run(std::string boardName = "")
 		backgroundMusic.play();
 	}
 
-    //// testing save system   ////
-    std::vector<vec2> snake1;
-
-    bodyPart* curr = snake.getHead();
-
-    while(curr)
-    {
-        snake1.push_back(vec2(curr->x,curr->y) );
-
-        curr = curr->next;
-
-    }
-
-
-    std::vector<Direction> dirs;
-    dirs.push_back(Direction::left);
-
-    std::vector<collectableObj> apples;
-    apples.push_back(apple);
-
-     if(poisonedAppleOn)
-        apples.push_back(poisonedApple);
-
-    saveAll(5, snake1, dirs, apples, boardName, difficulty, snake1);
-
+    
+    //////   READING FROM SAVE   ///////////////////////
     apple = createApplesfromJSON()[0];
+    if(poisonedAppleOn)
+        poisonedApple = createApplesfromJSON()[1];
+    score = createScoreFromJSON();
+    
+    std::vector<vec2> bodyparts = createSnakeFromJson( 1);
 
-    /////////////////////////////
 
 
     while(window.isOpen()){
@@ -822,7 +861,7 @@ short run(std::string boardName = "")
         i++;
         sf::Event ev;
         
-        windowPollEvent(window, ev, newDir, snake, gamePaused, newDir2, snake2);
+        windowPollEvent(window, ev, newDir, snake, gamePaused, newDir2, snake2, apple, poisonedApple,  boardName);
         
         if(!gamePaused){
             
@@ -1269,12 +1308,14 @@ short run(std::string boardName = "")
         sf::sleep(sf::milliseconds(frameFreezeTime));
         frameCounter++;
     }
-    boardReader.~BoardReader();
+   
+    
+
+    
+     boardReader.~BoardReader();
     saveHighScore();
     deleteParticle(collectedApplePS);
     backgroundMusic.stop();
-    
-    
     
     return 1;       //lost, run again
 }
