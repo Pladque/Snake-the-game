@@ -21,6 +21,11 @@ public:
     bool multiplayer;
     int amountOfHealthes;
 
+    saveMeneger()
+    {
+        this->validSave = false;
+    }
+
     void saveAll(int score,Snake snake1, Direction snake1Dir, std::vector<collectableObj> apples,
                     std::string boardName, int difficulty, Snake snake2,Direction snake2Dir, bool multiplayer,
                      int amountOfHealthes)
