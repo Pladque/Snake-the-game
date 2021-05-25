@@ -693,7 +693,11 @@ void windowPollEvent(sf::RenderWindow &window,
                     if(poisonedAppleOn)
                         apples.push_back(poisonedApple);
 
-                    sm->saveAll(5, snake, snake.getDirection(), apples, boardName, difficulty, snake, snake.getDirection(), enemySnakePresent);
+                    if(!withHealth)
+                        amountOfHealthes = 0;
+
+                    if(sm!=nullptr)
+                        sm->saveAll(score, snake, snake.getDirection(), apples, boardName, difficulty, snake2, snake2.getDirection(), enemySnakePresent, amountOfHealthes);
                     
                     window.close();
                 }

@@ -19,9 +19,11 @@ public:
     Snake snake2; 
      Direction snake2Dir;
     bool multiplayer;
+    int amountOfHealthes;
 
     void saveAll(int score,Snake snake1, Direction snake1Dir, std::vector<collectableObj> apples,
-                    std::string boardName, int difficulty, Snake snake2,Direction snake2Dir, bool multiplayer)
+                    std::string boardName, int difficulty, Snake snake2,Direction snake2Dir, bool multiplayer,
+                     int amountOfHealthes)
     {
         this->validSave = true;
 
@@ -34,6 +36,7 @@ public:
         this->snake2= snake2 ;
         this-> snake2Dir=  snake2Dir;
         this->multiplayer=multiplayer;
+        this->amountOfHealthes = amountOfHealthes;
     }
 
 };
