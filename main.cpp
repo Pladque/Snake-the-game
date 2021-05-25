@@ -1,3 +1,5 @@
+#include "Assets/Saves/save.cpp"
+#pragma once
 #include "game.cpp"
 
 /*
@@ -45,6 +47,7 @@ bool stay_in_menu = 1;		//may be used to determine if cotrol should stay in main
 
 int EnterMenu()
 {
+
 	BoardReader br;
 	br.CreateSpritesForAll(BOARDS_PATH);
 
@@ -707,6 +710,7 @@ int EnterMenu()
 
 int main(int, char const**)
 {
+	saveMeneger* sm = new saveMeneger();;
 	short run_return = 1;
 	while (stay_in_menu == 1)
 	{
@@ -714,7 +718,7 @@ int main(int, char const**)
 		{
 			if (EnterMenu() == 0)
 			{
-				run_return = run(BOARDS_PATH + board_number_to_pass);
+				run_return = run(BOARDS_PATH + board_number_to_pass, sm);
 			}
 			else
 			{
@@ -723,7 +727,7 @@ int main(int, char const**)
 		}
 		else
 		{
-			run_return = run(BOARDS_PATH + board_number_to_pass);
+			run_return = run(BOARDS_PATH + board_number_to_pass, sm);
 		}
 	}
 	
@@ -732,5 +736,7 @@ int main(int, char const**)
 		//run();
 	//	run(BOARDS_PATH + "wallsAroundBoard.txt");
 	//}
+
+	//delete(sm);
 	return 0;
 }

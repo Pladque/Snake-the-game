@@ -1,9 +1,8 @@
 #pragma once
 #include<vector>
 #pragma once
-#include "../../snake.cpp"
-#pragma once
 #include "../../collectableObj.h"
+#include "../../snake.cpp"
 
 
 class saveMeneger
@@ -17,7 +16,7 @@ public:
     std::string boardName;
     int difficulty;
     Snake snake2; 
-     Direction snake2Dir;
+    Direction snake2Dir;
     bool multiplayer;
     int amountOfHealthes;
 

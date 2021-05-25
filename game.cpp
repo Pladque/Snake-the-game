@@ -1,9 +1,12 @@
 #pragma once
 #include "snake.cpp"
+#pragma once
 #include "BoardReader.cpp"
 #pragma once
 #include "collectableObj.cpp"
+#pragma once
 #include "particle.cpp"
+#pragma once
 #include "TexturesAndSprites.cpp"
 
 #include <SFML/Audio.hpp>
@@ -18,6 +21,7 @@
 #include <jsoncpp/json/value.h>
 #include <sstream>
 
+#pragma once
 #include "Assets/Saves/save.cpp"
 
 /////  TEST SAVE SYSTEM  /////   compile with -ljsoncpp

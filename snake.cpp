@@ -1,7 +1,6 @@
 
-#ifndef SNAKE2_H
-#define SNAKE2_H
 
+#pragma once
 #include "snake.hpp"
 
 bodyPart::bodyPart()
@@ -234,5 +233,3 @@ int Snake::getLen()
  {
      this->head = newHead;
  }
-
-#endif

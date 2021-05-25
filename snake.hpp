@@ -1,7 +1,3 @@
-#ifndef SNAKE_H
-#define SNAKE_H
-
-
 #pragma once
 #include "consts.cpp"
 #pragma once
@@ -47,4 +43,3 @@ public:
     void setHead(bodyPart* newHead);
 };
 
-#endif
