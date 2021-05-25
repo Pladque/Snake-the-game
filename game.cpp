@@ -1,5 +1,7 @@
+#pragma once
 #include "snake.cpp"
 #include "BoardReader.cpp"
+#pragma once
 #include "collectableObj.cpp"
 #include "particle.cpp"
 #include "TexturesAndSprites.cpp"
@@ -16,210 +18,206 @@
 #include <jsoncpp/json/value.h>
 #include <sstream>
 
+#include "Assets/Saves/save.cpp"
+
 /////  TEST SAVE SYSTEM  /////   compile with -ljsoncpp
 
-struct vec2
-{
-    int x,y;
-    vec2(int nx, int ny) : x(nx), y(ny) {};
-};
+// void saveAll(int score, std::vector<vec2> snake1, 
+//         std::vector<Direction> snakesDir,
+//         std::vector<collectableObj> apples,
+//         std::string boardName,
+//         int difficulty,
+//         std::vector<vec2> snake2,
+//         bool multiplayer = false
+//         )
+//     {
+//         Json::Value save;   
 
-void saveAll(int score, std::vector<vec2> snake1, 
-        std::vector<Direction> snakesDir,
-        std::vector<collectableObj> apples,
-        std::string boardName,
-        int difficulty,
-        std::vector<vec2> snake2,
-        bool multiplayer = false
-        )
-    {
-        Json::Value save;   
+//         save["Difficulty"] = difficulty;
+//         save["healths"] = amountOfHealthes;
+//         save["poisonedApples"] = poisonedAppleOn;
+//         save["boardName"] = boardName;
+//         save["score"] = score;
 
-        save["Difficulty"] = difficulty;
-        save["healths"] = amountOfHealthes;
-        save["poisonedApples"] = poisonedAppleOn;
-        save["boardName"] = boardName;
-        save["score"] = score;
+//         //saving sanke 1
+//         Json::Value body(Json::arrayValue);
+//         for(auto part : snake1)
+//         {
 
-        //saving sanke 1
-        Json::Value body(Json::arrayValue);
-        for(auto part : snake1)
-        {
+//             Json::Value bodyOnePart(Json::arrayValue);
+//             bodyOnePart.append(Json::Value(part.x));
+//             bodyOnePart.append(Json::Value(part.y));
 
-            Json::Value bodyOnePart(Json::arrayValue);
-            bodyOnePart.append(Json::Value(part.x));
-            bodyOnePart.append(Json::Value(part.y));
+//             body.append(Json::Value(bodyOnePart)); 
+//         }
 
-            body.append(Json::Value(bodyOnePart)); 
-        }
+//         save["snake1"]["direction"] =  snakesDir[0];
+//         save["snake1"]["length"] = (int) snake1.size();
+//         save["snake1"]["body"] = body;
 
-        save["snake1"]["direction"] =  snakesDir[0];
-        save["snake1"]["length"] = (int) snake1.size();
-        save["snake1"]["body"] = body;
+//         //saving sanke 2
+//         if(multiplayer)
+//         {
+//             Json::Value body2(Json::arrayValue);
+//             for(auto part : snake2)
+//             {
 
-        //saving sanke 2
-        if(multiplayer)
-        {
-            Json::Value body2(Json::arrayValue);
-            for(auto part : snake2)
-            {
+//                 Json::Value bodyOnePart(Json::arrayValue);
+//                 bodyOnePart.append(Json::Value(part.x));
+//                 bodyOnePart.append(Json::Value(part.y));
 
-                Json::Value bodyOnePart(Json::arrayValue);
-                bodyOnePart.append(Json::Value(part.x));
-                bodyOnePart.append(Json::Value(part.y));
+//                 body2.append(Json::Value(bodyOnePart)); 
+//             }
 
-                body2.append(Json::Value(bodyOnePart)); 
-            }
+//             save["snake2"]["direction"] = snakesDir[1];
+//             save["snake2"]["length"] = (int) snake2.size();
+//             save["snake2"]["body"] = body2;
+//         }
 
-            save["snake2"]["direction"] = snakesDir[1];
-            save["snake2"]["length"] = (int) snake2.size();
-            save["snake2"]["body"] = body2;
-        }
+//         int appleID = 0;
+//         for(auto apple : apples)
+//         {
+//             Json::Value applePos(Json::arrayValue);
 
-        int appleID = 0;
-        for(auto apple : apples)
-        {
-            Json::Value applePos(Json::arrayValue);
+//             applePos.append(Json::Value(apple.getPosX()));
+//             applePos.append(Json::Value(apple.getPosY()));
 
-            applePos.append(Json::Value(apple.getPosX()));
-            applePos.append(Json::Value(apple.getPosY()));
+//             save["apple"+ std::to_string(appleID)]["pos"] = applePos;
+//             save["apple"+ std::to_string(appleID)]["golden"] = apple.getIsGolden();
+//             save["apple" + std::to_string(appleID)]["poisoned"] = apple.getIsPoisoned();
+//             save["apple" + std::to_string(appleID)]["bonusSize"] = apple.getSizeBonus();
+//             save["apple" + std::to_string(appleID)]["bonusScore"] = apple.getScoreBonus();
 
-            save["apple"+ std::to_string(appleID)]["pos"] = applePos;
-            save["apple"+ std::to_string(appleID)]["golden"] = apple.getIsGolden();
-            save["apple" + std::to_string(appleID)]["poisoned"] = apple.getIsPoisoned();
-            save["apple" + std::to_string(appleID)]["bonusSize"] = apple.getSizeBonus();
-            save["apple" + std::to_string(appleID)]["bonusScore"] = apple.getScoreBonus();
+//             appleID++;
+//         }
 
-            appleID++;
-        }
+//         std::fstream saveFile;
+//         saveFile.open(SAVES_PATH + "lastGame.json", std::ios::out);
 
-        std::fstream saveFile;
-        saveFile.open(SAVES_PATH + "lastGame.json", std::ios::out);
+//         Json::FastWriter fastWriter;
+//         saveFile << fastWriter.write(save);
 
-        Json::FastWriter fastWriter;
-        saveFile << fastWriter.write(save);
-
-        saveFile.close();
-    }
+//         saveFile.close();
+//     }
 
 
-    ///  READINGS  ///
+//     ///  READINGS  ///
     
-    std::vector<collectableObj> createApplesfromJSON()
-    {
-        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-        Json::Value lastGameJson;
+//     std::vector<collectableObj> createApplesfromJSON()
+//     {
+//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+//         Json::Value lastGameJson;
 
-        lastGameFile >> lastGameJson;
+//         lastGameFile >> lastGameJson;
 
-        int appleCounter = 0;
+//         int appleCounter = 0;
 
-        std::vector<collectableObj> apples;
-        while(true)
-        {
-            std::string appleName = "apple" + std::to_string(appleCounter++);
-            if(!lastGameJson.isMember(appleName))
-                break;
-            int posX  = lastGameJson[appleName]["pos"][0].asInt();
-            int posY = lastGameJson[appleName]["pos"][1].asInt();
-            int scoreBon = lastGameJson[appleName]["bonusScore"].asInt();
-            int sizeBon = lastGameJson[appleName]["bonusSize"].asInt();
+//         std::vector<collectableObj> apples;
+//         while(true)
+//         {
+//             std::string appleName = "apple" + std::to_string(appleCounter++);
+//             if(!lastGameJson.isMember(appleName))
+//                 break;
+//             int posX  = lastGameJson[appleName]["pos"][0].asInt();
+//             int posY = lastGameJson[appleName]["pos"][1].asInt();
+//             int scoreBon = lastGameJson[appleName]["bonusScore"].asInt();
+//             int sizeBon = lastGameJson[appleName]["bonusSize"].asInt();
 
 
-            collectableObj apple = collectableObj("apple", posX, posY, scoreBon, sizeBon);
+//             collectableObj apple = collectableObj("apple", posX, posY, scoreBon, sizeBon);
 
-            if(lastGameJson[appleName]["poisoned"].asBool())
-                apple.makePosion();
-            else if(lastGameJson[appleName]["golden"].asBool())
-            {
-                apple.setAsGolden();
-            } 
+//             if(lastGameJson[appleName]["poisoned"].asBool())
+//                 apple.makePosion();
+//             else if(lastGameJson[appleName]["golden"].asBool())
+//             {
+//                 apple.setAsGolden();
+//             } 
 
-            apples.push_back(apple);
-        }
+//             apples.push_back(apple);
+//         }
 
-        return apples;
+//         return apples;
 
-    }
+//     }
 
-    int createScoreFromJSON()
-    {
-        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-        Json::Value lastGameJson;
+//     int createScoreFromJSON()
+//     {
+//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+//         Json::Value lastGameJson;
 
-        lastGameFile >> lastGameJson;
+//         lastGameFile >> lastGameJson;
 
-        return lastGameJson["score"].asInt();
-    }
+//         return lastGameJson["score"].asInt();
+//     }
 
-    int createDifficultyFromJSON()
-    {
-        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-        Json::Value lastGameJson;
+//     int createDifficultyFromJSON()
+//     {
+//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+//         Json::Value lastGameJson;
 
-        lastGameFile >> lastGameJson;
+//         lastGameFile >> lastGameJson;
 
-        return lastGameJson["Difficulty"].asInt();
-    }
+//         return lastGameJson["Difficulty"].asInt();
+//     }
 
-    int createHealthFromJSON()
-    {
-        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-        Json::Value lastGameJson;
+//     int createHealthFromJSON()
+//     {
+//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+//         Json::Value lastGameJson;
 
-        lastGameFile >> lastGameJson;
+//         lastGameFile >> lastGameJson;
 
-        return lastGameJson["healths"].asInt();
-    }
+//         return lastGameJson["healths"].asInt();
+//     }
 
-    bool createIfPosionedApplesFromJSON()
-    {
-        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-        Json::Value lastGameJson;
+//     bool createIfPosionedApplesFromJSON()
+//     {
+//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+//         Json::Value lastGameJson;
 
-        lastGameFile >> lastGameJson;
+//         lastGameFile >> lastGameJson;
 
-        return lastGameJson["poisonedApples"].asBool();
-    }
+//         return lastGameJson["poisonedApples"].asBool();
+//     }
 
-    const char* createBoardNameFromJSON()
-    {
-        std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-        Json::Value lastGameJson;
+//     const char* createBoardNameFromJSON()
+//     {
+//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+//         Json::Value lastGameJson;
 
-        lastGameFile >> lastGameJson;
+//         lastGameFile >> lastGameJson;
 
-        return lastGameJson["boardName"].asCString();
-    }
+//         return lastGameJson["boardName"].asCString();
+//     }
 
-    std::vector<vec2> createSnakeFromJson(int snakeNum = 1)
-    {
-         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-        Json::Value lastGameJson;
+//     std::vector<vec2> createSnakeFromJson(int snakeNum = 1)
+//     {
+//          std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
+//         Json::Value lastGameJson;
 
-        lastGameFile >> lastGameJson;
+//         lastGameFile >> lastGameJson;
 
-         std::string name = "snake" + std::to_string(snakeNum);
+//          std::string name = "snake" + std::to_string(snakeNum);
 
-        int bodyPartsCounter = 0;
+//         int bodyPartsCounter = 0;
 
-        std::vector<vec2> bodyparts;
-        while(bodyPartsCounter++ < lastGameJson[name]["length"].asInt())
-        {
-            vec2 newPart(0,0);
-            newPart.x = lastGameJson[name]["body"][bodyPartsCounter][0].asInt();
-            newPart.y = lastGameJson[name]["body"][bodyPartsCounter][1].asInt();
+//         std::vector<vec2> bodyparts;
+//         while(bodyPartsCounter++ < lastGameJson[name]["length"].asInt())
+//         {
+//             vec2 newPart(0,0);
+//             newPart.x = lastGameJson[name]["body"][bodyPartsCounter][0].asInt();
+//             newPart.y = lastGameJson[name]["body"][bodyPartsCounter][1].asInt();
 
-            bodyparts.push_back(newPart);
+//             bodyparts.push_back(newPart);
 
-        }
+//         }
 
-        return bodyparts;
+//         return bodyparts;
        
 
-    }
+//     }
 
-//////////////////////
+// //////////////////////
 
 bool isFirstGame = true;
 bool isWon = false;
@@ -622,7 +620,7 @@ void drawAll(Snake& snake2, sf::RenderWindow& window, Snake& snake,
 void windowPollEvent(sf::RenderWindow &window,
                      sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused,
                      Direction &newDir2, Snake &snake2, collectableObj &apple, collectableObj &poisonedApple,
-                     std::string boardName)
+                     std::string boardName, saveMeneger* sm)
 {
     sf::Vector2i localMousePosition;
     while(window.pollEvent(ev)) {
@@ -688,20 +686,6 @@ void windowPollEvent(sf::RenderWindow &window,
                && localMousePosition.x <= (GRID_SIZE_X - 2) * cell_size_pix + 22.f && localMousePosition.y >= 16.f && localMousePosition.y <= 48.f) {
                 {
                     //// testing save system   ////
-                    std::vector<vec2> snake1;
-
-                    bodyPart* curr = snake.getHead();
-
-                    while(curr)
-                    {
-                        snake1.push_back(vec2(curr->x,curr->y) );
-
-                        curr = curr->next;
-
-                    }
-
-                    std::vector<Direction> dirs;
-                    dirs.push_back(Direction::left);
 
                     std::vector<collectableObj> apples;
                     apples.push_back(apple);
@@ -709,9 +693,8 @@ void windowPollEvent(sf::RenderWindow &window,
                     if(poisonedAppleOn)
                         apples.push_back(poisonedApple);
 
-                    saveAll(5, snake1, dirs, apples, boardName, difficulty, snake1);
-                    ////// stop save system testng ////
-
+                    sm->saveAll(5, snake, snake.getDirection(), apples, boardName, difficulty, snake, snake.getDirection(), enemySnakePresent);
+                    
                     window.close();
                 }
                 
@@ -738,7 +721,7 @@ void setTexture() {
     lifeSP.setTexture(lifeTexture);
 }
 
-short run(std::string boardName = "")
+short run(std::string boardName = "", saveMeneger* sm = nullptr)
 {
     bool gamePaused = false;
     int frameCounter = 0;
@@ -763,6 +746,8 @@ short run(std::string boardName = "")
     
     
     isFirstGame = false;
+
+    
     // Loading Board
     if(boardName != "")
     {
@@ -845,14 +830,27 @@ short run(std::string boardName = "")
 		backgroundMusic.play();
 	}
 
-    
-    //////   READING FROM SAVE   ///////////////////////
-    apple = createApplesfromJSON()[0];
-    if(poisonedAppleOn)
-        poisonedApple = createApplesfromJSON()[1];
-    score = createScoreFromJSON();
-    
-    std::vector<vec2> bodyparts = createSnakeFromJson( 1);
+
+    if(sm!=nullptr &&  sm->validSave)
+    {
+        snake = sm->snake1;
+        snake.changeDirection(sm->snake1Dir);
+
+        apple = sm->apples[0];
+
+        if(poisonedAppleOn)
+            poisonedApple = sm->apples[1];
+        
+        if(enemySnakePresent)
+        {
+            snake2 = sm->snake2;
+            snake2.changeDirection(sm->snake2Dir);
+        }
+
+        score = sm->score;
+
+        updateScore(0);
+    }
 
 
 
@@ -861,7 +859,7 @@ short run(std::string boardName = "")
         i++;
         sf::Event ev;
         
-        windowPollEvent(window, ev, newDir, snake, gamePaused, newDir2, snake2, apple, poisonedApple,  boardName);
+        windowPollEvent(window, ev, newDir, snake, gamePaused, newDir2, snake2, apple, poisonedApple,  boardName, sm);
         
         if(!gamePaused){
             

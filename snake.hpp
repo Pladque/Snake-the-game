@@ -1,3 +1,7 @@
+#ifndef SNAKE_H
+#define SNAKE_H
+
+
 #pragma once
 #include "consts.cpp"
 #pragma once
@@ -42,3 +46,5 @@ public:
     int getLen();
     void setHead(bodyPart* newHead);
 };
+
+#endif
