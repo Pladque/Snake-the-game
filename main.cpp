@@ -36,6 +36,7 @@
 
         //~ return allFIles;
 //~ }
+saveMeneger* sm = new saveMeneger();
 
 //DO NOT MODIFY/DELETE!!!
 //std::vector<std::string> boards_vector (list2_dir (BOARDS_PATH.c_str()));	-> doesn't seem to work
@@ -59,6 +60,7 @@ int EnterMenu()
 	extern int snakeSpeed;
 	extern bool poisonedAppleOn;
 	extern bool gameMusicOn;
+	extern bool withHealth;
 	
 	if (enemySnakePresent == false)
 	{
@@ -138,9 +140,15 @@ int EnterMenu()
 	sf::Text windDifficultyLevel, windPoisonedFruit, windMusic, windReturnFromOptions;		//in consecutive windows
 	sf::Text windSelectGameMode;
 	sf::Text windSelectBoard;
+	sf::Text windContinue;
     sf::Text arrowRight;
     sf::Text arrowLeft;
 	
+	sf::RectangleShape rectangleBasic0(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
+    rectangleBasic0.setFillColor(sf::Color(20, 100, 150));
+    rectangleBasic0.setPosition(REACT_X, 142.f + SPACING);
+    rectangleBasic0.setOutlineThickness(5.f);
+	rectangleBasic0.setOutlineColor(sf::Color(250, 150, 100));
 													
 	sf::RectangleShape rectangleBasic(sf::Vector2f(REACT_WIDTH, REACT_HEIGHT));
     rectangleBasic.setFillColor(sf::Color(20, 100, 150));
@@ -185,6 +193,12 @@ int EnterMenu()
 	mainText.setFillColor(sf::Color::Red);
 	mainText.setPosition(570.f, 5.f);
 	mainText.setStyle(sf::Text::Bold);
+	
+	windContinue.setFont(menuFont);
+	windContinue.setString("Continue: press 'C'");
+	windContinue.setCharacterSize(CHAR_SIZE);
+	windContinue.setFillColor(sf::Color::Black);
+	windContinue.setPosition(TEXT_X, 143.f + SPACING);
 	
 	windStartGame.setFont(menuFont);
 	windStartGame.setString("New game: press 'P'");
@@ -266,6 +280,13 @@ int EnterMenu()
         {
 			//menuMusic.play();
             // Close window: exit
+            rectangleBasic0.setFillColor(sf::Color(20, 100, 150));
+            localMousePosition = sf::Mouse::getPosition(menuWindow);
+            if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
+               && localMousePosition.y >= 142.f + SPACING && localMousePosition.y <= 142.f + SPACING + REACT_HEIGHT) {
+                rectangleBasic0.setFillColor(sf::Color(20, 90, 110));
+            }
+            
             rectangleBasic.setFillColor(sf::Color(20, 100, 150));
             localMousePosition = sf::Mouse::getPosition(menuWindow);
             if(localMousePosition.x >= REACT_X && localMousePosition.x <= REACT_X + REACT_WIDTH
@@ -333,6 +354,12 @@ int EnterMenu()
 					menuWindow.close();
 					return 0;
 				}
+				else if (menuEvent.key.code == sf::Keyboard::C && entered_settings == 0)
+			    {
+					//menuWindow.close();
+					//sm->validSave = false;
+					//return 0;
+				}
 				else if (menuEvent.key.code == sf::Keyboard::S)
 				{
 					entered_settings = 1;
@@ -370,6 +397,7 @@ int EnterMenu()
 						snakeSpeed = 9;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 						amountOfHealthes = 5;
+						sm->validSave = false;
 					}
 					else if (difficulty == 1)
 					{
@@ -377,6 +405,7 @@ int EnterMenu()
 						snakeSpeed = 7;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 						amountOfHealthes = 3;
+						sm->validSave = false;
 					}
 					else if (difficulty == 2)
 					{
@@ -384,6 +413,7 @@ int EnterMenu()
 						snakeSpeed = 5;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 						amountOfHealthes = 2;
+						sm->validSave = false;
 					}
 					else
 					{
@@ -391,6 +421,7 @@ int EnterMenu()
 						snakeSpeed = 3;
 						windDifficultyLevel.setString("Difficulty level: " + difficulty_level + " ('L')");
 						amountOfHealthes = 1;
+						sm->validSave = false;
 					}
 					
 				}
@@ -401,12 +432,14 @@ int EnterMenu()
 						poisonedAppleOn = true;
 						allowedPoisonedApple = "on";
 						windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+						sm->validSave = false;
 					}
 					else
 					{
 						poisonedAppleOn = false;
 						allowedPoisonedApple = "off";
 						windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+						sm->validSave = false;
 					}
 				}
 				else if (menuEvent.key.code == sf::Keyboard::V && entered_settings == 1)
@@ -416,12 +449,15 @@ int EnterMenu()
 						enemySnakePresent = true;
 						snakes_count = "2";
 						windSelectGameMode.setString("Game mode: " + snakes_count + " players ('V')");
+						withHealth = false;
+						sm->validSave = false;
 					}
 					else
 					{
 						enemySnakePresent = false;
 						snakes_count = "1";
 						windSelectGameMode.setString("Game mode: " + snakes_count + " player ('V')");
+						sm->validSave = false;
 					}
 				}
 				else if (menuEvent.key.code == sf::Keyboard::Right && entered_settings == 1)
@@ -430,24 +466,28 @@ int EnterMenu()
 					boardNumber = boardNumber % BOARD_COUNT;
 					if (boardNumber == 0)
 					{
+						sm->validSave = false;
 						rectangleBoard.setTexture(&boardTexture0);
 						board_number_to_pass = "allClear.txt";
 						//board_number_to_pass = boards_vector[0];
 					}
 					else if (boardNumber == 1)
 					{
+						sm->validSave = false;
 						rectangleBoard.setTexture(&boardTexture1);
 						board_number_to_pass = "corners.txt";
 						//board_number_to_pass = boards_vector[1];
 					}
 					else if (boardNumber == 2)
 					{
+						sm->validSave = false;
 						rectangleBoard.setTexture(&boardTexture2);
 						board_number_to_pass = "cornersInDistance.txt";
 						//board_number_to_pass = boards_vector[2];
 					}
 					else
 					{
+						sm->validSave = false;
 						rectangleBoard.setTexture(&boardTexture3);
 						board_number_to_pass = "aFewWaysOutBoard.txt";
 						//board_number_to_pass = boards_vector[3];
@@ -455,6 +495,7 @@ int EnterMenu()
 				}
 				else if (menuEvent.key.code == sf::Keyboard::Left && entered_settings == 1)
 				{
+					sm->validSave = false;
 					boardNumber += (BOARD_COUNT - 1);
 					boardNumber = boardNumber % BOARD_COUNT;
 					if (boardNumber == 0)
@@ -499,6 +540,13 @@ int EnterMenu()
 						menuWindow.close();
 						return 0;
 					}
+					else if (localMousePosition.y >= (142.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (142.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
+					{
+						//continue window was clicked by mouse
+						//menuWindow.close();
+						//sm->validSave = false;
+						//return 0;
+					}
 					else if (localMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
 					{
 						//settings window was clicked by mouse
@@ -517,17 +565,20 @@ int EnterMenu()
 							poisonedAppleOn = true;
 							allowedPoisonedApple = "on";
 							windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+							sm->validSave = false;
 						}
 						else
 						{
 							poisonedAppleOn = false;
 							allowedPoisonedApple = "off";
 							windPoisonedFruit.setString("Poisoned fruits: " + allowedPoisonedApple + " ('N')");
+							sm->validSave = false;
 						}
 					}
 					else if (localMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//difficulty window was cliked by mouse
+						sm->validSave = false;
 						difficulty++; 
 						difficulty = difficulty % 4;
 						if (difficulty == 0)
@@ -562,6 +613,7 @@ int EnterMenu()
 					else if (localMousePosition.y >= (331.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (331.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
 						//music window was clicked by mouse
+						sm->validSave = false;
 						if (gameMusicOn == true)
 						{
 							music_on_off = "off";
@@ -585,12 +637,14 @@ int EnterMenu()
 					}
 					else if (localMousePosition.y >= (457.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (457.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 1)
 					{
+						sm->validSave = false;
 						//Select mode was clicked by mouse
 						if (enemySnakePresent == false)
 						{
 							enemySnakePresent = true;
 							snakes_count = "2";
 							windSelectGameMode.setString("Game mode: " + snakes_count + " players ('V')");
+							withHealth = false;
 						}
 						else
 						{
@@ -610,6 +664,7 @@ int EnterMenu()
                 && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
                 && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowRight.getLocalBounds().height / 2)
 				{
+					sm->validSave = false;
 					boardNumber++;
 					boardNumber = boardNumber % BOARD_COUNT;
 					if (boardNumber == 0)
@@ -642,6 +697,7 @@ int EnterMenu()
                 && localMousePosition.y >= 520.f + SPACING + REACT_WIDTH / 2 - 14.f
                 && localMousePosition.y <= 520.f + SPACING + REACT_WIDTH / 2 + arrowLeft.getLocalBounds().height / 2)
 				{
+					sm->validSave = false;
 					boardNumber += (BOARD_COUNT - 1);
 					boardNumber = boardNumber % BOARD_COUNT;
 					if (boardNumber == 0)
@@ -682,6 +738,8 @@ int EnterMenu()
 	        menuWindow.draw(windStartGame);
 			menuWindow.draw(windOptions);
 	        menuWindow.draw(windQuitGame);
+	        //menuWindow.draw(rectangleBasic0);
+	        //menuWindow.draw(windContinue);
 		}
 		else
 		{
@@ -710,7 +768,6 @@ int EnterMenu()
 
 int main(int, char const**)
 {
-	saveMeneger* sm = new saveMeneger();
 	short run_return = 1;
 	while (stay_in_menu == 1)
 	{
@@ -722,6 +779,7 @@ int main(int, char const**)
 			}
 			else
 			{
+				delete(sm);
 				return 0;	
 			}
 		}
