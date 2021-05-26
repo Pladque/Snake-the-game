@@ -822,9 +822,7 @@ short run(std::string boardName = "", saveMeneger* sm = nullptr)
         poisonedApple.makePosion();
     }
     
-    Direction newDir, newDir2;
-    newDir = snake.getDirection();
-    newDir2 = snake2.getDirection();
+    
     int i = 0;
 
     //saving all objects snake can collide with
@@ -864,7 +862,9 @@ short run(std::string boardName = "", saveMeneger* sm = nullptr)
         snake.changeDirection(Direction::left);
         snake2.changeDirection(Direction::right);
     }
-
+    Direction newDir, newDir2;
+    newDir = snake.getDirection();
+    newDir2 = snake2.getDirection();
 
 
     while(window.isOpen()){
