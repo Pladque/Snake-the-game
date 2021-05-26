@@ -181,6 +181,38 @@ Direction Snake::getDirection() {
     return direction;
 }
 
+Snake& Snake::operator=(Snake& snake) {
+    if (snake.head == nullptr)
+            return *this;
+        // Create a temp variable since ll.current doesn't move/change.
+        bodyPart* tmp = snake.head;
+
+        // Allocate a new node in memory.
+        head = new bodyPart(tmp->x, tmp->y, nullptr, tmp->isVisible);
+
+        bodyPart* current = head;
+
+        // Move to next item in ll's list.
+        tmp = tmp->next;
+
+        while (tmp != nullptr)
+        {
+            // Allocate new memory for a new 'node'.
+            current->next = new bodyPart();
+            // Point to this new 'node'.
+            current = current->next;
+            // Copy over the data.
+            current->x = tmp->x;
+            current->y = tmp->y;
+            current->isVisible = tmp->isVisible;
+            // By default set the 'next' to null.
+            current->next = nullptr;
+            // Move along ll's list.
+            tmp = tmp->next;
+        }
+    return *this;
+}
+
 void Snake::fade()
 {
     bodyPart* currBodyPart = head;
@@ -215,6 +247,7 @@ Snake::~Snake() {
         currBodyPart = currBodyPart->next;
         delete toDel;
     }
+    head = nullptr;
 }
 
 int Snake::getLen()

@@ -41,5 +41,6 @@ public:
     ~Snake();
     int getLen();
     void setHead(bodyPart* newHead);
+    Snake& operator=(Snake& snake);
 };
 

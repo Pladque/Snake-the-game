@@ -488,9 +488,11 @@ void drawAll(Snake& snake2, sf::RenderWindow& window, Snake& snake,
     bodyPart* curr = snake.getHead();
     
     if(!isGameOver) {
+        
         while(curr)
         {
             if(curr == snake.getHead()) {
+                
                 if(curr->isVisible){
                     head.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
                     window.draw(head);
@@ -500,6 +502,7 @@ void drawAll(Snake& snake2, sf::RenderWindow& window, Snake& snake,
                     snakeSP.setPosition(curr->x * cell_size_pix, curr->y * cell_size_pix);
                     window.draw(snakeSP);
                 }
+                
             }
             curr = curr->next;
         }
@@ -699,11 +702,11 @@ void windowPollEvent(sf::RenderWindow &window,
 
                     if(!withHealth)
                         amountOfHealthes = 0;
-
                     if(sm!=nullptr)
                         sm->saveAll(score, snake, snake.getDirection(), apples, boardName, difficulty, snake2, snake2.getDirection(), enemySnakePresent, amountOfHealthes);
                     
                     window.close();
+                    
                 }
                 
             }else if(localMousePosition.x >= (GRID_SIZE_X - 1) * cell_size_pix - 10.f
@@ -788,8 +791,7 @@ short run(std::string boardName = "", saveMeneger* sm = nullptr)
         snake2.getHead()->x = 10;
         snake2.getHead()->y = 10;
     }
-    snake.changeDirection(Direction::left);
-    snake2.changeDirection(Direction::right);
+    
     resizeSnake(snake, 2);
     
     if(enemySnakePresent) {
@@ -858,6 +860,9 @@ short run(std::string boardName = "", saveMeneger* sm = nullptr)
         score = sm->score;
 
         updateScore(0);
+    }else {
+        snake.changeDirection(Direction::left);
+        snake2.changeDirection(Direction::right);
     }
 
 
@@ -1173,7 +1178,7 @@ short run(std::string boardName = "", saveMeneger* sm = nullptr)
         }
         
         window.clear(sf::Color(153,204,255,100));
-
+        
         snakeHeadCollision(&snake, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
         if(enemySnakePresent)
             snakeHeadCollision(&snake2, AllCollectableObjs, appleEating, collectedApplePS, collisonObjsAmount);
