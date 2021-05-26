@@ -1,4 +1,4 @@
-#include "Assets/Saves/save.cpp"
+#include "save.cpp"
 #pragma once
 #include "game.cpp"
 
@@ -710,7 +710,7 @@ int EnterMenu()
 
 int main(int, char const**)
 {
-	saveMeneger* sm = new saveMeneger();;
+	saveMeneger* sm = new saveMeneger();
 	short run_return = 1;
 	while (stay_in_menu == 1)
 	{
@@ -731,12 +731,11 @@ int main(int, char const**)
 		}
 	}
 	
-	//if (EnterMenu() == 0)
-	//{
-		//run();
-	//	run(BOARDS_PATH + "wallsAroundBoard.txt");
-	//}
-
-	//delete(sm);
+	if (EnterMenu() == 0)
+	{
+		run();
+		run(BOARDS_PATH + "wallsAroundBoard.txt");
+	}
+	delete(sm);
 	return 0;
 }

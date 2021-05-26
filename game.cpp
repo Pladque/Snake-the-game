@@ -16,13 +16,13 @@
 #include <iostream>
 #include <string>
 
-#include<jsoncpp/json/writer.h>
-#include <jsoncpp/json/json.h>
-#include <jsoncpp/json/value.h>
+#include <json/writer.h>
+#include <json/json.h>
+#include <json/value.h>
 #include <sstream>
 
 #pragma once
-#include "Assets/Saves/save.cpp"
+#include "save.cpp"
 
 /////  TEST SAVE SYSTEM  /////   compile with -ljsoncpp
 

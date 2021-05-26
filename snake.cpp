@@ -153,6 +153,10 @@ bool Snake::move(BoardReader* wallsCotainer, bodyPart* head2)
     return validMove;
 }
 
+Snake::Snake() {
+    
+}
+
 void Snake::grow(bool isVisible = true)
 {
 

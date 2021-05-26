@@ -1,8 +1,8 @@
 #pragma once
-#include<vector>
+#include <vector>
 #pragma once
-#include "../../collectableObj.h"
-#include "../../snake.cpp"
+#include "collectableObj.h"
+#include "snake.cpp"
 
 
 class saveMeneger
@@ -30,7 +30,6 @@ public:
                      int amountOfHealthes)
     {
         this->validSave = true;
-
         this-> score =score;
         this->snake1 = snake1;
         this-> snake1Dir=  snake1Dir;
