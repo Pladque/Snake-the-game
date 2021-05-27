@@ -16,9 +16,6 @@
 #include <iostream>
 #include <string>
 
-#include <json/writer.h>
-#include <json/json.h>
-#include <json/value.h>
 #include <sstream>
 
 #pragma once
@@ -231,7 +228,6 @@ bool withHealth = false;
 int snake_x = GRID_SIZE_X / 2;
 int snake_y = (GRID_SIZE_Y + scoreBarHeight / 32) / 2;
 
-//temp as global, put it into main later mby
 int score = 0;
 int highScore = 0;
 

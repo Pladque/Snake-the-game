@@ -1,5 +1,4 @@
 #include "save.cpp"
-#pragma once
 #include "game.cpp"
 
 /*
@@ -201,7 +200,7 @@ int EnterMenu()
 	windContinue.setPosition(TEXT_X, 143.f + SPACING);
 	
 	windStartGame.setFont(menuFont);
-	windStartGame.setString("New game: press 'P'");
+	windStartGame.setString("Play: press 'P'");
 	windStartGame.setCharacterSize(CHAR_SIZE);
 	windStartGame.setFillColor(sf::Color::Black);
 	windStartGame.setPosition(TEXT_X, 209.f + SPACING);
