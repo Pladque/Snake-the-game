@@ -355,9 +355,9 @@ int EnterMenu()
 				}
 				else if (menuEvent.key.code == sf::Keyboard::C && entered_settings == 0)
 			    {
-					//menuWindow.close();
-					//sm->validSave = false;
-					//return 0;
+					menuWindow.close();
+					sm->validSave = false;
+					return 0;
 				}
 				else if (menuEvent.key.code == sf::Keyboard::S)
 				{
@@ -542,9 +542,9 @@ int EnterMenu()
 					else if (localMousePosition.y >= (142.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (142.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
 					{
 						//continue window was clicked by mouse
-						//menuWindow.close();
-						//sm->validSave = false;
-						//return 0;
+						menuWindow.close();
+						sm->validSave = false;
+						return 0;
 					}
 					else if (localMousePosition.y >= (268.f + SPACING + MOUSE_CORRECTION) && localMousePosition.y <= (268.f + SPACING + MOUSE_CORRECTION + REACT_HEIGHT) && entered_settings == 0)
 					{
@@ -737,8 +737,8 @@ int EnterMenu()
 	        menuWindow.draw(windStartGame);
 			menuWindow.draw(windOptions);
 	        menuWindow.draw(windQuitGame);
-	        //menuWindow.draw(rectangleBasic0);
-	        //menuWindow.draw(windContinue);
+	        menuWindow.draw(rectangleBasic0);
+	        menuWindow.draw(windContinue);
 		}
 		else
 		{
