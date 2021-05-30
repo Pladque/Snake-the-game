@@ -29,10 +29,15 @@ private:
     
 
 public:
-    bool move(BoardReader* wallsCotainer, bodyPart* head2);    //false if collided with own body
+    // moves snakes body in snake.direction
+    bool move(BoardReader* wallsCotainer, bodyPart* head2);    //false if collided with own body or wall
     Snake();
+    //creates snake at given coords
     Snake(unsigned short startX, unsigned  short startY);
+    // grow snake by Onepiece 
+    // isVisible - if you want to grow visible, or invisible part
     void grow(bool isVisible);
+    // fades snake
     void fade();
     bool returnBack();
     Direction getDirection();
