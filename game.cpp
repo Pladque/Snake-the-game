@@ -21,205 +21,6 @@
 #pragma once
 #include "save.cpp"
 
-/////  TEST SAVE SYSTEM  /////   compile with -ljsoncpp
-
-// void saveAll(int score, std::vector<vec2> snake1, 
-//         std::vector<Direction> snakesDir,
-//         std::vector<collectableObj> apples,
-//         std::string boardName,
-//         int difficulty,
-//         std::vector<vec2> snake2,
-//         bool multiplayer = false
-//         )
-//     {
-//         Json::Value save;   
-
-//         save["Difficulty"] = difficulty;
-//         save["healths"] = amountOfHealthes;
-//         save["poisonedApples"] = poisonedAppleOn;
-//         save["boardName"] = boardName;
-//         save["score"] = score;
-
-//         //saving sanke 1
-//         Json::Value body(Json::arrayValue);
-//         for(auto part : snake1)
-//         {
-
-//             Json::Value bodyOnePart(Json::arrayValue);
-//             bodyOnePart.append(Json::Value(part.x));
-//             bodyOnePart.append(Json::Value(part.y));
-
-//             body.append(Json::Value(bodyOnePart)); 
-//         }
-
-//         save["snake1"]["direction"] =  snakesDir[0];
-//         save["snake1"]["length"] = (int) snake1.size();
-//         save["snake1"]["body"] = body;
-
-//         //saving sanke 2
-//         if(multiplayer)
-//         {
-//             Json::Value body2(Json::arrayValue);
-//             for(auto part : snake2)
-//             {
-
-//                 Json::Value bodyOnePart(Json::arrayValue);
-//                 bodyOnePart.append(Json::Value(part.x));
-//                 bodyOnePart.append(Json::Value(part.y));
-
-//                 body2.append(Json::Value(bodyOnePart)); 
-//             }
-
-//             save["snake2"]["direction"] = snakesDir[1];
-//             save["snake2"]["length"] = (int) snake2.size();
-//             save["snake2"]["body"] = body2;
-//         }
-
-//         int appleID = 0;
-//         for(auto apple : apples)
-//         {
-//             Json::Value applePos(Json::arrayValue);
-
-//             applePos.append(Json::Value(apple.getPosX()));
-//             applePos.append(Json::Value(apple.getPosY()));
-
-//             save["apple"+ std::to_string(appleID)]["pos"] = applePos;
-//             save["apple"+ std::to_string(appleID)]["golden"] = apple.getIsGolden();
-//             save["apple" + std::to_string(appleID)]["poisoned"] = apple.getIsPoisoned();
-//             save["apple" + std::to_string(appleID)]["bonusSize"] = apple.getSizeBonus();
-//             save["apple" + std::to_string(appleID)]["bonusScore"] = apple.getScoreBonus();
-
-//             appleID++;
-//         }
-
-//         std::fstream saveFile;
-//         saveFile.open(SAVES_PATH + "lastGame.json", std::ios::out);
-
-//         Json::FastWriter fastWriter;
-//         saveFile << fastWriter.write(save);
-
-//         saveFile.close();
-//     }
-
-
-//     ///  READINGS  ///
-    
-//     std::vector<collectableObj> createApplesfromJSON()
-//     {
-//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-//         Json::Value lastGameJson;
-
-//         lastGameFile >> lastGameJson;
-
-//         int appleCounter = 0;
-
-//         std::vector<collectableObj> apples;
-//         while(true)
-//         {
-//             std::string appleName = "apple" + std::to_string(appleCounter++);
-//             if(!lastGameJson.isMember(appleName))
-//                 break;
-//             int posX  = lastGameJson[appleName]["pos"][0].asInt();
-//             int posY = lastGameJson[appleName]["pos"][1].asInt();
-//             int scoreBon = lastGameJson[appleName]["bonusScore"].asInt();
-//             int sizeBon = lastGameJson[appleName]["bonusSize"].asInt();
-
-
-//             collectableObj apple = collectableObj("apple", posX, posY, scoreBon, sizeBon);
-
-//             if(lastGameJson[appleName]["poisoned"].asBool())
-//                 apple.makePosion();
-//             else if(lastGameJson[appleName]["golden"].asBool())
-//             {
-//                 apple.setAsGolden();
-//             } 
-
-//             apples.push_back(apple);
-//         }
-
-//         return apples;
-
-//     }
-
-//     int createScoreFromJSON()
-//     {
-//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-//         Json::Value lastGameJson;
-
-//         lastGameFile >> lastGameJson;
-
-//         return lastGameJson["score"].asInt();
-//     }
-
-//     int createDifficultyFromJSON()
-//     {
-//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-//         Json::Value lastGameJson;
-
-//         lastGameFile >> lastGameJson;
-
-//         return lastGameJson["Difficulty"].asInt();
-//     }
-
-//     int createHealthFromJSON()
-//     {
-//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-//         Json::Value lastGameJson;
-
-//         lastGameFile >> lastGameJson;
-
-//         return lastGameJson["healths"].asInt();
-//     }
-
-//     bool createIfPosionedApplesFromJSON()
-//     {
-//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-//         Json::Value lastGameJson;
-
-//         lastGameFile >> lastGameJson;
-
-//         return lastGameJson["poisonedApples"].asBool();
-//     }
-
-//     const char* createBoardNameFromJSON()
-//     {
-//         std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-//         Json::Value lastGameJson;
-
-//         lastGameFile >> lastGameJson;
-
-//         return lastGameJson["boardName"].asCString();
-//     }
-
-//     std::vector<vec2> createSnakeFromJson(int snakeNum = 1)
-//     {
-//          std::ifstream lastGameFile(SAVES_PATH + "lastGame.json", std::ifstream::binary);
-//         Json::Value lastGameJson;
-
-//         lastGameFile >> lastGameJson;
-
-//          std::string name = "snake" + std::to_string(snakeNum);
-
-//         int bodyPartsCounter = 0;
-
-//         std::vector<vec2> bodyparts;
-//         while(bodyPartsCounter++ < lastGameJson[name]["length"].asInt())
-//         {
-//             vec2 newPart(0,0);
-//             newPart.x = lastGameJson[name]["body"][bodyPartsCounter][0].asInt();
-//             newPart.y = lastGameJson[name]["body"][bodyPartsCounter][1].asInt();
-
-//             bodyparts.push_back(newPart);
-
-//         }
-
-//         return bodyparts;
-       
-
-//     }
-
-// //////////////////////
-
 bool isFirstGame = true;
 bool isWon = false;
 bool withHealth = false;
@@ -237,6 +38,7 @@ const int window_height = GRID_SIZE_Y * cell_size_pix + scoreBarHeight;
 
 BoardReader boardReader;
 
+//Deletes particles from given ParticalSystem
 void deleteParticle(PartycleSystem &toDelete){
     Particle* temp = toDelete.getFirstParticle();
     Particle* help;
@@ -249,8 +51,9 @@ void deleteParticle(PartycleSystem &toDelete){
 
 ///INITS:
 
-
-void initGame() {
+// inits game Textues
+void initGame() 
+{
     snakeTexture.loadFromFile(TEXTURES_PATH+"snake.png");
     
     headTexture.loadFromFile(TEXTURES_PATH+"head.png");
@@ -275,7 +78,7 @@ void initGame() {
     /// SOUNDS ///
     
 }
-
+//inits gameMusic
 void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf::Sound& appleEating, sf::SoundBuffer& gameOverSound, sf::Sound& gameOver, sf::SoundBuffer& winSound, sf::Sound& win){
     
     appleEatingSound.loadFromFile("./Assets/Sounds/applebite.wav");
@@ -299,6 +102,7 @@ void initMusic(sf::Music& backgroundMusic, sf::SoundBuffer& appleEatingSound, sf
 	 }
 }
 
+// Sets font and inits counters
 void setupText( sf::Font &font, sf::Font &fontForPause)
 {
     ScoreText.setFont(font); // font is a sf::Font
@@ -351,7 +155,7 @@ void setupText( sf::Font &font, sf::Font &fontForPause)
     YouWinText.setStyle(sf::Text::Bold);
 
 }
-
+//loads highScore from File (file in SAVES_PATH)
 void loadHighScore()
 {
     std::fstream highScoreFile;
@@ -362,6 +166,7 @@ void loadHighScore()
     highScoreFile.close();
 }
 
+//saves highScore to File (file in SAVES_PATH)
 void saveHighScore()
 {
     if(score > highScore)
@@ -378,6 +183,9 @@ void saveHighScore()
     }
 }
 
+/// snake - snake to resize
+/// size - amount of newPices
+/// isVisible - true if grow visible part of snake, false if not
 void resizeSnake(Snake& snake, int size, bool isVisible = true)
 {
     if(size > 0)
@@ -393,8 +201,9 @@ void resizeSnake(Snake& snake, int size, bool isVisible = true)
     }
     
 }
-
+//colors:
 //3 - black     //2 - gold      //1 - red
+// particleDense - amount of particles in particle system
 PartycleSystem makeParticles(int color = 1, int particleDense = 100)
 {
     srand (time(NULL));
@@ -431,7 +240,7 @@ PartycleSystem makeParticles(int color = 1, int particleDense = 100)
     return collectedApplePS;
 }
 
-
+// add points to score
 void updateScore(int addToScore){
     if(score + addToScore < 0) {
         score = 0;
@@ -440,6 +249,12 @@ void updateScore(int addToScore){
     ScoreText.setString("Score: " + std::to_string(score));
 }
 
+// checks collision with other objects
+// snake - snake to check collision
+// objects[] - array of objs that snake can collide with
+// appleAeting - sound of snake eating apple
+// appleEatingPS - partical system to create when snake ate apple
+// collObjAmount - amount of objects in collecrableObj
 void snakeHeadCollision(Snake *snake, collectableObj* objects[], 
     sf::Sound& appleEating, PartycleSystem &appleEatingPS, int collObjAmount = 0)
 {
@@ -470,7 +285,13 @@ void snakeHeadCollision(Snake *snake, collectableObj* objects[],
     }
 
 }
-
+// snake, snake2 - snakes to draw
+// window - window to draw at
+// collObj - apples to draw
+// poisionedApple - poisoned appleTo Draw
+// gmae Pause - true if game is paused, false if not
+// lives - amount of lives that snake(player) has
+// isGameOver - true if player lost (needed for gameOver screen)
 void drawAll(Snake& snake2, sf::RenderWindow& window, Snake& snake,
                 collectableObj& collObj, PartycleSystem &collectedApplePS,
              collectableObj &poisonedApple, bool& gamePaused, int lives, bool isGameOver = false)
@@ -619,7 +440,7 @@ void drawAll(Snake& snake2, sf::RenderWindow& window, Snake& snake,
     
 }
 
-
+// handles events
 void windowPollEvent(sf::RenderWindow &window,
                      sf::Event &ev, Direction &newDir, Snake &snake, bool &gamePaused,
                      Direction &newDir2, Snake &snake2, collectableObj &apple, collectableObj &poisonedApple,
@@ -728,6 +549,8 @@ void setTexture() {
     lifeSP.setTexture(lifeTexture);
 }
 
+//boaardName - name of board to load in game
+// sm - SaveMeneger with save of lastGame
 short run(std::string boardName = "", saveMeneger* sm = nullptr)
 {
     bool gamePaused = false;
