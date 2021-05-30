@@ -1,6 +1,6 @@
 # Snake-the-game
 
-#TODO
+#Check list
 
 - [X] Background sprite for game    (15.05.2021)
 
@@ -12,7 +12,7 @@
 
 - [X] high score (aka save system) (13.05.2021)
 
-- [ ] mode with opponent (mby like snake.io gameplay??)
+- [X] mode with opponent (mby like snake.io gameplay??)
 
 - [X] 3 types of apples (poisoned, golden, normal)    (14.05.2021)
   
@@ -26,7 +26,7 @@
 
 - [X] Menu after death   (18.05.2021)
 
-- [ ] Game saving system
+- [X] Game saving system
 
 ## Update v1.2 ##
 
